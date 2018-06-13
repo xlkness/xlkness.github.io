@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>lkness的小站</title>
+  <title>我的小站</title>
   
-  <subtitle>lkness</subtitle>
+  <subtitle>lk</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
