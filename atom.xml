@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-06-14T02:31:29.671Z</updated>
+  <updated>2018-06-14T07:42:09.756Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,36 +17,38 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>test_categories</title>
-    <link href="http://yoursite.com/2018/06/13/test-categories/index/"/>
-    <id>http://yoursite.com/2018/06/13/test-categories/index/</id>
-    <published>2018-06-14T02:28:18.000Z</published>
-    <updated>2018-06-14T02:31:29.671Z</updated>
+    <title>编译60个小程序之makefile</title>
+    <link href="http://yoursite.com/2018/06/14/003makefile/index/"/>
+    <id>http://yoursite.com/2018/06/14/003makefile/index/</id>
+    <published>2018-06-14T07:39:08.000Z</published>
+    <updated>2018-06-14T07:42:09.756Z</updated>
     
-    <content type="html"><![CDATA[<p>心情很好～</p><p>（测试分类。。。</p>]]></content>
+    <content type="html"><![CDATA[<p>公司有个任务需要编译60个c语言小程序，工程目录结构为：</p><p>src：放所有小程序源文件.c</p><p>drv：所有小程序编译后都为对应.drv</p><p>其它头文件、库目录省略。</p><p>makefile不太熟，也很菜，我第一想法是用for循环进行循环编译，还用到了makefile自定义函数，贴代码：</p><pre><code>CC = arm-linux-gccCFLAGS +=-Wall -O -D_REENTRANT -fpic -sharedLDFLAGS += -L./lib -lutility -lcrc -lmxml -lserial -lsocket -lpthreadROOT_DIR = $(shell pwd)SRC_DIR = ./srcDRV_DIR = ./drv#src/*.cSRC := $(wildcard ${SRC_DIR}/*.c)SRC1 := $(notdir $(SRC))ALL_NAME := $(basename ${SRC1})#自定义了一个compile_file函数define compile_file        $(CC) $(CFLAGS) -o $1 $2 $(LDFLAGS)endefdefault:        for name in $(ALL_NAME); do \#这里调用自定义函数，传输两个参数:一个drv/xx.drv，一个src/xx.c        ${call compile_file, $(DRV_DIR)/$$name.drv, $(SRC_DIR)/$$name.c}; doneclean:        rm -f $(DRV_DIR)/*.drv</code></pre><p>编译的效果是将所有的小程序都编译一遍，不管有没有出错，不管是否为最新。我需要的效果是编译所有程序，编译到哪一个出错即停止，编译前还要检查目标文件和源文件的更新时间，因此这个makefile不好用，只是学习了一下makefile的循环和自定义函数。</p><p>然后又构思makefile该如何写，就在思考的过程中想起来了学裸机程序时工程有一个.S和一个.c文件的编译，再结合makefile的伪目标，结构就很清晰了，这里用一个变量ALL_NAME表示获取到的所有src目录下的.c文件的名字替换为.drv（去除src/目录名和.c后缀，再补上drv/和.drv后缀，形式为drv/xxx.drv），代码忘了拷，贴部分自己能记住的吧：</p><pre><code>.PHONY:default cleandefault:$(ALL_NAME)$(DRV_DIR)/%.drv:$(SRC_DIR)/%.c    $(CC) $(CFLAGS) -o $@ $&lt; $(LDFLAGS)clean:    rm $(DRV_DIR)/*.drv -r</code></pre><p>这个makefile就能满足之前的要求了。通过两个makefile的编写，学习了makefile的函数、自定义函数、循环、伪目标、makefile规则与shell规则的混合问题。</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;心情很好～&lt;/p&gt;
-&lt;p&gt;（测试分类。。。&lt;/p&gt;
-
+        &lt;p&gt;公司有个任务需要编译60个c语言小程序，工程目录结构为：&lt;/p&gt;
+&lt;p&gt;src：放所有小程序源文件.c&lt;/p&gt;
+&lt;p&gt;drv：所有小程序编译后都为对应.drv&lt;/p&gt;
+&lt;p&gt;其它头文件、库目录省略。&lt;/p&gt;
+&lt;p&gt;makefile不太熟，也很菜，我第一想法是用for循环进行
       
     
     </summary>
     
-      <category term="杂事" scheme="http://yoursite.com/categories/%E6%9D%82%E4%BA%8B/"/>
+      <category term="开发" scheme="http://yoursite.com/categories/%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="心情" scheme="http://yoursite.com/tags/%E5%BF%83%E6%83%85/"/>
+      <category term="C/C++" scheme="http://yoursite.com/tags/C-C/"/>
     
   </entry>
   
   <entry>
     <title>v4l2capture</title>
-    <link href="http://yoursite.com/2018/06/13/v4l2capture/index/"/>
-    <id>http://yoursite.com/2018/06/13/v4l2capture/index/</id>
+    <link href="http://yoursite.com/2018/06/13/002v4l2capture/index/"/>
+    <id>http://yoursite.com/2018/06/13/002v4l2capture/index/</id>
     <published>2018-06-14T01:38:53.000Z</published>
     <updated>2018-06-14T02:34:33.267Z</updated>
     
@@ -71,8 +73,8 @@
   
   <entry>
     <title>yuv422转换为yuv420p</title>
-    <link href="http://yoursite.com/2018/06/12/yuv422toyuv420p/index/"/>
-    <id>http://yoursite.com/2018/06/12/yuv422toyuv420p/index/</id>
+    <link href="http://yoursite.com/2018/06/12/001yuv422toyuv420p/index/"/>
+    <id>http://yoursite.com/2018/06/12/001yuv422toyuv420p/index/</id>
     <published>2018-06-13T02:25:24.000Z</published>
     <updated>2018-06-14T02:34:33.271Z</updated>
     
