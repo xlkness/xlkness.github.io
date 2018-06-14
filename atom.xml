@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-06-13T02:26:01.474Z</updated>
+  <updated>2018-06-14T02:31:29.671Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,11 +17,64 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>test_categories</title>
+    <link href="http://yoursite.com/2018/06/13/test-categories/index/"/>
+    <id>http://yoursite.com/2018/06/13/test-categories/index/</id>
+    <published>2018-06-14T02:28:18.000Z</published>
+    <updated>2018-06-14T02:31:29.671Z</updated>
+    
+    <content type="html"><![CDATA[<p>心情很好～</p><p>（测试分类。。。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;心情很好～&lt;/p&gt;
+&lt;p&gt;（测试分类。。。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+      <category term="杂事" scheme="http://yoursite.com/categories/%E6%9D%82%E4%BA%8B/"/>
+    
+    
+      <category term="心情" scheme="http://yoursite.com/tags/%E5%BF%83%E6%83%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>v4l2capture</title>
+    <link href="http://yoursite.com/2018/06/13/v4l2capture/index/"/>
+    <id>http://yoursite.com/2018/06/13/v4l2capture/index/</id>
+    <published>2018-06-14T01:38:53.000Z</published>
+    <updated>2018-06-14T02:34:33.267Z</updated>
+    
+    <content type="html"><![CDATA[<p>虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。</p><h1 id="1-v4l2-c"><a href="#1-v4l2-c" class="headerlink" title="1.v4l2.c"></a>1.v4l2.c</h1><pre><code>void get_cam_info(struct camera *cam){    if(ioctl(cam-&gt;fd, VIDIOC_QUERYCAP, &amp;cam-&gt;cap) &lt; 0)    {        perror(&quot;query camera information error.\n&quot;);        exit(0);    }    if(!(cam-&gt;cap.capabilities &amp; V4L2_CAP_VIDEO_CAPTURE))    {        printf(&quot;device is not a capture device.\n&quot;);        exit(0);    }    printf(&quot;\nCapability Informations:\n&quot;);    printf(&quot;Driver Name:%s\nCard Name:%s\nBus info:%s\nDriver Version:%u.%u.%u\nCapabilities: %d\n&quot;,           cam-&gt;cap.driver,cam-&gt;cap.card,cam-&gt;cap.bus_info,           (cam-&gt;cap.version&gt;&gt;16)&amp;0XFF, (cam-&gt;cap.version&gt;&gt;8)&amp;0XFF,cam-&gt;cap.version&amp;0XFF,           cam-&gt;cap.capabilities );}void get_cam_fmtdesc(struct camera *cam){    cam-&gt;fmtdesc.index  = 0;    cam-&gt;fmtdesc.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;    while ((ioctl(cam-&gt;fd, VIDIOC_ENUM_FMT, &amp;cam-&gt;fmtdesc)) == 0)    {        printf(&quot;\t%d.\n\t{\n\tpixelformat = &apos;%c%c%c%c&apos;,\n\tdescription = &apos;%s&apos;\n \t}\n&quot;,                cam-&gt;fmtdesc.index+1,                cam-&gt;fmtdesc.pixelformat &amp; 0xFF,               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 8) &amp; 0xFF,               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 16) &amp; 0xFF,               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 24) &amp; 0xFF,                cam-&gt;fmtdesc.description);                cam-&gt;fmtdesc.index++;    }}void set_cap_format(struct camera *cam){    memset(&amp;cam-&gt;format, 0, sizeof(cam-&gt;format));    cam-&gt;format.fmt.pix.width       = cam-&gt;width;    cam-&gt;format.fmt.pix.height      = cam-&gt;height;    cam-&gt;format.fmt.pix.pixelformat = cam-&gt;cap_format;    //cam-&gt;format.fmt.pix.field       = V4L2_FIELD_INTERLACED;    cam-&gt;format.fmt.pix.field       = V4L2_FIELD_ANY;    cam-&gt;format.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;    if(ioctl(cam-&gt;fd, VIDIOC_S_FMT, &amp;cam-&gt;format) &lt; 0)    {        perror(&quot;set capture format error.\n&quot;);        exit(0);    }}void get_cap_format(struct camera *cam){    struct v4l2_format fmt;    struct v4l2_fmtdesc fmtdesc;    fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;    if(ioctl(cam-&gt;fd, VIDIOC_G_FMT, &amp;fmt) &lt; 0)    {        perror(&quot;get_cap_format:error.\n&quot;);        exit(0);    }    printf(&quot;\nCurrent data format information:\n width:%d\n height:%d\n&quot;,           fmt.fmt.pix.width,fmt.fmt.pix.height);    fmtdesc.index       = 0;    fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;    while(ioctl(cam-&gt;fd, VIDIOC_ENUM_FMT, &amp;fmtdesc) != -1)    {        if(fmtdesc.pixelformat == cam-&gt;format.fmt.pix.pixelformat)        {            printf(&quot; format:%s\n&quot;,fmtdesc.description);            break;        }        fmtdesc.index ++;    }}void get_framerate(struct camera *cam){    int ret;    memset(&amp;cam-&gt;setfps, 0, sizeof(struct v4l2_streamparm));    cam-&gt;setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE ;    cam-&gt;setfps.parm.capture.capability = V4L2_CAP_TIMEPERFRAME;    ret = ioctl(cam-&gt;fd, VIDIOC_G_PARM, &amp;cam-&gt;setfps);    if(ret &lt; 0)    {        perror(&quot;get fps error.\n&quot;);    }    printf(&quot; fps:%d\n&quot;,cam-&gt;setfps.parm.capture.timeperframe.denominator);}void set_framerate(struct camera *cam){    int ret ;    memset(&amp;cam-&gt;setfps, 0, sizeof(struct v4l2_streamparm));    cam-&gt;setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;    cam-&gt;setfps.parm.capture.timeperframe.numerator = 1;    cam-&gt;setfps.parm.capture.timeperframe.denominator = 25;    ret = ioctl(cam-&gt;fd, VIDIOC_S_PARM, &amp;cam-&gt;setfps);    if(ret &lt; 0)    {        perror(&quot;set fps error.\n&quot;);    }}void req_buffer(struct camera *cam){    memset(&amp;cam-&gt;reqbuf, 0, sizeof(cam-&gt;reqbuf));    cam-&gt;reqbuf.count   = cam-&gt;buf_num;    cam-&gt;reqbuf.type    = V4L2_BUF_TYPE_VIDEO_CAPTURE;    cam-&gt;reqbuf.memory  = V4L2_MEMORY_MMAP;    if(ioctl(cam-&gt;fd, VIDIOC_REQBUFS, &amp;cam-&gt;reqbuf) &lt; 0)    {        perror(&quot;reqbuf error.\n&quot;);        exit(0);    }}void init_mmap(struct camera *cam){    unsigned int i;    for(i=0; i&lt;cam-&gt;buf_num; i++)    {        //memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));        cam-&gt;buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;        cam-&gt;buf.memory = V4L2_MEMORY_MMAP;        cam-&gt;buf.index  = i;        if(-1 == ioctl(cam-&gt;fd, VIDIOC_QUERYBUF, &amp;cam-&gt;buf))        {            perror(&quot;ioctl querybuf error.\n&quot;);            exit(0);        }        cam-&gt;buffers[i].length = cam-&gt;buf.length;        cam-&gt;buffers[i].start = (unsigned char *)mmap(NULL,                                cam-&gt;buf.length,                                PROT_READ | PROT_WRITE,                                MAP_SHARED,                                cam-&gt;fd,                                cam-&gt;buf.m.offset);        if(MAP_FAILED == cam-&gt;buffers[i].start)        {            perror(&quot;mmap error.\n&quot;);            exit(0);        }    }}void start_capture(struct camera *cam){    unsigned int i;    for(i=0; i&lt;cam-&gt;buf_num; i++)    {        //memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));        cam-&gt;buf.type       = V4L2_BUF_TYPE_VIDEO_CAPTURE;        cam-&gt;buf.memory     = V4L2_MEMORY_MMAP;        cam-&gt;buf.index      = i;        if(-1 == ioctl(cam-&gt;fd, VIDIOC_QBUF, &amp;cam-&gt;buf))        {            perror(&quot;start capture:video ioctl qbuf error.\n&quot;);            exit(0);        }    }    if(-1 == ioctl(cam-&gt;fd, VIDIOC_STREAMON, &amp;cam-&gt;buf.type))    {        perror(&quot;start capture:video ioctl streamon error.\n&quot;);        exit(0);    }}int isHaveData(int fd){    fd_set fds;    struct timeval tv;    int r;    FD_ZERO (&amp;fds);//将指定的文件描述符集清空    FD_SET (fd, &amp;fds);//在文件描述符集合中增加一个新的文件描述符    tv.tv_sec = 2;    tv.tv_usec = 0;    for (;;) //这一段涉及到异步IO    {        r = select (fd + 1, &amp;fds, NULL, NULL, &amp;tv);//判断是否可读（即摄像头是否准备好），tv是定时        if (-1 == r)        {            if (EINTR == errno)            {                printf(&quot;select err\n&quot;);                continue;            }        }        if (0 == r)        {            fprintf (stderr, &quot;select timeout：%d\n&quot;,errno);            return 0;        }        return 1;    }}int get_one_frame_buf(struct camera * cam){    int index ;    if(isHaveData(cam-&gt;fd))    {        memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));        cam-&gt;buf.type       = V4L2_BUF_TYPE_VIDEO_CAPTURE;        cam-&gt;buf.memory     = V4L2_MEMORY_MMAP;        if(ioctl(cam-&gt;fd, VIDIOC_DQBUF, &amp;cam-&gt;buf) &lt; 0)        {            perror(&quot;get one frame buffer:video ioctl dqbuf error.\n&quot;);            exit(0);        }        assert(cam-&gt;buf.index &lt; cam-&gt;buf_num);        index = cam-&gt;buf.index;        //starter = (unsigned char *)buffers[cam-&gt;buf.index].start;        if(ioctl(cam-&gt;fd, VIDIOC_QBUF, &amp;cam-&gt;buf) &lt; 0)        {            perror(&quot;get one frame buffer:video ioctl qbuf error.\n&quot;);            exit(0);        }        return index;    }    else    {        printf(&quot;get one frame buffer error.\n&quot;);        exit(0);    }}void stop_capture(struct camera *cam){    if(-1 == ioctl(cam-&gt;fd,VIDIOC_STREAMOFF,&amp;cam-&gt;fmtdesc.type))    {        perror(&quot;stop capture error.\n&quot;);        exit(0);    }    close(cam-&gt;fd);    printf(&quot;stop capture successfully!\n&quot;);}void Munmap(int req_num, struct mmap_buffer *buffers){    unsigned int i;    for (i = 0; i &lt; req_num; ++i)        if (-1 == munmap(buffers[i].start, buffers[i].length))            free (buffers);}</code></pre><h1 id="2-v4l2-h"><a href="#2-v4l2-h" class="headerlink" title="2.v4l2.h"></a>2.v4l2.h</h1><p>这里的h4all.h包含的库函数,动手man一下吧 :-D</p><pre><code>#ifndef _V4L2_UVC_H#define _V4L2_UVC_H#include &quot;h4all.h&quot;struct mmap_buffer{    void *start;    size_t length;};typedef struct camera{    int fd; //摄像头文件描述符    int width;    int height;    int cap_format;    int buf_num;    struct v4l2_capability      cap;    struct v4l2_fmtdesc         fmtdesc;    struct v4l2_format          format;    struct v4l2_streamparm      setfps;    struct v4l2_requestbuffers  reqbuf;    struct v4l2_buffer          buf;    struct mmap_buffer          buffers[4];}Camera;void get_cam_info(struct camera *cam);void get_cam_fmtdesc(struct camera *cam);void set_cap_format(struct camera *cam);void get_cap_format(struct camera *cam);void get_framerate(struct camera *cam);void set_framerate(struct camera *cam);void req_buffer(struct camera *cam);void init_mmap(struct camera *cam);void start_capture(struct camera *cam);int get_one_frame_buf(struct camera * cam);void stop_capture(struct camera *cam);void Munmap(int req_num, struct mmap_buffer *buffers);void Init_v4l2(struct camera *cam);#endif</code></pre><h1 id="3-初始化：main-c"><a href="#3-初始化：main-c" class="headerlink" title="3.初始化：main.c"></a>3.初始化：main.c</h1><pre><code>#define DRIVER      &quot;/dev/video2&quot;#define WIDTH       176#define HEIGHT      144#define CAP_FORMAT  V4L2_PIX_FMT_YUYV#define REQ_BUFFER  4Camera *cam;struct mmap_buffer buffers[REQ_BUFFER];cam = (Camera *)malloc(sizeof(Camera));void set_cam(Camera *cam, const char *driver_path,    int width, int height, int format, int req_num){    cam-&gt;fd         = Open(driver_path);    cam-&gt;width      = width;    cam-&gt;height     = height;    cam-&gt;cap_format = format;    cam-&gt;buf_num    = req_num;}</code></pre><h1 id="4-获得数据"><a href="#4-获得数据" class="headerlink" title="4.获得数据"></a>4.获得数据</h1><p>调用v4l2_uvc.c的get_one_frame_buf(cam),用int型的index接收返回值，即是目前获得的底几个缓冲区的索引值，cam-&gt;buffers[index].start即是指向那段数据内存，cam-&gt;buffers[index].length即是大小</p><p><em>注：</em><br><em>当然，还有什么设置伽马值、曝光度这些套路跟上面差不多，可以百度一下，作为函数补充进去</em></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。&lt;/p&gt;
+&lt;h1 id=&quot;1-v4l2-c&quot;&gt;&lt;a href=&quot;#1-v4l2-c&quot; class=&quot;headerlink&quot; title=&quot;1.v4l2.c&quot;&gt;&lt;/a&gt;1.v4l2.c&lt;/h
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://yoursite.com/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="摄像头" scheme="http://yoursite.com/tags/%E6%91%84%E5%83%8F%E5%A4%B4/"/>
+    
+  </entry>
+  
+  <entry>
     <title>yuv422转换为yuv420p</title>
     <link href="http://yoursite.com/2018/06/12/yuv422toyuv420p/index/"/>
     <id>http://yoursite.com/2018/06/12/yuv422toyuv420p/index/</id>
     <published>2018-06-13T02:25:24.000Z</published>
-    <updated>2018-06-13T02:26:01.474Z</updated>
+    <updated>2018-06-14T02:34:33.271Z</updated>
     
     <content type="html"><![CDATA[<p>今天遇到一个问题，我的摄像头采集到的数据是yuyv格式(属于yuv422)，而X264在进行编码的时候需要标准的YUV（4：2：0）。所以有一个yuv422toyuv420的转换。在网上找了半天找到的方法拿过来转换了查看都很花。于是自己看了一下yuv格式的解释，准备写一个转换代码。以下许多解释都是按我的理解：</p><h1 id="1-yuv"><a href="#1-yuv" class="headerlink" title="1.yuv"></a>1.yuv</h1><p>yuv格式通常有两大类：打包(packed)和平面(planar)格式。前者在码流里是yuv挨一起，比如我的yuyv就是 Y0 U0 Y1 V1 Y2 U2 …. 每一个 Y对应一组UV分量。后者存储y u v分量是分开存储的，这种方式一般后面带P， 比如y uv420p就是Y0 Y1 Y2 … U0 U1 U2 … V0 V1 V2 … uv分量的多少根据格式来，yuv420也就是每四个 Y共用一组UV分量。</p><h1 id="2-转换"><a href="#2-转换" class="headerlink" title="2.转换"></a>2.转换</h1><p>理解了yuyv即yuv422与yuv420p中分量的排布，就要进行转换了。网上查到的资料说yuv422-&gt;yuv420p时 丢弃偶数行的uv分量。</p><h1 id="3-编码"><a href="#3-编码" class="headerlink" title="3.编码"></a>3.编码</h1><pre><code>定义：unsignedchar *y = out;unsignedchar *u = out + width*height;unsigned char*v = out + width*height + width*height/4;</code></pre><p>y u v分别指向yuv420buf中存储y u v分量的数组，这里out的类型为char型数组，按yuv420p的定义，4个y共用一对uv，那么一个y对应1/4个uv，一个分量占一个byte，out的大小为：总共的y分量(width<em>height) + 总共的u分量(width</em>height/4) + 总共的v分量(width<em>height/4) = width</em>height*3/2。通过上面的转换也可以得到yuyv(yuv422)一个像素占用2个字节，yuv420p一个像素占1.5个字节，rgb24的话占用3个字节，还是节约了一点点空间的。。。</p><pre><code>获取y分量并存储到yuv420buf中：         for(i=0; i&lt;yuv422_length; i+=2){               *(y+y_index) = *(in+i);               y_index++;         }这里的yuv422_length为width*height*2;y_index初始为0，存储一个y就自加一次。获取uv分量并存储到yuv420buf中：         for(i=0; i&lt;height; i+=2){               base_h = i*width*2;               for(j=base_h+1;j&lt;base_h+width*2; j+=2){                        if(is_u){                                 *(u+u_index)= *(in+j);                                 u_index++;                                 is_u = 0;                        }                        else{                                 *(v+v_index)= *(in+j);                                 v_index++;                                 is_u = 1;                        }               }          }</code></pre><p><em>总结：初入视频图像，我还是一个菜鸟，对于很多理解也不深，这个代码应该还有很多没考虑，对于我可用了。当然以上都是废话，直接贴代码</em></p><pre><code>int yuv422toyuv420(unsigned char *out, const unsigned char *in, unsigned int width, unsigned int height)    {    unsigned char *y = out;    unsigned char *u = out + width*height;    unsigned char *v = out + width*height + width*height/4;    unsigned int i,j;    unsigned int base_h;    unsigned int is_y = 1, is_u = 1;    unsigned int y_index = 0, u_index = 0, v_index = 0;    unsigned long yuv422_length = 2 * width * height;    //序列为YU YV YU YV，一个yuv422帧的长度 width * height * 2 个字节    //丢弃偶数行 u v    for(i=0; i&lt;yuv422_length; i+=2){        *(y+y_index) = *(in+i);        y_index++;    }    for(i=0; i&lt;height; i+=2){        base_h = i*width*2;        for(j=base_h+1; j&lt;base_h+width*2; j+=2){            if(is_u){                *(u+u_index) = *(in+j);                u_index++;                is_u = 0;            }            else{                *(v+v_index) = *(in+j);                v_index++;                is_u = 1;            }        }    }    return 1;    }</code></pre>]]></content>
     
@@ -34,6 +87,10 @@
     
     </summary>
     
+      <category term="开发" scheme="http://yoursite.com/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="摄像头" scheme="http://yoursite.com/tags/%E6%91%84%E5%83%8F%E5%A4%B4/"/>
     
   </entry>
   

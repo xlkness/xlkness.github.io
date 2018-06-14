@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>v4l2capture | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="摄像头">
+    <meta name="description" content="虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。 1.v4l2.cvoid get_cam_info(struct camera *cam) {     if(ioctl(cam-&amp;gt;fd, VIDIOC_QUERYCAP, &amp;amp;cam-&amp;gt;cap) &amp;lt; 0)     {         perror(&amp;quot;query camera">
+<meta name="keywords" content="摄像头">
+<meta property="og:type" content="article">
+<meta property="og:title" content="v4l2capture">
+<meta property="og:url" content="http://yoursite.com/2018/06/13/v4l2capture/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。 1.v4l2.cvoid get_cam_info(struct camera *cam) {     if(ioctl(cam-&amp;gt;fd, VIDIOC_QUERYCAP, &amp;amp;cam-&amp;gt;cap) &amp;lt; 0)     {         perror(&amp;quot;query camera">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-06-14T02:34:33.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="v4l2capture">
+<meta name="twitter:description" content="虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。 1.v4l2.cvoid get_cam_info(struct camera *cam) {     if(ioctl(cam-&amp;gt;fd, VIDIOC_QUERYCAP, &amp;amp;cam-&amp;gt;cap) &amp;lt; 0)     {         perror(&amp;quot;query camera">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-about"></i>
+                about
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">v4l2capture</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">v4l2capture</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-14T01:38:53.000Z" itemprop="datePublished" class="page-time">
+  2018-06-13
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-v4l2-c"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.v4l2.c</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-v4l2-h"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.v4l2.h</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-初始化：main-c"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.初始化：main.c</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-获得数据"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.获得数据</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-v4l2capture/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">v4l2capture</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-13 21:38:53" datetime="2018-06-14T01:38:53.000Z"  itemprop="datePublished">2018-06-13</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。</p>
+<h1 id="1-v4l2-c"><a href="#1-v4l2-c" class="headerlink" title="1.v4l2.c"></a>1.v4l2.c</h1><pre><code>void get_cam_info(struct camera *cam)
+{
+    if(ioctl(cam-&gt;fd, VIDIOC_QUERYCAP, &amp;cam-&gt;cap) &lt; 0)
+    {
+        perror(&quot;query camera information error.\n&quot;);
+        exit(0);
+    }
+    if(!(cam-&gt;cap.capabilities &amp; V4L2_CAP_VIDEO_CAPTURE))
+    {
+        printf(&quot;device is not a capture device.\n&quot;);
+        exit(0);
+    }
+    printf(&quot;\nCapability Informations:\n&quot;);
+    printf(&quot;Driver Name:%s\nCard Name:%s\nBus info:%s\nDriver Version:%u.%u.%u\nCapabilities: %d\n&quot;,
+           cam-&gt;cap.driver,cam-&gt;cap.card,cam-&gt;cap.bus_info,
+           (cam-&gt;cap.version&gt;&gt;16)&amp;0XFF, (cam-&gt;cap.version&gt;&gt;8)&amp;0XFF,cam-&gt;cap.version&amp;0XFF,
+           cam-&gt;cap.capabilities );
+}
+void get_cam_fmtdesc(struct camera *cam)
+{
+    cam-&gt;fmtdesc.index  = 0;
+    cam-&gt;fmtdesc.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    while ((ioctl(cam-&gt;fd, VIDIOC_ENUM_FMT, &amp;cam-&gt;fmtdesc)) == 0)
+    {
+        printf(&quot;\t%d.\n\t{\n\tpixelformat = &apos;%c%c%c%c&apos;,\n\tdescription = &apos;%s&apos;\n \t}\n&quot;,
+                cam-&gt;fmtdesc.index+1,
+                cam-&gt;fmtdesc.pixelformat &amp; 0xFF,
+               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 8) &amp; 0xFF,
+               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 16) &amp; 0xFF,
+               (cam-&gt;fmtdesc.pixelformat &gt;&gt; 24) &amp; 0xFF,
+                cam-&gt;fmtdesc.description);
+                cam-&gt;fmtdesc.index++;
+    }
+}
+void set_cap_format(struct camera *cam)
+{
+    memset(&amp;cam-&gt;format, 0, sizeof(cam-&gt;format));
+
+    cam-&gt;format.fmt.pix.width       = cam-&gt;width;
+    cam-&gt;format.fmt.pix.height      = cam-&gt;height;
+    cam-&gt;format.fmt.pix.pixelformat = cam-&gt;cap_format;
+    //cam-&gt;format.fmt.pix.field       = V4L2_FIELD_INTERLACED;
+    cam-&gt;format.fmt.pix.field       = V4L2_FIELD_ANY;
+    cam-&gt;format.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    if(ioctl(cam-&gt;fd, VIDIOC_S_FMT, &amp;cam-&gt;format) &lt; 0)
+    {
+        perror(&quot;set capture format error.\n&quot;);
+        exit(0);
+    }
+}
+void get_cap_format(struct camera *cam)
+{
+    struct v4l2_format fmt;
+    struct v4l2_fmtdesc fmtdesc;
+    fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if(ioctl(cam-&gt;fd, VIDIOC_G_FMT, &amp;fmt) &lt; 0)
+    {
+        perror(&quot;get_cap_format:error.\n&quot;);
+        exit(0);
+    }
+    printf(&quot;\nCurrent data format information:\n width:%d\n height:%d\n&quot;,
+           fmt.fmt.pix.width,fmt.fmt.pix.height);
+
+    fmtdesc.index       = 0;
+    fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    while(ioctl(cam-&gt;fd, VIDIOC_ENUM_FMT, &amp;fmtdesc) != -1)
+    {
+        if(fmtdesc.pixelformat == cam-&gt;format.fmt.pix.pixelformat)
+        {
+            printf(&quot; format:%s\n&quot;,fmtdesc.description);
+            break;
+        }
+        fmtdesc.index ++;
+    }
+}
+void get_framerate(struct camera *cam)
+{
+    int ret;
+    memset(&amp;cam-&gt;setfps, 0, sizeof(struct v4l2_streamparm));
+    cam-&gt;setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE ;
+    cam-&gt;setfps.parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
+    ret = ioctl(cam-&gt;fd, VIDIOC_G_PARM, &amp;cam-&gt;setfps);
+    if(ret &lt; 0)
+    {
+        perror(&quot;get fps error.\n&quot;);
+    }
+    printf(&quot; fps:%d\n&quot;,cam-&gt;setfps.parm.capture.timeperframe.denominator);
+}
+void set_framerate(struct camera *cam)
+{
+    int ret ;
+    memset(&amp;cam-&gt;setfps, 0, sizeof(struct v4l2_streamparm));
+    cam-&gt;setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    cam-&gt;setfps.parm.capture.timeperframe.numerator = 1;
+    cam-&gt;setfps.parm.capture.timeperframe.denominator = 25;
+    ret = ioctl(cam-&gt;fd, VIDIOC_S_PARM, &amp;cam-&gt;setfps);
+    if(ret &lt; 0)
+    {
+        perror(&quot;set fps error.\n&quot;);
+    }
+}
+void req_buffer(struct camera *cam)
+{
+    memset(&amp;cam-&gt;reqbuf, 0, sizeof(cam-&gt;reqbuf));
+
+    cam-&gt;reqbuf.count   = cam-&gt;buf_num;
+    cam-&gt;reqbuf.type    = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    cam-&gt;reqbuf.memory  = V4L2_MEMORY_MMAP;
+
+    if(ioctl(cam-&gt;fd, VIDIOC_REQBUFS, &amp;cam-&gt;reqbuf) &lt; 0)
+    {
+        perror(&quot;reqbuf error.\n&quot;);
+        exit(0);
+    }
+}
+
+void init_mmap(struct camera *cam)
+{
+
+    unsigned int i;
+    for(i=0; i&lt;cam-&gt;buf_num; i++)
+    {
+        //memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));
+
+        cam-&gt;buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        cam-&gt;buf.memory = V4L2_MEMORY_MMAP;
+        cam-&gt;buf.index  = i;
+
+        if(-1 == ioctl(cam-&gt;fd, VIDIOC_QUERYBUF, &amp;cam-&gt;buf))
+        {
+            perror(&quot;ioctl querybuf error.\n&quot;);
+            exit(0);
+        }
+
+        cam-&gt;buffers[i].length = cam-&gt;buf.length;
+
+        cam-&gt;buffers[i].start = (unsigned char *)mmap(NULL,
+                                cam-&gt;buf.length,
+                                PROT_READ | PROT_WRITE,
+                                MAP_SHARED,
+                                cam-&gt;fd,
+                                cam-&gt;buf.m.offset);
+
+        if(MAP_FAILED == cam-&gt;buffers[i].start)
+        {
+            perror(&quot;mmap error.\n&quot;);
+            exit(0);
+        }
+    }
+}
+
+void start_capture(struct camera *cam)
+{
+    unsigned int i;
+
+    for(i=0; i&lt;cam-&gt;buf_num; i++)
+    {
+        //memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));
+        cam-&gt;buf.type       = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        cam-&gt;buf.memory     = V4L2_MEMORY_MMAP;
+        cam-&gt;buf.index      = i;
+
+        if(-1 == ioctl(cam-&gt;fd, VIDIOC_QBUF, &amp;cam-&gt;buf))
+        {
+            perror(&quot;start capture:video ioctl qbuf error.\n&quot;);
+            exit(0);
+        }
+    }
+    if(-1 == ioctl(cam-&gt;fd, VIDIOC_STREAMON, &amp;cam-&gt;buf.type))
+    {
+        perror(&quot;start capture:video ioctl streamon error.\n&quot;);
+        exit(0);
+    }
+}
+
+int isHaveData(int fd)
+{
+    fd_set fds;
+    struct timeval tv;
+    int r;
+
+    FD_ZERO (&amp;fds);//将指定的文件描述符集清空
+    FD_SET (fd, &amp;fds);//在文件描述符集合中增加一个新的文件描述符
+
+    tv.tv_sec = 2;
+    tv.tv_usec = 0;
+    for (;;) //这一段涉及到异步IO
+    {
+        r = select (fd + 1, &amp;fds, NULL, NULL, &amp;tv);//判断是否可读（即摄像头是否准备好），tv是定时
+        if (-1 == r)
+        {
+            if (EINTR == errno)
+            {
+                printf(&quot;select err\n&quot;);
+                continue;
+            }
+        }
+        if (0 == r)
+        {
+            fprintf (stderr, &quot;select timeout：%d\n&quot;,errno);
+            return 0;
+        }
+        return 1;
+    }
+}
+
+int get_one_frame_buf(struct camera * cam)
+{
+    int index ;
+    if(isHaveData(cam-&gt;fd))
+    {
+        memset(&amp;cam-&gt;buf, 0, sizeof(cam-&gt;buf));
+
+        cam-&gt;buf.type       = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        cam-&gt;buf.memory     = V4L2_MEMORY_MMAP;
+        if(ioctl(cam-&gt;fd, VIDIOC_DQBUF, &amp;cam-&gt;buf) &lt; 0)
+        {
+            perror(&quot;get one frame buffer:video ioctl dqbuf error.\n&quot;);
+            exit(0);
+        }
+
+        assert(cam-&gt;buf.index &lt; cam-&gt;buf_num);
+
+        index = cam-&gt;buf.index;
+        //starter = (unsigned char *)buffers[cam-&gt;buf.index].start;
+        if(ioctl(cam-&gt;fd, VIDIOC_QBUF, &amp;cam-&gt;buf) &lt; 0)
+        {
+            perror(&quot;get one frame buffer:video ioctl qbuf error.\n&quot;);
+            exit(0);
+        }
+        return index;
+    }
+    else
+    {
+        printf(&quot;get one frame buffer error.\n&quot;);
+        exit(0);
+    }
+}
+
+void stop_capture(struct camera *cam)
+{
+    if(-1 == ioctl(cam-&gt;fd,VIDIOC_STREAMOFF,&amp;cam-&gt;fmtdesc.type))
+    {
+        perror(&quot;stop capture error.\n&quot;);
+        exit(0);
+    }
+
+    close(cam-&gt;fd);
+
+    printf(&quot;stop capture successfully!\n&quot;);
+}
+
+void Munmap(int req_num, struct mmap_buffer *buffers)
+{
+    unsigned int i;
+    for (i = 0; i &lt; req_num; ++i)
+        if (-1 == munmap(buffers[i].start, buffers[i].length))
+            free (buffers);
+}
+</code></pre><h1 id="2-v4l2-h"><a href="#2-v4l2-h" class="headerlink" title="2.v4l2.h"></a>2.v4l2.h</h1><p>这里的h4all.h包含的库函数,动手man一下吧 :-D</p>
+<pre><code>#ifndef _V4L2_UVC_H
+#define _V4L2_UVC_H
+#include &quot;h4all.h&quot;
+struct mmap_buffer{
+    void *start;
+    size_t length;
+};
+typedef struct camera{
+    int fd; //摄像头文件描述符
+    int width;
+    int height;
+    int cap_format;
+    int buf_num;
+    struct v4l2_capability      cap;
+    struct v4l2_fmtdesc         fmtdesc;
+    struct v4l2_format          format;
+    struct v4l2_streamparm      setfps;
+    struct v4l2_requestbuffers  reqbuf;
+    struct v4l2_buffer          buf;
+    struct mmap_buffer          buffers[4];
+}Camera;
+
+void get_cam_info(struct camera *cam);
+
+void get_cam_fmtdesc(struct camera *cam);
+
+void set_cap_format(struct camera *cam);
+
+void get_cap_format(struct camera *cam);
+
+void get_framerate(struct camera *cam);
+
+void set_framerate(struct camera *cam);
+
+void req_buffer(struct camera *cam);
+
+void init_mmap(struct camera *cam);
+
+void start_capture(struct camera *cam);
+
+int get_one_frame_buf(struct camera * cam);
+
+void stop_capture(struct camera *cam);
+
+void Munmap(int req_num, struct mmap_buffer *buffers);
+
+void Init_v4l2(struct camera *cam);
+
+#endif
+</code></pre><h1 id="3-初始化：main-c"><a href="#3-初始化：main-c" class="headerlink" title="3.初始化：main.c"></a>3.初始化：main.c</h1><pre><code>#define DRIVER      &quot;/dev/video2&quot;
+#define WIDTH       176
+#define HEIGHT      144
+#define CAP_FORMAT  V4L2_PIX_FMT_YUYV
+#define REQ_BUFFER  4
+
+Camera *cam;
+struct mmap_buffer buffers[REQ_BUFFER];
+cam = (Camera *)malloc(sizeof(Camera));
+
+void set_cam(Camera *cam, const char *driver_path,
+    int width, int height, int format, int req_num)
+{
+    cam-&gt;fd         = Open(driver_path);
+    cam-&gt;width      = width;
+    cam-&gt;height     = height;
+    cam-&gt;cap_format = format;
+    cam-&gt;buf_num    = req_num;
+}
+</code></pre><h1 id="4-获得数据"><a href="#4-获得数据" class="headerlink" title="4.获得数据"></a>4.获得数据</h1><p>调用v4l2_uvc.c的get_one_frame_buf(cam),用int型的index接收返回值，即是目前获得的底几个缓冲区的索引值，cam-&gt;buffers[index].start即是指向那段数据内存，cam-&gt;buffers[index].length即是大小</p>
+<p><em>注：</em><br><em>当然，还有什么设置伽马值、曝光度这些套路跟上面差不多，可以百度一下，作为函数补充进去</em></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-14T02:34:33.267Z" itemprop="dateUpdated">2018-06-13 22:34:33</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/摄像头/">摄像头</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/13/v4l2capture/index/&title=《v4l2capture》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/13/v4l2capture/index/&title=《v4l2capture》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/13/v4l2capture/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《v4l2capture》 — My Blog&url=http://yoursite.com/2018/06/13/v4l2capture/index/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/13/v4l2capture/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/13/test-categories/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">test_categories</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/12/yuv422toyuv420p/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">yuv422转换为yuv420p</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Wed Jun 13 2018 21:38:53 GMT-0400",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/13/v4l2capture/index/&title=《v4l2capture》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/13/v4l2capture/index/&title=《v4l2capture》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/13/v4l2capture/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《v4l2capture》 — My Blog&url=http://yoursite.com/2018/06/13/v4l2capture/index/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/13/v4l2capture/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACL0lEQVR42u3aS27DMAwFwNz/0i7QrRvlUVSLWhqtArexNV4w/Oj1itf1vcbX75/v6/7X+93ePWvBwsDAeCzjGq53jPH/dLaYvI4f7oOBgXEAI7/d2kCcXI9+ADAwMDCGgTJPAT8Ezfi5GBgYGHnATTCdNBQDAwOjeuvk+rh8nWMsrsUxMDAeyKgOBv7y8y/ONzAwMB7CuIqrkz52wveHXWFgYGzNGI8b8yMX+VBz/Ky8YRedB8HAwNiIUS0d51r/c0lhdXSKgYGxN2NVYVltn3XKaQwMjNMYcyG1kxomaWL55WJgYGzHqB7b6o8h8+NfhW9hYGBszagWsf02WfWVlUtZDAyM7Rh5otYfUibhe/KeGBgYxzCSreeFbv7dvIh9ewUDA+NgRtK4zwcAeZOuDMPAwNiakaRxa4eO1bsV2BgYGFszqgPFajhOgnh/IIqBgXECY+54RDWhrJbB+Q8DBgbG3ozO5vJAmaee+QEyDAyMcxhJY6tf0ObhOw/Q5f4fBgbGAxl5U75znCLf9OR3MTAwDmD0D1XMUauf34ZgDAyMrRnjza0dPf5GmoiBgXEC4yqutWOAvD33IWXEwMDYmjFXUiapZCco580+DAyMcxhzQ8TqhjovqNw7xMDA2JSRN86qI4ROuVt4CgYGBkbxYGvevKumm9GBMAwMjOMZc5Xx3EC0MKLAwMA4gDF3zCIPymPSXLttshbHwMB4IGNtqVkdTM4dAls238DAwPjvjC+MLrJQpixYnwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
