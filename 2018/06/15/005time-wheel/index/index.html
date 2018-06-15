@@ -29,12 +29,12 @@
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻： 基于升序链表的定时器没太大难度，因此">
 <meta property="og:locale" content="zh">
-<meta property="og:image" content="http://yoursite.com/2018/06/15/005time-wheel/index/1.jpeg">
-<meta property="og:updated_time" content="2018-06-15T07:45:15.640Z">
+<meta property="og:image" content="http://yoursite.com/img/time_wheel.jpeg">
+<meta property="og:updated_time" content="2018-06-15T08:18:17.176Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C时间轮">
 <meta name="twitter:description" content="看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻： 基于升序链表的定时器没太大难度，因此">
-<meta name="twitter:image" content="http://yoursite.com/2018/06/15/005time-wheel/index/1.jpeg">
+<meta name="twitter:image" content="http://yoursite.com/img/time_wheel.jpeg">
     
         <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
     
@@ -191,7 +191,7 @@
             <p>看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻：</p>
 <p>基于升序链表的定时器没太大难度，因此也懒得总结了。</p>
 <p>说一下时间轮，下面是截的书中的图片：</p>
-<p><img src="1.jpeg" alt="time_wheel" title="time_wheel"></p>
+<p><img src="/img/time_wheel.jpeg" alt="time_wheel" title="time_wheel"></p>
 <p>时间轮，像轮子一样滚动定时，每滚一个刻度，指针就走一个滴答，滚完一圈，就进入下一圈。因此有了这个概念，时间轮的结构也就出来了：1.齿轮（槽slot），用来标识一个滴答；2.槽间隔（slot interval ），当前槽经过多长时间到下一个槽；3.一圈的槽数量（N）；4.当前指针，走一个滴答加一，走完一圈又回到初始位置。</p>
 <p>再深入一点，定时器以什么方式添加到槽上？可以看图，每一个槽其实就是一个链表头结点，定时器即添加到所属槽的链表后。这样我们可以对时间轮性能进行分析，SI越小，定时精度越高，如果SI=10s，那么我们指定的定时器只能是10s的倍数；如果N越大，定时器效率越高，这也很好理解，N越小，一圈槽数量越少，那么我们同样添加100个定时器，分配到每个头结点的定时器越多，每一次滴答到时，就遍历当前槽，遍历一次所花时间越多。</p>
 <p>如何确定定时器位置？根据定时器到时时间可以计算，例如：定时器超时时间timeout=21s(即21s后触发定时器)，当前间隔SI=2s，一圈槽数量N=70，当前指针cur_slot指向第5个槽，我们可以计算出定时器放置的位置，这里需要两个变量，一个rotation指定定时器处于第几圈，一个slot指定定时器处于第几个槽，因此slot = ( cur_slot + timeout / SI ) % N = 15, rotation = timeout / SI / N = 0，即此定时器被放置于15槽的链表后，至于是链表头插还是尾插这个随意，指针滴答到了15槽即触发15槽到时，遍历15槽链表，若rotation=0的表示为当前该触发定时器，若rotation&gt;0的定时器对rotation–（其实很好理解，cur_slot在转当前轮，则不处理后面的轮，只对它的rotation减一就跳过，等到cur_slot转下一圈再判断此定时器）。根据这个计算，如果其它参数不变，现在有一个timeout=161s的定时器，cur_slot=5,我们可以计算出这个定时器的slot=15，rotation=1，正好处于第15槽，但是是下一转触发该触发。</p>
@@ -432,7 +432,7 @@ int main()
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-15T07:45:15.640Z" itemprop="dateUpdated">2018-06-15 15:45:15</time>
+    Last updated: <time datetime="2018-06-15T08:18:17.176Z" itemprop="dateUpdated">2018-06-15 16:18:17</time>
 </span><br>
 
 
