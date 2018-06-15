@@ -159,6 +159,55 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-004deamon/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-14 21:31:50" datetime="2018-06-15T01:31:50.000Z"  itemprop="datePublished">2018-06-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/14/004deamon/index/">Linux daemon守护进程的创建</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻：
+这里我用ssh登陆ubuntu，在终端用vim编写。
+第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下...
+    
+
+        <a href="/2018/06/14/004deamon/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-003makefile/index"
   class="article-card article-type-post" itemprop="blogPost">
 
