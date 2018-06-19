@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="服务器,Erlang,Golang">
+    <meta name="description" content="学不见其长，但日有所增">
+<meta name="keywords" content="服务器,Erlang,Golang">
+<meta property="og:type" content="website">
+<meta property="og:title" content="My Blog">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="学不见其长，但日有所增">
+<meta property="og:locale" content="zh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="My Blog">
+<meta name="twitter:description" content="学不见其长，但日有所增">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">My Blog</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">My Blog</h1>
+        <h5 class="subtitle">
+            
+                我的小站
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-013rebar3-conf/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 19:59:19" datetime="2018-06-19T11:59:19.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/013rebar3-conf/index/">erlang rebar3配置文件</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        rebar3的简单使用可以参考rebar3的官方文档。以下讲解一些rebar3的配置，初入erlang，理解还不甚深刻。用rebar3进行工程创建，会生成rebar.config文件，贴一些配置的使用方法
+1.编译设置%% 编译设置
+{erl_opts, [
+{parse_transform, lager_transform}
+, {parse_transform, ms_transform...
+    
+
+        <a href="/2018/06/19/013rebar3-conf/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-012erlang-system-build/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 19:42:44" datetime="2018-06-19T11:42:44.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/012erlang-system-build/index/">ubuntu16+ideaIC+rebar3搭建erlang开发环境</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        1.ubuntu16系统2.安装各种库sudo apt-get install build-essential
+sudo apt-get install libncurses5-dev
+sudo apt-get install libssl-dev
+sudo apt-get install m4
+sudo apt-get install unixodbc unixodbc-dev
+sudo ...
+    
+
+        <a href="/2018/06/19/012erlang-system-build/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-011max-sub-arr/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 19:35:51" datetime="2018-06-19T11:35:51.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/011max-sub-arr/index/">分治之最大子数组-《算法导论》学习笔记四</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        《算法导论》第4章4.1使用分治策略求最大子数组（数组包含负数，不然整个数组即使最大子数组，求解没意义）。
+思路：数组头为low，尾为high，mid=(low+high)/2，这样将数组分为了两段。首先肯定存在这个最大子数组。那么子数组的位置要么处于mid左边，要么处于mid右边，要么包含mid。假设最大子数组出现在mid左边，对mid左边子数组再进行(low+high)/2切分，那么最大...
+    
+
+        <a href="/2018/06/19/011max-sub-arr/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-010recu-insert-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 20:15:00" datetime="2018-06-15T12:15:00.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/010recu-insert-sort/index/">递归插入排序-《算法导论》学习笔记三</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码：
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+#include &lt;string.h&gt...
+    
+
+        <a href="/2018/06/15/010recu-insert-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-009cgiserver/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 18:47:28" datetime="2018-06-15T10:47:28.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/009cgiserver/index/">c半同步半异步进程池模型之cgi服务器</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        对半同步半异步进程池模型垂涎已久，这次中秋放假撸了下代码。
+模型的简单介绍：主进程创建几个子进程作为工作进程，主进程监听客户端connect事件，一旦有连接事件，即通过round robin(简单轮询)选取一个子进程， 通过父子进程间的通信管道通知子进程有连接事件，子进程epoll监听到管道通信时间，即知道有客户端连接，因此进程accept，并将客户端连接套接字加入epoll监听事件，客户端...
+    
+
+        <a href="/2018/06/15/009cgiserver/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-008merge-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 18:40:26" datetime="2018-06-15T10:40:26.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/008merge-sort/index/">归并排序-《算法导论》学习笔记二</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        算法导论第二章3小节讲到分治法，即将大问题化解为规模小一些的同类问题，这样先处理小问题，再合并两个小问题再解决，递归的思路。按照书上的伪代码，写了c算法。
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;
+#include &lt;stdlib.h&gt;
+
+void merge( int *arr, int p,
+    int q, int...
+    
+
+        <a href="/2018/06/15/008merge-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-007insert-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 18:37:04" datetime="2018-06-15T10:37:04.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/007insert-sort/index/">插入排序-《算法导论》学习笔记一</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        算法导论第二章的第一小节是插入排序，也就是像打扑克牌整理扑克一样，从左边第二张开始，每张与前边排好序的扑克牌比较，比较到能插入的位置就插入，算法比较简单。
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdli...
+    
+
+        <a href="/2018/06/15/007insert-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-006time-heap/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 15:46:30" datetime="2018-06-15T07:46:30.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/006time-heap/index/">C时间堆</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        跟上一篇，这里写一下时间堆：
+时间轮的滴答是固定以指定的槽间隔触发，而时间堆是以定时器堆中的最小到期时间做定时，也就是alarm(minTimeout)，一旦定时器被触发，那么就删除此定时器，更新时间堆，将新的最小到期时间定时器作为新的定时。
+然后是时间堆的数据结构，这里用了二叉树，将二叉树的根节点作为最小最小到期时间，每次滴答就取根节点，并且是完全二叉树，因此比较容易理解，我也懒得画图了，...
+    
+
+        <a href="/2018/06/15/006time-heap/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-005time-wheel/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-15 15:41:11" datetime="2018-06-15T07:41:11.000Z"  itemprop="datePublished">2018-06-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/15/005time-wheel/index/">C时间轮</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻：
+基于升序链表的定时器没太大难度...
+    
+
+        <a href="/2018/06/15/005time-wheel/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-004deamon/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-14 21:31:50" datetime="2018-06-14T13:31:50.000Z"  itemprop="datePublished">2018-06-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/14/004deamon/index/">Linux daemon守护进程的创建</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻：
+这里我用ssh登陆ubuntu，在终端用vim编写。
+第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下...
+    
+
+        <a href="/2018/06/14/004deamon/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+<nav id="page-nav">
+    <div class="inner">
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
+    </div>
+</nav>
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/page/2/&title=My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/page/2/&title=My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/page/2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=My Blog&url=http://yoursite.com/page/2/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/page/2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABx0lEQVR42u3aQW7DMAwEwP7/0y7QUw+1s2vJTAqMToGhSKMLQZH6+orH8TOuvx+/RvvfzQMXF3eZe1yOs6VX5iTfzw6Pi4s7yc2D1IvlLrn5UU+/4+Lifhj3+l/Xx2gDJS4u7n/hJpu1c3BxcT+Zm4DyLfOg9uBdDRcXd4HbFkyf+P1gfRcXF7fkHuVIglTeVql3x8XFHeHmJY8nZt67DuHi4s5zk0WT3GM9nYqarLi4uA9w86dUbWvk3vOLF7vj4uIOcvNQUjQ8brVMrpMeXFzcGW7bSmnLGW0Sk4RCXFzcGW6eymy4aZVdkqLDg4uLu4mbF0HapxJFATRvuOLi4o5w8+CyUmBtk5j2qLi4uHu57QUmL6PkGRYuLu7nc9fDWZv0JEVSXFzcSW6SlOT0e9ehvLSKi4s7w82D1Ia2R7z+6ZFwcXEHuUkLJAleLaWuguLi4g5y26JG+8yiDZF1JxYXF3crtw0obfE0mdm2e3FxcWe4efBaaZzkAfHFgXFxcQe5bfFipZC6OX3BxcV9Kzef0157HglkuLi4H8DN+7p5weWP9XFxcQe5bZE0b720bdptZRFcXNwF7sqNI39+0eJwcXHfxP0GEhklC9XK3vUAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

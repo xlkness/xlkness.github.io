@@ -159,11 +159,11 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
-            <article id="post-010recu-insert-sort/index"
+            <article id="post-023red-black-tree/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-15 20:15:00" datetime="2018-06-15T12:15:00.000Z"  itemprop="datePublished">2018-06-15</time>
+        <time class="post-time" title="2018-06-19 20:38:53" datetime="2018-06-19T12:38:53.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -177,7 +177,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/010recu-insert-sort/index/">递归插入排序-《算法导论》学习笔记三</a>
+      <a class="post-title-link" href="/2018/06/19/023red-black-tree/index/">红黑树-《算法导论》学习笔记十二</a>
     </h3>
   
 
@@ -187,14 +187,11 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码：
-#include &lt;stdio.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
-#include &lt;string.h&gt...
+        红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。
+树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一...
     
 
-        <a href="/2018/06/15/010recu-insert-sort/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/023red-black-tree/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
@@ -210,11 +207,11 @@
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-009cgiserver/index"
+            <article id="post-022bin-search-tree/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-15 18:47:28" datetime="2018-06-15T10:47:28.000Z"  itemprop="datePublished">2018-06-15</time>
+        <time class="post-time" title="2018-06-19 20:36:13" datetime="2018-06-19T12:36:13.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -228,7 +225,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/009cgiserver/index/">c半同步半异步进程池模型之cgi服务器</a>
+      <a class="post-title-link" href="/2018/06/19/022bin-search-tree/index/">二叉搜索树-《算法导论》学习笔记十一</a>
     </h3>
   
 
@@ -238,64 +235,17 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        对半同步半异步进程池模型垂涎已久，这次中秋放假撸了下代码。
-模型的简单介绍：主进程创建几个子进程作为工作进程，主进程监听客户端connect事件，一旦有连接事件，即通过round robin(简单轮询)选取一个子进程， 通过父子进程间的通信管道通知子进程有连接事件，子进程epoll监听到管道通信时间，即知道有客户端连接，因此进程accept，并将客户端连接套接字加入epoll监听事件，客户端...
+        二叉搜索树是以一颗二叉树来组织的，每个节点除数据外，还包括三个分别指向父结点、左孩子、右孩子的指针，二叉搜索树有个特性：某个结点root的左子树的某个节点x的关键值小于等于root结点右子树某个结点y的关键值。
+二叉搜索树有几个操作：
+1、查找
+查找与给定关键值相等的结点
+2、遍历
+前序、中序、后序遍历输出
+3、从某结点出发，寻找子树中最小关键值的结点
+4、从某结点出发，寻找子树中最大关键值...
     
 
-        <a href="/2018/06/15/009cgiserver/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-008merge-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 18:40:26" datetime="2018-06-15T10:40:26.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/008merge-sort/index/">归并排序-《算法导论》学习笔记二</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        算法导论第二章3小节讲到分治法，即将大问题化解为规模小一些的同类问题，这样先处理小问题，再合并两个小问题再解决，递归的思路。按照书上的伪代码，写了c算法。
-#include &lt;stdio.h&gt;
-#include &lt;time.h&gt;
-#include &lt;stdlib.h&gt;
-
-void merge( int *arr, int p,
-    int q, int...
-    
-
-        <a href="/2018/06/15/008merge-sort/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/022bin-search-tree/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
@@ -311,11 +261,11 @@ void merge( int *arr, int p,
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-007insert-sort/index"
+            <article id="post-021search-min-i/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-15 18:37:04" datetime="2018-06-15T10:37:04.000Z"  itemprop="datePublished">2018-06-15</time>
+        <time class="post-time" title="2018-06-19 20:32:13" datetime="2018-06-19T12:32:13.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -329,7 +279,7 @@ void merge( int *arr, int p,
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/007insert-sort/index/">插入排序-《算法导论》学习笔记一</a>
+      <a class="post-title-link" href="/2018/06/19/021search-min-i/index/">查找数组第i小的数-《算法导论》学习笔记十</a>
     </h3>
   
 
@@ -339,15 +289,156 @@ void merge( int *arr, int p,
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        算法导论第二章的第一小节是插入排序，也就是像打扑克牌整理扑克一样，从左边第二张开始，每张与前边排好序的扑克牌比较，比较到能插入的位置就插入，算法比较简单。
+        查找第i小的数利用了快速排序的一点思想，即以数组某个值作为比较值，然后遍历数组中除这个数以外的数，小于它的就放左边，大于它的放右边，然后作为比较值的数放中间，并返回比较值的下标，如果下标等于i，表示就找到了，如果下标大于i，又再次从大于此下标的数组递归进行此过程，同理，小于i就从小于此下标的数组递归进行此过程，代码：
 #include &lt;stdio.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
+#include &lt...
+    
+
+        <a href="/2018/06/19/021search-min-i/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-020bucket-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:28:14" datetime="2018-06-19T12:28:14.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/020bucket-sort/index/">桶排序-《算法导论》学习笔记九</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        桶排序要求数据均匀、独立分布在某个区间上，然后将待排序值按某个区间划分为几个区间数组，然后将待排序的数按这个区间划分公式有序放入对应桶中，这样放完之后再按顺序从桶中拿出来一个一个放入原数组。c代码桶可以用链表，如待排序数组的值为0-99，那么桶可以划分为0-9、10-19、20-29…..，这样就得到了10个桶数组链表，然后遍历待排序的数组，将值/10后以链表插入排序方式放入对应桶链表中（就...
+    
+
+        <a href="/2018/06/19/020bucket-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-019count-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:27:08" datetime="2018-06-19T12:27:08.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/019count-sort/index/">计数排序-《算法导论》学习笔记八</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        计数排序：假设n个输入元素中的每一个都是在0-k区间内的一个整数(k为正整数)，对每一个输入元素x，确定小于x的元素个数，用一个0-k长度的数组做记录，例如输入数组的数为0-10长度，随机出[2,5,3,0,2,3,0,3]，可以计算出一个0-10的数组，分别表示小于等于x的数的个数，于是有：0-&gt;2,1-&gt;2,2-&gt;4,3-&gt;7,4-&gt;7,5-&gt;8,6-...
+    
+
+        <a href="/2018/06/19/019count-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-018quick-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:24:39" datetime="2018-06-19T12:24:39.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/018quick-sort/index/">快速排序-《算法导论》学习笔记七</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        快排利用分治的思想，将问题规模切分为小的子规模问题，类似归并排序，归并是将两个待排序的子数组合并为一个有序的数组，而快排是将数组以某个数组值划分为两个子数组，一个数组的所有数比这个值小，一个数组的所有数比这个值大，然后再递归地对两个子数组再以某个数组值做切分和交换：
+#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
-#include &lt;stdli...
+#include &lt...
     
 
-        <a href="/2018/06/15/007insert-sort/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/018quick-sort/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
@@ -363,11 +454,11 @@ void merge( int *arr, int p,
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-006time-heap/index"
+            <article id="post-017erlang-shell-color/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-15 15:46:30" datetime="2018-06-15T07:46:30.000Z"  itemprop="datePublished">2018-06-15</time>
+        <time class="post-time" title="2018-06-19 20:19:59" datetime="2018-06-19T12:19:59.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -381,7 +472,7 @@ void merge( int *arr, int p,
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/006time-heap/index/">C时间堆</a>
+      <a class="post-title-link" href="/2018/06/19/017erlang-shell-color/index/">erlang的终端带颜色输出与中文字符串输出</a>
     </h3>
   
 
@@ -391,19 +482,20 @@ void merge( int *arr, int p,
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        跟上一篇，这里写一下时间堆：
-时间轮的滴答是固定以指定的槽间隔触发，而时间堆是以定时器堆中的最小到期时间做定时，也就是alarm(minTimeout)，一旦定时器被触发，那么就删除此定时器，更新时间堆，将新的最小到期时间定时器作为新的定时。
-然后是时间堆的数据结构，这里用了二叉树，将二叉树的根节点作为最小最小到期时间，每次滴答就取根节点，并且是完全二叉树，因此比较容易理解，我也懒得画图了，...
+        1.带颜色输出erlang终端支持带颜色输出，例如lager日志库就可以。其实就是在输出前设置一下输出属性，正常的字体是：”\e[0;38m”下面自己弄了一些宏：
+-define(CONSOLE_COLOR_RED,      &quot;\e[0;31m&quot;).
+-define(CONSOLE_COLOR_RED_BOLD, &quot;\e[1;31m&quot;).
+-defi...
     
 
-        <a href="/2018/06/15/006time-heap/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/017erlang-shell-color/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
 
     </div>
     
@@ -412,11 +504,11 @@ void merge( int *arr, int p,
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-005time-wheel/index"
+            <article id="post-016heap-sort/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-15 15:41:11" datetime="2018-06-15T07:41:11.000Z"  itemprop="datePublished">2018-06-15</time>
+        <time class="post-time" title="2018-06-19 20:18:42" datetime="2018-06-19T12:18:42.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -430,7 +522,7 @@ void merge( int *arr, int p,
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/005time-wheel/index/">C时间轮</a>
+      <a class="post-title-link" href="/2018/06/19/016heap-sort/index/">堆排序-《算法导论》学习笔记六</a>
     </h3>
   
 
@@ -440,18 +532,17 @@ void merge( int *arr, int p,
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻：
-基于升序链表的定时器没太大难度...
+        堆排序就是将一组数按二叉树层序遍历的存储顺序，经过一系列比较转移，最终变成有序的数组，这里的二叉树堆一定是完全二叉树。堆排序能进行的基础是有个最大堆的数组，最大堆性质是指树上的每个节点的子节点都比自己小或等于。因此最顶上的根节点一定是值最大的节点，有了最大堆在，堆排序就可以进行了，从层序遍历的最后一个节点开始倒序循环，交换当前节点与最顶层根节点，即最大值的节点，这样每次最大的节点都被放在层序...
     
 
-        <a href="/2018/06/15/005time-wheel/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/016heap-sort/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
 
     </div>
     
@@ -460,11 +551,11 @@ void merge( int *arr, int p,
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-004deamon/index"
+            <article id="post-015nmatrix/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-14 21:31:50" datetime="2018-06-14T13:31:50.000Z"  itemprop="datePublished">2018-06-14</time>
+        <time class="post-time" title="2018-06-19 20:16:29" datetime="2018-06-19T12:16:29.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -478,7 +569,7 @@ void merge( int *arr, int p,
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/14/004deamon/index/">Linux daemon守护进程的创建</a>
+      <a class="post-title-link" href="/2018/06/19/015nmatrix/index/">n阶矩阵一般乘法-《算法导论》学习笔记五</a>
     </h3>
   
 
@@ -488,19 +579,28 @@ void merge( int *arr, int p,
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻：
-这里我用ssh登陆ubuntu，在终端用vim编写。
-第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下...
+        A、B两个矩阵均是nxn的矩阵，则两个矩阵的乘法：
+
+一般的矩阵乘法代码：
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+
+class SquareMatrix {
+public:
+  ...
     
 
-        <a href="/2018/06/14/004deamon/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/015nmatrix/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
 
     </div>
     
@@ -509,11 +609,11 @@ void merge( int *arr, int p,
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-003makefile/index"
+            <article id="post-014rebar3-plugin/index"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2018-06-14 03:39:08" datetime="2018-06-13T19:39:08.000Z"  itemprop="datePublished">2018-06-14</time>
+        <time class="post-time" title="2018-06-19 20:11:35" datetime="2018-06-19T12:11:35.000Z"  itemprop="datePublished">2018-06-19</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
@@ -527,7 +627,7 @@ void merge( int *arr, int p,
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/14/003makefile/index/">编译60个小程序之makefile</a>
+      <a class="post-title-link" href="/2018/06/19/014rebar3-plugin/index/">erlang编写rebar3插件</a>
     </h3>
   
 
@@ -537,124 +637,19 @@ void merge( int *arr, int p,
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        公司有个任务需要编译60个c语言小程序，工程目录结构为：
-src：放所有小程序源文件.c
-drv：所有小程序编译后都为对应.drv
-其它头文件、库目录省略。
-makefile不太熟，也很菜，我第一想法是用for循环进行循环编译，还用到了makefile自定义函数，贴代码：
-CC = arm-linux-gcc
+        1.生成插件工程假设插件名为testp，执行rebar3 new plugins testp，即生成了插件工程项目，查看目录结构如图：
 
-CFLAGS +=-Wall -O -D_REENTRANT -fpic -sh...
+testp.erl文件调用初始化的代码，而插件最重要的代码在testp_prv.erl的文件，文件里提供了三个接口，分别为init/1,do/1,format_error/1，init做插件初始化的工作，初始化命名空间/初始化命令，然后将命令加入到reba...
     
 
-        <a href="/2018/06/14/003makefile/index/" class="post-more waves-effect waves-button">
+        <a href="/2018/06/19/014rebar3-plugin/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-002v4l2capture/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-13 21:38:53" datetime="2018-06-13T13:38:53.000Z"  itemprop="datePublished">2018-06-13</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/13/002v4l2capture/index/">v4l2capture</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        虽然网上很多了，还是贴一下吧，自己刚入门的时候也是找苦逼很久找代码，代码我也是总结的。
-1.v4l2.cvoid get_cam_info(struct camera *cam)
-{
-    if(ioctl(cam-&gt;fd, VIDIOC_QUERYCAP, &amp;cam-&gt;cap) &lt; 0)
-    {
-        perror(&quot;query came...
-    
-
-        <a href="/2018/06/13/002v4l2capture/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/摄像头/">摄像头</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-001yuv422toyuv420p/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-12 22:25:24" datetime="2018-06-12T14:25:24.000Z"  itemprop="datePublished">2018-06-12</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/12/001yuv422toyuv420p/index/">yuv422转换为yuv420p</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        今天遇到一个问题，我的摄像头采集到的数据是yuyv格式(属于yuv422)，而X264在进行编码的时候需要标准的YUV（4：2：0）。所以有一个yuv422toyuv420的转换。在网上找了半天找到的方法拿过来转换了查看都很花。于是自己看了一下yuv格式的解释，准备写一个转换代码。以下许多解释都是按我的理解：
-1.yuvyuv格式通常有两大类：打包(packed)和平面(planar)格式。...
-    
-
-        <a href="/2018/06/12/001yuv422toyuv420p/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/摄像头/">摄像头</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
 
     </div>
     
@@ -665,6 +660,12 @@ CFLAGS +=-Wall -O -D_REENTRANT -fpic -sh...
     </ul>
 
     
+<nav id="page-nav">
+    <div class="inner">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    </div>
+</nav>
+
 
 </div>
 

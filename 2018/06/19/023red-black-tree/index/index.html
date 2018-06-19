@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>红黑树-《算法导论》学习笔记十二 | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据结构/算法">
+    <meta name="description" content="红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。 树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑">
+<meta name="keywords" content="数据结构&#x2F;算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红黑树-《算法导论》学习笔记十二">
+<meta property="og:url" content="http://yoursite.com/2018/06/19/023red-black-tree/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。 树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-06-19T12:50:03.888Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="红黑树-《算法导论》学习笔记十二">
+<meta name="twitter:description" content="红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。 树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">红黑树-《算法导论》学习笔记十二</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">红黑树-《算法导论》学习笔记十二</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-19T12:38:53.000Z" itemprop="datePublished" class="page-time">
+  2018-06-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-023red-black-tree/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">红黑树-《算法导论》学习笔记十二</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-19 20:38:53" datetime="2018-06-19T12:38:53.000Z"  itemprop="datePublished">2018-06-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。</p>
+<p>树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑树是满足几个特殊性质的二叉搜索树：</p>
+<ul>
+<li>每个结点或是红色的，或是黑色的</li>
+<li>根结点是黑色的</li>
+<li>每个叶结点（亦即空结点）为黑色的</li>
+<li>如果一个结点是红色的，则它的两个子结点都是黑色的</li>
+<li>对每个结点，从该结点到其所有后代叶结点的简单路径上，均包含相同数目的黑色结点（经过的黑色结点数为黑高）</li>
+</ul>
+<p>与二叉搜索树相似，红黑树也有一些操作接口：</p>
+<ul>
+<li>遍历</li>
+<li>寻找结点中序遍历的后继:tree_minimum</li>
+<li>寻找结点中序遍历的前驱:tree_maximum</li>
+<li>结点左右旋转（红黑树不同于二叉搜索树的操作），用来平衡黑高<ul>
+<li>左旋：结点的父结点的左孩子指向结点的右孩子，右孩子的左孩子变为结点的右孩子，右孩子变为它的父结点</li>
+<li>右旋：结点的父结点的右孩子指向结点的左孩子，做孩子的右孩子变为结点的左孩子，左孩子变为它的父结点*</li>
+</ul>
+</li>
+<li>插入，插入一个新结点时，考虑如果插入黑色结点，破坏了原树的红黑性质（黑高），要进行重新平衡</li>
+<li>删除，删除了一个结点后，考虑如果删除的是黑色结点，或删除了结点，后继提升到删除节点的位置后，平衡红黑性质</li>
+</ul>
+<p>———-插入</p>
+<ol>
+<li><p>如果结点的父结点为黑色，表示没插入这个结点前满足红黑树<br>性质，且插入这个红色结点后，也不影响红黑树黑高，故保持当前位置</p>
+</li>
+<li><p>如果结点的父结点为红色，那么判断插入结点与父结点，以及父结点的<br>父结点，叔结点，这四个结点是否组成一个倒立的”v”字形：</p>
+<p> (1). 如果是倒立”v”，则插入结点的父结点为红色，破坏了红黑树的：红<br>色结点的左右孩子都为黑色的性质，故父结点一定要变为黑色;<br>那么将父结点变为黑色;</p>
+<p> 判断叔结点若为红色，则将叔结点变为黑色，父结点的父结点变为红色，<br>插入结点的指针指向父结点的父结点，再次从步骤1判断（因为经过变换，<br>从插入结点的父结点的父结点开始的子数都满足红黑树性质，只需要将<br>父结点的父结点单独当作一个新插入它的父结点的子结点再进行处理即可）;</p>
+<p> 否则叔结点为黑色，则直接将父结点的父结点变为红色，但是这样做之后，<br>父结点因为变为黑色，而叔结点还是黑色，两个子树路径的黑高相差1,要<br>维持黑高相等，则将父结点的父结点的父结点向叔结点相同的方向旋转（<br>可以针对这种情况画图，会发现这样旋转后，两个黑高不一样的子树分开了，<br>，且满足红黑树性质）。</p>
+<p> (2). 如果不是倒立”v”，即插入结点的父结点所处子树为某方向上的子树，但插入<br>结点又是父结点另一方的孩子结点，则只需要进行一下旋转，就将结点变为<br>倒立的”v”形状，继续从步骤1开始作为倒立”v”子树判断。</p>
+</li>
+<li><p>将根结点变为黑色</p>
+</li>
+</ol>
+<p>———-删除</p>
+<ol>
+<li><p>以指针p指向待删除结点node，p_color记录node颜色</p>
+</li>
+<li><p>判断node的左右孩子<br> (1). 如果左孩子为空<br>寻找node的右孩子，记为q（不管是否指向空）<br>用q结点替换node结点</p>
+<p> (2). 但如果右孩子为空<br>寻找node的左孩子，记为q（不管是否指向空）<br>用q结点替换node结点</p>
+<p> (3). 否则左右孩子都不为空<br>寻找node的中序遍历后继(tree_minimum())，p指向它;</p>
+<p> p_color记录后继的颜色;</p>
+<p> q指向p的右结点（不管是否为空）;</p>
+<p> 判断p的父结点是否为node:是，则， q的父结点设为p（只有当q为空结点时有用）/否，则，用p的右结点替换p(rb_transplant(tree, p, p-&gt;right))，用p结点接管node结点右子树（p-&gt;right = node-&gt;right, p-&gt;right-&gt;parent = p）;</p>
+<p> 用p结点替换node结点(rb_transplant(tree, node, p));</p>
+<p> p结点接管node结点左子树(p-&gt;left = node-&gt;left,p-&gt;left-&gt;parent = p);</p>
+<p> p结点的颜色设置为node结点的颜色</p>
+</li>
+<li><p>判断p_color的颜色如果为黑色，表示删除结点后，黑高可能-1,<br>要修复红黑树，从结点q处开始修复红黑树，根据q的颜色来修复</p>
+</li>
+<li><p>循环.直到q结点不为根结点以及p结点的颜色不为黑色</p>
+<p> (1). 如果node的兄弟结点为红色<br>（因为node结点替换了删除结点，黑高-1,与兄弟结点子树黑高差1）<br>设置兄弟结点为黑色，父结点设置为红色，从父结点开始向node一侧旋转，兄弟结点成为新的子树根结点，因为兄弟结点为黑色，则经过兄弟结点到node结点的子树黑高+1,平衡，但对于兄弟结点的父结点的子树，黑高又可能不平衡，node指针指向兄弟结点，继续步骤4</p>
+<p> (2). 如果node的兄弟结点为黑色，且兄弟结点的左右孩子均为黑色<br>（因为node结点替换了删除结点，黑高-1,与兄弟结点子树黑高差1）<br>设置兄弟结点颜色为红色，兄弟结点子树黑高-1,达到平衡，但父结点以上的子树可能受影响，node指针指向父结点，继续步骤4</p>
+<p> (3). 如果node的兄弟结点为黑色，且兄弟结点的靠近node一侧的孩子结点颜色为红色，另一侧的孩子结点为黑色<br>（因为node结点替换了删除结点，黑高-1,与兄弟结点子树黑高差1）<br>兄弟结点靠近node一侧的孩子结点设置为黑色，兄弟结点设置为红色，从兄弟结点开始进行向远离node一侧旋转，兄弟结点的孩子结点成为它的父结点，原兄弟结点的左右子树黑高不变，但node结点所处子树因为替换删除结点，黑高-1，还是没有平衡，node指针指向新的兄弟结点的孩子结点，继续4</p>
+<p> (4). 如果node的兄弟结点为黑色，且兄弟结点的远离node一侧的孩子结点颜色为红色，另一侧颜色未知<br>（因为node结点替换了删除结点，黑高-1,与兄弟结点子树黑高差1）<br>兄弟结点设置为node父结点的颜色，父结点设置为黑色，兄弟结点为红色的设置为黑色，然后从node父结点开始进行向node一侧旋转，旋转前，可以思考，父结点若为红色，旋转后不改变子树黑高，若父结点为黑色，旋转后也不会改变黑高经过一轮变换后，node结点的父结点的父结点左右子树黑高一样，且经过node替换后-1的黑高，因为变换，又+1,本子树在整个红黑树中没有破坏黑高一致性，故将node指针指向整个树的根结点，跳出循环<br>设置node指针的结点颜色为黑色</p>
+</li>
+</ol>
+<p>代码：</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+
+//#define COLOR_RED   1;
+//#define COLOR_BLACK 2;
+
+
+
+typedef enum color {
+    COLOR_RED,
+    COLOR_BLACK
+}color;
+
+typedef struct rbTreeNode {
+    int key;
+    color color;
+    struct rbTreeNode *parent;
+    struct rbTreeNode *left;
+    struct rbTreeNode *right;
+}rbTreeNode;
+
+typedef struct rbTree {
+    int node_num;
+    int height;
+    rbTreeNode *root;
+    rbTreeNode *null;
+}rbTree;
+
+void print_tree( rbTree * );
+
+rbTreeNode *tree_minimum(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    while ( root-&gt;left != null ) {
+        root = root-&gt;left;
+    }
+
+    return root;
+}
+
+rbTreeNode *tree_maximum(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    while ( root-&gt;right != null ) {
+        root = root-&gt;right;
+    }
+
+    return root;
+}
+
+
+void left_rotate(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = node-&gt;right;
+    node-&gt;right = p-&gt;left;
+
+    if ( p-&gt;left != tree-&gt;null )
+        p-&gt;left-&gt;parent = node;
+
+    p-&gt;parent = node-&gt;parent;
+
+    if ( node-&gt;parent == tree-&gt;null )
+        tree-&gt;root = p;
+    else if ( node == node-&gt;parent-&gt;left )
+        node-&gt;parent-&gt;left = p;
+    else
+        node-&gt;parent-&gt;right = p;
+
+    p-&gt;left = node;
+    node-&gt;parent = p;
+}
+void right_rotate(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = node-&gt;left;
+    node-&gt;left = p-&gt;right;
+
+    if ( p-&gt;right != tree-&gt;null )
+        p-&gt;right-&gt;parent = node;
+
+    p-&gt;parent = node-&gt;parent;
+
+    if ( node-&gt;parent == tree-&gt;null )
+        tree-&gt;root = p;
+    else if ( node == node-&gt;parent-&gt;right )
+        node-&gt;parent-&gt;right = p;
+    else
+        node-&gt;parent-&gt;left = p;
+
+    p-&gt;right = node;
+    node-&gt;parent = p;
+}
+void rb_insert_fixup(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = tree-&gt;null;
+
+    while ( node-&gt;parent-&gt;color == COLOR_RED ) {
+        if ( node-&gt;parent == node-&gt;parent-&gt;parent-&gt;left ) {
+
+            p = node-&gt;parent-&gt;parent-&gt;right;
+            if ( p-&gt;color == COLOR_RED ) {
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                p-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;parent-&gt;color = COLOR_RED;
+                node = node-&gt;parent-&gt;parent;
+            } else if ( node == node-&gt;parent-&gt;right ) {
+                node = node-&gt;parent;
+                left_rotate( tree, node );
+            } else {
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;parent-&gt;color = COLOR_RED;
+                right_rotate( tree, node-&gt;parent-&gt;parent );
+            }
+
+        } else {
+
+            p = node-&gt;parent-&gt;parent-&gt;left;
+            if ( p-&gt;color == COLOR_RED ) {
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                p-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;parent-&gt;color = COLOR_RED;
+                node = node-&gt;parent-&gt;parent;
+            } else if ( node == node-&gt;parent-&gt;left ) {
+                node = node-&gt;parent;
+                right_rotate( tree, node );
+            } else {
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;parent-&gt;color = COLOR_RED;
+                left_rotate( tree, node-&gt;parent-&gt;parent );
+            }
+
+        }
+    }
+
+    tree-&gt;root-&gt;color = COLOR_BLACK;
+}
+void rb_insert(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = tree-&gt;null;
+    rbTreeNode *q = tree-&gt;root;
+
+    while ( q != tree-&gt;null ) {
+        p = q;
+        if ( node-&gt;key &lt; q-&gt;key )
+            q = q-&gt;left;
+        else
+            q = q-&gt;right;
+    }
+
+    node-&gt;parent = p;
+
+    if ( p == tree-&gt;null )
+        tree-&gt;root = node;
+    else if ( node-&gt;key &lt; p-&gt;key )
+        p-&gt;left = node;
+    else
+        p-&gt;right = node;
+
+    node-&gt;left = tree-&gt;null;
+    node-&gt;right = tree-&gt;null;
+    node-&gt;color = COLOR_RED;
+    rb_insert_fixup( tree, node );
+}
+void rb_transplant(
+    rbTree *tree,
+    rbTreeNode *node_a,
+    rbTreeNode *node_b )
+{
+    if ( node_a-&gt;parent == tree-&gt;null )
+        tree-&gt;root = node_b;
+    else if ( node_a == node_a-&gt;parent-&gt;left )
+        node_a-&gt;parent-&gt;left = node_b;
+    else
+        node_a-&gt;parent-&gt;right = node_b;
+
+    node_b-&gt;parent = node_a-&gt;parent;
+    free( node_a );
+}
+void rb_delete_fixup(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = tree-&gt;null;
+
+    while ( node != tree-&gt;null &amp;&amp; node-&gt;color == COLOR_BLACK ) {
+        if ( node == node-&gt;parent-&gt;left ) {
+            p = node-&gt;parent-&gt;right;
+            if ( p-&gt;color == COLOR_RED ) {
+                p-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;color = COLOR_RED;
+                left_rotate( tree, node-&gt;parent );
+                p = node-&gt;parent-&gt;right;
+            } else if ( p-&gt;left-&gt;color == COLOR_BLACK
+                &amp;&amp; p-&gt;right-&gt;color == COLOR_BLACK ) {
+                p-&gt;color = COLOR_RED;
+                node = node-&gt;parent;
+            } else if ( p-&gt;right-&gt;color == COLOR_BLACK ) {
+                p-&gt;left-&gt;color = COLOR_BLACK;
+                p-&gt;color = COLOR_RED;
+                right_rotate( tree, p );
+                p = node-&gt;parent-&gt;right;
+            } else {
+                p-&gt;color = node-&gt;parent-&gt;color;
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                left_rotate( tree, node-&gt;parent );
+                node = tree-&gt;root;
+            }
+        } else {
+            p = node-&gt;parent-&gt;left;
+            if ( p-&gt;color == COLOR_RED ) {
+                p-&gt;color = COLOR_BLACK;
+                node-&gt;parent-&gt;color = COLOR_RED;
+                right_rotate( tree, node-&gt;parent );
+                p = node-&gt;parent-&gt;left;
+            } else if ( p-&gt;left-&gt;color == COLOR_BLACK
+                &amp;&amp; p-&gt;right-&gt;color == COLOR_BLACK ) {
+                p-&gt;color = COLOR_RED;
+                node = node-&gt;parent;
+            } else if ( p-&gt;left-&gt;color == COLOR_BLACK ) {
+                p-&gt;right-&gt;color = COLOR_BLACK;
+                p-&gt;color = COLOR_RED;
+                left_rotate( tree, p );
+                p = node-&gt;parent-&gt;left;
+            } else {
+                p-&gt;color = node-&gt;parent-&gt;color;
+                node-&gt;parent-&gt;color = COLOR_BLACK;
+                right_rotate( tree, node-&gt;parent );
+                node = tree-&gt;root;
+            }
+        }
+    }
+    node-&gt;color = COLOR_BLACK;
+}
+void rb_delete(
+    rbTree *tree,
+    rbTreeNode *node )
+{
+    rbTreeNode *p = node;
+    rbTreeNode *q = tree-&gt;null;
+    color origin_color = p-&gt;color;
+
+    if ( node-&gt;left == tree-&gt;null ) {
+        q = node-&gt;right;
+        rb_transplant( tree, node, node-&gt;right );
+    } else if ( node-&gt;right == tree-&gt;null ) {
+        q = node-&gt;left;
+        rb_transplant( tree, node, node-&gt;left );
+    } else {
+        p = tree_minimum( node-&gt;right, tree-&gt;null );
+        origin_color = p-&gt;color;
+        q = p-&gt;right;
+
+        if ( p-&gt;parent == node )
+            q-&gt;parent = p;
+        else {
+            rb_transplant( tree, p, p-&gt;right );
+            p-&gt;right = node-&gt;right;
+            p-&gt;right-&gt;parent = p;
+        }
+
+        rb_transplant( tree, node, p );
+        p-&gt;left = node-&gt;left;
+        p-&gt;left-&gt;parent = p;
+        p-&gt;color = node-&gt;color;
+    }
+
+    if ( origin_color == COLOR_BLACK )
+        rb_delete_fixup( tree, q );
+}
+int random_num()
+{
+    int a = 1;
+    int b = 100;
+
+    return rand() % ( b - a ) + a;
+}
+void postorder_tree_free(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    if ( root != null ) {
+        postorder_tree_free( root-&gt;left, null );
+        postorder_tree_free( root-&gt;right, null );
+        free( root );
+    }
+}
+void inorder_tree_walk(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    if ( root != null ) {
+        inorder_tree_walk( root-&gt;left, null );
+        printf(&quot;%d(%d) &quot;, root-&gt;key, root-&gt;color);
+        inorder_tree_walk( root-&gt;right, null );
+    }
+}
+void preorder_tree_walk(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    if ( root != null ) {
+        printf(&quot;%d(%d) &quot;, root-&gt;key, root-&gt;color);
+        preorder_tree_walk( root-&gt;left, null );
+        preorder_tree_walk( root-&gt;right, null );
+    }
+}
+void postorder_tree_walk(
+    rbTreeNode *root,
+    rbTreeNode *null )
+{
+    if ( root != null ) {
+        postorder_tree_walk( root-&gt;left, null );
+        postorder_tree_walk( root-&gt;right, null );
+        printf(&quot;%d(%d) &quot;, root-&gt;key, root-&gt;color);
+    }
+}
+void print_tree(
+    rbTree *tree )
+{
+    printf(&quot;中序:&quot;);
+    inorder_tree_walk( tree-&gt;root, tree-&gt;null );
+    printf(&quot;\n&quot;);
+    printf(&quot;前序:&quot;);
+    preorder_tree_walk( tree-&gt;root, tree-&gt;null );
+    printf(&quot;\n&quot;);
+    printf(&quot;后序:&quot;);
+    postorder_tree_walk( tree-&gt;root, tree-&gt;null );
+    printf(&quot;\n\n&quot;);
+}
+rbTreeNode *tree_search_recursion(
+    rbTreeNode *root,
+    int key,
+    rbTreeNode *null)
+{
+    if ( root == null || key == root-&gt;key ) {
+        return root;
+    }
+
+    if ( key &lt; root-&gt;key )
+        return tree_search_recursion( root-&gt;left, key, null );
+    else
+        return tree_search_recursion( root-&gt;right, key, null );
+}
+
+rbTreeNode *tree_search(
+    rbTreeNode *root,
+    int key,
+    rbTreeNode *null )
+{
+    while ( root != null &amp;&amp; key != root-&gt;key ) {
+        if ( key &lt; root-&gt;key )
+            root = root-&gt;left;
+        else
+            root = root-&gt;right;
+    }
+
+    return root;
+}
+// 找前驱 即中序遍历的前一个位置值
+rbTreeNode *tree_predecessor(
+    rbTreeNode *node,
+    rbTreeNode *null )
+{
+    if ( node-&gt;left != null )
+        return tree_maximum( node-&gt;left, null );
+
+    rbTreeNode *p = node-&gt;parent;
+
+    while ( p != null &amp;&amp; node == p-&gt;left ) {
+        node = p;
+        p = p-&gt;parent;
+    }
+
+    return p;
+}
+// 找后继 即中序遍历的后一个位置值
+rbTreeNode *tree_successor(
+    rbTreeNode *node,
+    rbTreeNode *null )
+{
+    if ( node-&gt;right != null )
+        return tree_minimum( node-&gt;right, null );
+
+    rbTreeNode *p = node-&gt;parent;
+
+    while ( p != null &amp;&amp; node == p-&gt;right ) {
+        node = p;
+        p = p-&gt;parent;
+    }
+
+    return p;
+}
+void free_tree(
+    rbTree *tree )
+{
+    rbTreeNode *root = tree-&gt;root;
+
+    postorder_tree_free( root, tree-&gt;null );
+
+    free( tree );
+}
+int main(
+    int argc,
+    char **argv )
+{
+    srand((int)time(NULL));
+
+    int i = 10;
+    int len = 10;
+    int arr[10] = {10,4,15,14,5, 2,8,13,1,19};
+
+    rbTree *tree = ( rbTree * )malloc( sizeof(rbTree) );
+    tree-&gt;node_num = 0;
+    tree-&gt;height = 0;
+    tree-&gt;null = ( rbTreeNode * )malloc( sizeof(rbTreeNode) );
+    tree-&gt;null-&gt;color = COLOR_BLACK;
+    tree-&gt;root = tree-&gt;null;
+
+    for ( i = 0; i &lt; len; i++ ) {
+        rbTreeNode *node =
+            ( rbTreeNode * )malloc( sizeof(rbTreeNode) );
+        //node-&gt;key = random_num();
+        node-&gt;key = arr[i];
+        node-&gt;parent = tree-&gt;null;
+        node-&gt;left = tree-&gt;null;
+        node-&gt;right = tree-&gt;null;
+        rb_insert( tree, node );
+        printf(&quot;insert %d successfully\n&quot;, arr[i]);
+    }
+
+    print_tree( tree );
+
+    rbTreeNode *delete_node = tree_search( tree-&gt;root, 4, tree-&gt;null );
+
+    if ( delete_node != tree-&gt;null ) {
+        rb_delete( tree, delete_node );
+    }
+    printf(&quot;\n删除%d的节点后遍历顺序为:\n&quot;, 4);
+    print_tree( tree );
+    printf(&quot;\n&quot;);
+
+    delete_node = tree_search( tree-&gt;root, 15, tree-&gt;null );
+    if ( delete_node != tree-&gt;null ) {
+        rb_delete( tree, delete_node );
+    }
+    printf(&quot;\n删除%d的节点后中序遍历顺序为:\n&quot;, 15);
+    print_tree( tree );
+    printf(&quot;\n&quot;);
+
+    free_tree( tree );
+
+    return 0;
+}
+</code></pre>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-19T12:50:03.888Z" itemprop="dateUpdated">2018-06-19 20:50:03</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/19/023red-black-tree/index/&title=《红黑树-《算法导论》学习笔记十二》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/19/023red-black-tree/index/&title=《红黑树-《算法导论》学习笔记十二》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/19/023red-black-tree/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《红黑树-《算法导论》学习笔记十二》 — My Blog&url=http://yoursite.com/2018/06/19/023red-black-tree/index/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/19/023red-black-tree/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/19/022bin-search-tree/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">二叉搜索树-《算法导论》学习笔记十一</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Tue Jun 19 2018 20:38:53 GMT+0800",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/19/023red-black-tree/index/&title=《红黑树-《算法导论》学习笔记十二》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/19/023red-black-tree/index/&title=《红黑树-《算法导论》学习笔记十二》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/19/023red-black-tree/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《红黑树-《算法导论》学习笔记十二》 — My Blog&url=http://yoursite.com/2018/06/19/023red-black-tree/index/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/19/023red-black-tree/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACM0lEQVR42u3a0W6DMAwF0P3/T3fSnia1hWsn65Tk5KkCChweLDv211e8Hj/r3fHfZ59/P69393y+ZvLCwMBYlvG4XNcPuObl/02e++4aDAyMcxjVV4luPTV839wBAwMDI751NbAmySUGBgZGlZFXkdX07qMBFwMDY0FGLwheJ4XJ2X+oxTEwMBZkVMvOT/7+w/4GBgbGIoxHcV0nZ/n23OS3wsDA2JqRpGW9qYZeY6AaXQs1NAYGxrKMXohMis/e/ZsDZBgYGFszesMWecGZvHQe0G8+HAYGxgGMke34WeBp/Q0MDIztGEmYy0vQ3tm8SXBTAGNgYBzGyI+PB9BeWlneO8TAwFiQkYe2vBxN/jXy3BdXYmBgbM3IL60G1pGZrurIBQYGxgmM6nZ87/qRYbIkHGNgYOzKqKZ0OWBk2CIf48DAwDiHUX1AFL/jK6uJ6Yt3xsDAOIaRpIl5kK2mhiMLAwNjb0Z1iy0JrDl48rAFBgbG1oxe67E3rtoregufFQMDYztG0p5MGpC9ID7S+MTAwDiTMb7pVt4mKyajkwcsMDAwFmHkYxDVDbLxAN0cQcPAwNiO0dyCj9l5G6BaGN90YjEwMDZilMvFeNhrfJwi/xAYGBgnMPLWY3I8L1BHyt2hDioGBsayjDzIVgPrCLJcymJgYBzP6IXgXhFbbTxgYGBglBO1YoGaNxUmB1wMDIylGCODFxNGu4plLQYGxmmMXmNgZFxsvAnR/HAYGBjrMb4B5rdb0ZV3lvUAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
