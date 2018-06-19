@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻： 这里我用ssh登陆ubuntu，在终端用vim编写。 第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下： /">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-15T01:39:24.792Z">
+<meta property="og:updated_time" content="2018-06-19T02:02:56.055Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux daemon守护进程的创建">
 <meta name="twitter:description" content="今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻： 这里我用ssh登陆ubuntu，在终端用vim编写。 第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下： /">
@@ -310,7 +310,7 @@ int main()
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-15T01:39:24.792Z" itemprop="dateUpdated">2018-06-15 09:39:24</time>
+    Last updated: <time datetime="2018-06-19T02:02:56.055Z" itemprop="dateUpdated">2018-06-19 10:02:56</time>
 </span><br>
 
 

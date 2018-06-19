@@ -20,16 +20,16 @@
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="摄像头">
+    <meta name="keywords" content="数据结构/算法">
     <meta name="description" content="算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码： #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;time.h&amp;gt; #include &amp;lt;string.h&amp;gt; #">
-<meta name="keywords" content="摄像头">
+<meta name="keywords" content="数据结构&#x2F;算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="递归插入排序-《算法导论》学习笔记三">
 <meta property="og:url" content="http://yoursite.com/2018/06/15/010recu-insert-sort/index/index.html">
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码： #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;time.h&amp;gt; #include &amp;lt;string.h&amp;gt; #">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-15T12:17:53.104Z">
+<meta property="og:updated_time" content="2018-06-19T02:13:42.604Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="递归插入排序-《算法导论》学习笔记三">
 <meta name="twitter:description" content="算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码： #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;time.h&amp;gt; #include &amp;lt;string.h&amp;gt; #">
@@ -305,7 +305,7 @@ int main( int argc, char **argv )
 </code></pre><p>开始一直以为是代码有数组越界或者边界条件没考虑到，后来看了代码许久没发现问题。然后gdb看core文件，bt看调用栈发现段在递归向下大概70w-80w的位置，而递归栈还没返回，执行过程很正常没出问题，想了想是栈溢出，每次自顶向下调用一次自身函数就要在栈里保存一次函数地址和参数。</p>
 <p>用ulimit -a|grep stack看了一下默认的栈空间大小为8192kb=8m=8<em>1024</em>1024=8388608byte。网上查了下说一次函数调用每次占用栈内存为：4返回地址 + 4<em>参数个数 + 4寄存器保护 + 4</em>局部变量数（未验证准确与否），我的排序占用4+4<em>2+12=24字节，但根据我每次设置栈大小调试程序，设置到31256kb时程序没有段错误，也就是31256</em>1024/1000000=32字节，这里的一次函数调用为32字节。</p>
 <p>用ulimit -s 102400修改了栈空间大小100M（暂时修改），再次运行程序排序100w个数，发现打印正常，程序也没段错误了，只是递归栈开始返回等了好久。</p>
-<p>对归并排序的思考：以前也有用归并排序排1亿个数（<a href="http://blog.csdn.net/u012785877/article/details/52475023），没有出现栈溢出，里面也是用递归的方法，因此仔细看了下归并排序（算法导论里有提到归并排序的递归树，可以算出数量，但是我看着头大，准备略过这些数学问题，先照着把代码写出来，看完了再回头深入看一遍），模拟了一下递归的栈过程如下：" target="_blank" rel="noopener">http://blog.csdn.net/u012785877/article/details/52475023），没有出现栈溢出，里面也是用递归的方法，因此仔细看了下归并排序（算法导论里有提到归并排序的递归树，可以算出数量，但是我看着头大，准备略过这些数学问题，先照着把代码写出来，看完了再回头深入看一遍），模拟了一下递归的栈过程如下：</a></p>
+<p>对归并排序的思考：以前也有用归并排序排1亿个数（<a href="http://blog.csdn.net/u012785877/article/details/52475023）[1]，没有出现栈溢出，里面也是用递归的方法，因此仔细看了下归并排序（算法导论里有提到归并排序的递归树，可以算出数量，但是我看着头大，准备略过这些数学问题，先照着把代码写出来，看完了再回头深入看一遍），模拟了一下递归的栈过程如下：" target="_blank" rel="noopener">http://blog.csdn.net/u012785877/article/details/52475023）[1]，没有出现栈溢出，里面也是用递归的方法，因此仔细看了下归并排序（算法导论里有提到归并排序的递归树，可以算出数量，但是我看着头大，准备略过这些数学问题，先照着把代码写出来，看完了再回头深入看一遍），模拟了一下递归的栈过程如下：</a></p>
 <p>假设有134217728个数待排序(2^27)。因此递归树根节点为2^27；递归第一次递归树有二层，两个节点分别为2^26、2^26；递归第三次递归树为有三层，四个节点分别为2^25、2^25、2^25、2^25……这样一直推到递归树叶子节点为2^1，此递归树有27层，2^(floor - 1) + 1 = 2^(26 -1) + 1 = 67108865个节点，也就是要维护67108865*30约为20亿的函数调用栈空间，为什么没有栈溢出呢？。通过调试归并排序，排序4个数时，是将0-3分为0-1，在将0-1分为0，对0再分发现不能分了，则此次递归返回到父节点，划分右子树1，对1再分发现不能分了，于是调用排序，将0、1排为0-1，再回归0-1的父节点，再对右子树2-3递归进行此过程。其实排序4个数最大只需要5次递归函数调用（即递归树走到最深度），如果排序n层递归树，最大需要n+1次。回到以上排序2^27个数，则最大同时需要28次递归函数调用，其余时候都是栈空间在不断出栈入栈。</p>
 <p>上面写得有点昏，无奈不是学文科的，又不想画图，额。这个归并排序的分析结果只花了2个小时分析，也不能确定准不准确，如果错了欢迎批评指正。</p>
 
@@ -316,7 +316,7 @@ int main( int argc, char **argv )
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-15T12:17:53.104Z" itemprop="dateUpdated">2018-06-15 20:17:53</time>
+    Last updated: <time datetime="2018-06-19T02:13:42.604Z" itemprop="dateUpdated">2018-06-19 10:13:42</time>
 </span><br>
 
 
@@ -340,7 +340,7 @@ int main( int argc, char **argv )
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/摄像头/">摄像头</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
 
 
             

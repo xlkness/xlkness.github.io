@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="对半同步半异步进程池模型垂涎已久，这次中秋放假撸了下代码。 模型的简单介绍：主进程创建几个子进程作为工作进程，主进程监听客户端connect事件，一旦有连接事件，即通过round robin(简单轮询)选取一个子进程， 通过父子进程间的通信管道通知子进程有连接事件，子进程epoll监听到管道通信时间，即知道有客户端连接，因此进程accept，并将客户端连接套接字加入epoll监听事件，客户端浏览器">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-15T11:04:32.076Z">
+<meta property="og:updated_time" content="2018-06-19T02:02:56.131Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="c半同步半异步进程池模型之cgi服务器">
 <meta name="twitter:description" content="对半同步半异步进程池模型垂涎已久，这次中秋放假撸了下代码。 模型的简单介绍：主进程创建几个子进程作为工作进程，主进程监听客户端connect事件，一旦有连接事件，即通过round robin(简单轮询)选取一个子进程， 通过父子进程间的通信管道通知子进程有连接事件，子进程epoll监听到管道通信时间，即知道有客户端连接，因此进程accept，并将客户端连接套接字加入epoll监听事件，客户端浏览器">
@@ -1160,7 +1160,7 @@ int main( int argc, char **argv )
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-15T11:04:32.076Z" itemprop="dateUpdated">2018-06-15 19:04:32</time>
+    Last updated: <time datetime="2018-06-19T02:02:56.131Z" itemprop="dateUpdated">2018-06-19 10:02:56</time>
 </span><br>
 
 
