@@ -159,6 +159,103 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-032build-erlang-server01/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 20:38:16" datetime="2018-06-20T12:38:16.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/032build-erlang-server01/index/">【从零开始构建erlang服务器】-01网络库</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        简介 网络库是服务器的基础。有了网络库，服务器就能接收外界消息，提供服务。因此开始就从网络库入手。这里先构建基础的TCP通信网络库。至于UDP、WebSocket这些通信手段暂不说。
+gen_tcp erlang的底层是c语言封装的，因此其socket通信在beam层也是经过封装的，更易使用。告别跟系统绑定的select/poll/epoll/iocp/kqueue的复杂操作，我们只需要根据...
+    
+
+        <a href="/2018/06/20/032build-erlang-server01/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-031paxos/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 20:25:06" datetime="2018-06-20T12:25:06.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/译文/">译文</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/031paxos/index/">paxos-simple</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        上周给组里分享课程，其中讲到了paxos，觉得没讲好，遂决定看看paxos论文，看的时候有的枯涩的地方就翻译到文本里记录，翻译得越来越多，索性都翻译了吧 …
+1. 介绍在实现一个容错分布式系统时，人们认为Paxos算法理解起来很困难，大概对于很多读者来说最初的陈述是用的希腊语。事实上，它是分布式算法中最简单也最明显的一种。
+它本质上是一个共识算法-the “synod” algorithm ...
+    
+
+        <a href="/2018/06/20/031paxos/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式/">分布式</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-030erlang-timer/index"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -566,115 +663,12 @@ AVL树实现了几个操作：
 
         </li>
     
-        <li class="post-list-item fade">
-            <article id="post-022bin-search-tree/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:36:13" datetime="2018-06-19T12:36:13.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/022bin-search-tree/index/">二叉搜索树-《算法导论》学习笔记十一</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        二叉搜索树是以一颗二叉树来组织的，每个节点除数据外，还包括三个分别指向父结点、左孩子、右孩子的指针，二叉搜索树有个特性：某个结点root的左子树的某个节点x的关键值小于等于root结点右子树某个结点y的关键值。
-二叉搜索树有几个操作：
-1、查找
-查找与给定关键值相等的结点
-2、遍历
-前序、中序、后序遍历输出
-3、从某结点出发，寻找子树中最小关键值的结点
-4、从某结点出发，寻找子树中最大关键值...
-    
-
-        <a href="/2018/06/19/022bin-search-tree/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-021search-min-i/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:32:13" datetime="2018-06-19T12:32:13.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/021search-min-i/index/">查找数组第i小的数-《算法导论》学习笔记十</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        查找第i小的数利用了快速排序的一点思想，即以数组某个值作为比较值，然后遍历数组中除这个数以外的数，小于它的就放左边，大于它的放右边，然后作为比较值的数放中间，并返回比较值的下标，如果下标等于i，表示就找到了，如果下标大于i，又再次从大于此下标的数组递归进行此过程，同理，小于i就从小于此下标的数组递归进行此过程，代码：
-#include &lt;stdio.h&gt;
-#include &lt...
-    
-
-        <a href="/2018/06/19/021search-min-i/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
     </ul>
 
     
 <nav id="page-nav">
     <div class="inner">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
     </div>
 </nav>
 
