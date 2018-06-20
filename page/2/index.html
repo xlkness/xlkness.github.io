@@ -159,6 +159,100 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-020bucket-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:28:14" datetime="2018-06-19T12:28:14.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/020bucket-sort/index/">桶排序-《算法导论》学习笔记九</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        桶排序要求数据均匀、独立分布在某个区间上，然后将待排序值按某个区间划分为几个区间数组，然后将待排序的数按这个区间划分公式有序放入对应桶中，这样放完之后再按顺序从桶中拿出来一个一个放入原数组。c代码桶可以用链表，如待排序数组的值为0-99，那么桶可以划分为0-9、10-19、20-29…..，这样就得到了10个桶数组链表，然后遍历待排序的数组，将值/10后以链表插入排序方式放入对应桶链表中（就...
+    
+
+        <a href="/2018/06/19/020bucket-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-019count-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:27:08" datetime="2018-06-19T12:27:08.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/019count-sort/index/">计数排序-《算法导论》学习笔记八</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        计数排序：假设n个输入元素中的每一个都是在0-k区间内的一个整数(k为正整数)，对每一个输入元素x，确定小于x的元素个数，用一个0-k长度的数组做记录，例如输入数组的数为0-10长度，随机出[2,5,3,0,2,3,0,3]，可以计算出一个0-10的数组，分别表示小于等于x的数的个数，于是有：0-&gt;2,1-&gt;2,2-&gt;4,3-&gt;7,4-&gt;7,5-&gt;8,6-...
+    
+
+        <a href="/2018/06/19/019count-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-018quick-sort/index"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -556,105 +650,6 @@ sudo ...
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-010recu-insert-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 20:15:00" datetime="2018-06-15T12:15:00.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/010recu-insert-sort/index/">递归插入排序-《算法导论》学习笔记三</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        算法导论第二章结尾练习2.3-4提到将插入排序写递归版本，然后尝试写了个，本来写了就好了，但是调试的时候排序10w个数可以，排序100w个数就段错误，分析了一下，把结果放上来以后查看，先贴代码：
-#include &lt;stdio.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
-#include &lt;string.h&gt...
-    
-
-        <a href="/2018/06/15/010recu-insert-sort/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-009cgiserver/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 18:47:28" datetime="2018-06-15T10:47:28.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/009cgiserver/index/">c半同步半异步进程池模型之cgi服务器</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        对半同步半异步进程池模型垂涎已久，这次中秋放假撸了下代码。
-模型的简单介绍：主进程创建几个子进程作为工作进程，主进程监听客户端connect事件，一旦有连接事件，即通过round robin(简单轮询)选取一个子进程， 通过父子进程间的通信管道通知子进程有连接事件，子进程epoll监听到管道通信时间，即知道有客户端连接，因此进程accept，并将客户端连接套接字加入epoll监听事件，客户端...
-    
-
-        <a href="/2018/06/15/009cgiserver/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
 
     </div>
     

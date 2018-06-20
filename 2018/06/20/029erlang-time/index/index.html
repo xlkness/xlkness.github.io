@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>erlang:now()与os:timestamp()-Erlang源码学习一 | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Erlang">
+    <meta name="description" content="erlang中，关于erlang:now()与os:timestamp()两个接口，查看官方文档的解释：   按官方文档上说erlang:now/0是废弃了的，它可以获取一个持续递增的唯一时间戳。除此也没说讲到更多。 再看erlang:now/0文档给的时间和时间修正，里面详细描述了erlang对于时间的处理，暂不看。 直接跳到c源码看吧，在这之前可以看看linux内核时间的管理，明白什么是墙上时">
+<meta name="keywords" content="Erlang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="erlang:now()与os:timestamp()-Erlang源码学习一">
+<meta property="og:url" content="http://lkness/2018/06/20/029erlang-time/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="erlang中，关于erlang:now()与os:timestamp()两个接口，查看官方文档的解释：   按官方文档上说erlang:now/0是废弃了的，它可以获取一个持续递增的唯一时间戳。除此也没说讲到更多。 再看erlang:now/0文档给的时间和时间修正，里面详细描述了erlang对于时间的处理，暂不看。 直接跳到c源码看吧，在这之前可以看看linux内核时间的管理，明白什么是墙上时">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://lkness/img/erlang_time1.png">
+<meta property="og:image" content="http://lkness/img/erlang_time2.png">
+<meta property="og:image" content="http://lkness/img/erlang_time3.png">
+<meta property="og:image" content="http://lkness/img/erlang_time4.png">
+<meta property="og:image" content="http://lkness/img/erlang_time5.png">
+<meta property="og:image" content="http://lkness/img/erlang_time6.png">
+<meta property="og:image" content="http://lkness/img/erlang_time7.png">
+<meta property="og:image" content="http://lkness/img/erlang_time8.png">
+<meta property="og:image" content="http://lkness/img/erlang_time9.png">
+<meta property="og:image" content="http://lkness/img/erlang_time10.png">
+<meta property="og:updated_time" content="2018-06-20T12:04:28.254Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="erlang:now()与os:timestamp()-Erlang源码学习一">
+<meta name="twitter:description" content="erlang中，关于erlang:now()与os:timestamp()两个接口，查看官方文档的解释：   按官方文档上说erlang:now/0是废弃了的，它可以获取一个持续递增的唯一时间戳。除此也没说讲到更多。 再看erlang:now/0文档给的时间和时间修正，里面详细描述了erlang对于时间的处理，暂不看。 直接跳到c源码看吧，在这之前可以看看linux内核时间的管理，明白什么是墙上时">
+<meta name="twitter:image" content="http://lkness/img/erlang_time1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">erlang:now()与os:timestamp()-Erlang源码学习一</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">erlang:now()与os:timestamp()-Erlang源码学习一</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-20T11:44:02.000Z" itemprop="datePublished" class="page-time">
+  2018-06-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#erlang-now-0"><span class="post-toc-number">1.</span> <span class="post-toc-text">erlang:now/0</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#os-timestamp-0"><span class="post-toc-number">2.</span> <span class="post-toc-text">os:timestamp/0</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-029erlang-time/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">erlang:now()与os:timestamp()-Erlang源码学习一</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-20 19:44:02" datetime="2018-06-20T11:44:02.000Z"  itemprop="datePublished">2018-06-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>erlang中，关于erlang:now()与os:timestamp()两个接口，查看官方文档的解释：</p>
+<p><img src="/img/erlang_time1.png" alt="erlang_time1"></p>
+<p><img src="/img/erlang_time2.png" alt="erlang_time2"></p>
+<p>按官方文档上说erlang:now/0是废弃了的，它可以获取一个持续递增的唯一时间戳。除此也没说讲到更多。</p>
+<p>再看erlang:now/0文档给的<a href="http://erlang.org/doc/apps/erts/time_correction.html#Dos_and_Donts" target="_blank" rel="noopener">时间和时间修正</a>，里面详细描述了erlang对于时间的处理，暂不看。</p>
+<p>直接跳到c源码看吧，在这之前可以看看<a href="https://blog.csdn.net/hytgxljh/article/details/52440837" target="_blank" rel="noopener">linux内核时间的管理</a>，明白什么是墙上时间(wall time)、单调递增时间(monotonic time)等。</p>
+<h1 id="erlang-now-0"><a href="#erlang-now-0" class="headerlink" title="erlang:now/0"></a>erlang:now/0</h1><pre><code>erlang:now/0的bif函数对应erlang源码:erts/emulator/beam/bif.c
+</code></pre><p><img src="/img/erlang_time3.png" alt="erlang_time3"></p>
+<p><code>now_0()</code>的获取时间调用<code>get_now()</code>函数，位于erts/emulator/beam/erl_time_sup.c</p>
+<p><img src="/img/erlang_time4.png" alt="erlang_time4"></p>
+<p>获取时间主要用一个回调<code>get_time()</code>，而获取时间之后会与上一次调用产生的值比较，并产生一个新的保证单调递增的唯一值，并加锁修改旧值。关于<code>get_time()</code>的初始化要在同文件的<code>erlang_init_time_sup()</code>函数</p>
+<p><img src="/img/erlang_time5.png" alt="erlang_time5"></p>
+<p>可以看到有一个条件编译宏 ERTS_HAVE_OS_MONOTONIC_TIME_SUPPORT，在没有配置erlang源码时，这些宏都未定义，但如果在源码根目录执行了./configure配置后，会在emulator目录生成一个文件夹（我的是x86_64-unknown-linux-gnu），里面放有config.h配置文件，里面根据操作系统类型做了对应宏定义，对应宏ERTS_HAVE_OS_MONOTONIC_TIME_SUPPORT就是在config.h里，表示这个操作系统有单调递增时间(monotonic time)，那么这里可以看到get_time回调指向了<code>get_os_grift_corrected_time()</code>，此函数直接返回<code>read_corrected_time()</code>函数结果：</p>
+<p><img src="/img/erlang_time6.png" alt="erlang_time6"></p>
+<p>可以看到<code>read_corrected_time()</code>函数主要执行了<code>erts_os_monitonic_time()</code>和<code>calc_corrected_erl_mtime()</code>来获取操作系统的monitonic_time以及修正时间。<br><code>erts_os_monitonic_time()</code>直接调用<code>posix_clock_gettime()</code>函数，参数为MONOTONIC_CLOCK_ID，获取monotonic time：</p>
+<p><img src="/img/erlang_time7.png" alt="erlang_time7"></p>
+<p>获取时间的函数实则调用了linux的系统函数<code>clock_gettime()</code>，可以man手册看一看；<br><code>calc_corrected_erl_time()</code>函数：</p>
+<p><img src="/img/erlang_time8.png" alt="erlang_time8"></p>
+<p>将获取的当前操作系统monitonic time与最近一次更新的操作系统monitonic time做一个差值计算，然后根据erlang时间的设计来计算一个新的erlang monitonic time。</p>
+<h1 id="os-timestamp-0"><a href="#os-timestamp-0" class="headerlink" title="os:timestamp/0"></a>os:timestamp/0</h1><p><code>os:timestamp()</code>函数代码：</p>
+<p><img src="/img/erlang_time9.png" alt="erlang_time9"></p>
+<p>代码里调用了<code>erts_os_system_time()</code>函数来获取操作系统的时间：</p>
+<p><img src="/img/erlang_time10.png" alt="erlang_time10"></p>
+<p>又是熟悉的<code>posix_clock_gettime()</code>，并且参数为WALL_CLOCK_ID获取墙上时间。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>erlang:now/0</code>获取的是erlang系统的monotonic time，它从操作系统获取后还要用erlang时间处理的方式在调整为erlang monotonic time，期间几次会对全局变量加锁，故效率会有损耗，而每一次获取时间值后会与上一次获取的值做一个对比，并加一来保证获取值的严格单调递增，所以可以用来作为唯一名(unique name)的生成，但是，erts7.0之后就不建议用这个函数了，可以用<code>erlang:timestamp/0</code>替代，如果要生成唯一名可以用<code>erlang:unique_integer/0</code>等等。 而<code>os:timestamp/0</code>则是获取操作系统的墙上时间(wall time)，并做调整变为erlang system time。</p>
+<p><code>erlang:now/0</code>获取时间的文件为erl_time_sup.c，所有的erlang关于时间处理方式的逻辑都定义在里面，包括维护全局变量来处理操作系统转变为erlang规则的内部时间、注册定时器周期检查erlang时间与os时间对比的偏移量等；<code>os:timestamp/0</code>获取时间的文件为sys_time.c，是对os获取时间的库函数的封装、以及对获取的时间进行简单调整的文件，比较轻量级。</p>
+<p>后记：看了erlang时间的处理，感觉很有趣，后面学习一下erlang源码中对时间的管理代码。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-20T12:04:28.254Z" itemprop="dateUpdated">2018-06-20 20:04:28</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://lkness">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/20/029erlang-time/index/&title=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/20/029erlang-time/index/&title=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/20/029erlang-time/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&url=http://lkness/2018/06/20/029erlang-time/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/20/029erlang-time/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/20/030erlang-timer/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">erlang底层c定时器设计-Erlang源码学习二</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/20/028graph/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">图的简单表示-算法学习笔记十七</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Wed Jun 20 2018 19:44:02 GMT+0800",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/20/029erlang-time/index/&title=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/20/029erlang-time/index/&title=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/20/029erlang-time/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《erlang:now()与os:timestamp()-Erlang源码学习一》 — My Blog&url=http://lkness/2018/06/20/029erlang-time/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/20/029erlang-time/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMElEQVR42u3ay26DQAwF0P7/T6dSV12UybU9rcpwWEUJAQ4Ly6+Pj/h4fR3fP38/1udf/Xp1hfV/RwcGBsZtGa/lcXXp9ZlX/12fmbyyy9eHgYHxAEYeZHPY5Ar5s2FgYGAk5yRp4hqWB3oMDAyMXuHae8RqKomBgYGRJ3ZJUboOwVXG5locAwPjhozeYOBvPv/6fAMDA+PfM17Foxeg54XxmztiYGAczVg36JM0Ln/EZP2iN5DAwMB4JiNpok2Cb69tN+oaYmBg3JaRW3vjyTxY98ppDAyM5zB++5tkgaw6fsDAwHgOYzIASB6ulybmpTIGBsYTGL0ysrrmtZf6w8vFwMA4mpEXivn6V7XcTX6tjigwMDBOYlRb/JPhwWSn6016ioGB8XjGKDkLYPkSxijgYmBg3JZRDYjVhK9KqiaphXYiBgbGEYxeIdpM5orDhoiEgYFxKKM3hkzOny9PFEYOGBgYRzPmg4F8eJAPGKovEQMD4wmMPFzuarRV08fkJWJgYJzK6DXL8mHkZCEs+R4DA+M5jN7NeqVsPmwotAIxMDCOZuQFai8EV9tzoztiYGAcytjV8Eqa/vnaRDXFxMDAOJuxIVoHixHz1HBXsMbAwLgvY1K4TtbIqm278ngAAwPjOEZe3OaLF3mTbr7lhYGBgZGEyOojbl7ywMDAwCg2znptuGr4HgVcDAyMGzL2Lkzkg8xJIC5XzBgYGLdlbCgg41FBNVmsFs8YGBjHMT4BqrNgvnIgJWMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

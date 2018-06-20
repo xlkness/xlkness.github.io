@@ -159,6 +159,106 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-030erlang-timer/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 20:09:25" datetime="2018-06-20T12:09:25.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/030erlang-timer/index/">erlang底层c定时器设计-Erlang源码学习二</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        Erlang底层的定时器实现位于源码的erts/emulator/beam/time.c文件，用时间轮的方式动态添加和删除定时器，结构体名为typedef struct ErtsTimerWheel_ ErtsTimerWheel，每一个定时器的结构体名为typedef struct erl_timer ErtsTWheelTimer，看结构体实现大体上可以知道定时器的设计。
+定时器 Ert...
+    
+
+        <a href="/2018/06/20/030erlang-timer/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-029erlang-time/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 19:44:02" datetime="2018-06-20T11:44:02.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/029erlang-time/index/">erlang:now()与os:timestamp()-Erlang源码学习一</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        erlang中，关于erlang:now()与os:timestamp()两个接口，查看官方文档的解释：
+
+
+按官方文档上说erlang:now/0是废弃了的，它可以获取一个持续递增的唯一时间戳。除此也没说讲到更多。
+再看erlang:now/0文档给的时间和时间修正，里面详细描述了erlang对于时间的处理，暂不看。
+直接跳到c源码看吧，在这之前可以看看linux内核时间的管理，明白什么是...
+    
+
+        <a href="/2018/06/20/029erlang-time/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-028graph/index"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -555,100 +655,6 @@ AVL树实现了几个操作：
     
 
         <a href="/2018/06/19/021search-min-i/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-020bucket-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:28:14" datetime="2018-06-19T12:28:14.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/020bucket-sort/index/">桶排序-《算法导论》学习笔记九</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        桶排序要求数据均匀、独立分布在某个区间上，然后将待排序值按某个区间划分为几个区间数组，然后将待排序的数按这个区间划分公式有序放入对应桶中，这样放完之后再按顺序从桶中拿出来一个一个放入原数组。c代码桶可以用链表，如待排序数组的值为0-99，那么桶可以划分为0-9、10-19、20-29…..，这样就得到了10个桶数组链表，然后遍历待排序的数组，将值/10后以链表插入排序方式放入对应桶链表中（就...
-    
-
-        <a href="/2018/06/19/020bucket-sort/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-019count-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:27:08" datetime="2018-06-19T12:27:08.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/019count-sort/index/">计数排序-《算法导论》学习笔记八</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        计数排序：假设n个输入元素中的每一个都是在0-k区间内的一个整数(k为正整数)，对每一个输入元素x，确定小于x的元素个数，用一个0-k长度的数组做记录，例如输入数组的数为0-10长度，随机出[2,5,3,0,2,3,0,3]，可以计算出一个0-10的数组，分别表示小于等于x的数的个数，于是有：0-&gt;2,1-&gt;2,2-&gt;4,3-&gt;7,4-&gt;7,5-&gt;8,6-...
-    
-
-        <a href="/2018/06/19/019count-sort/index/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>
