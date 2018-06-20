@@ -21,18 +21,18 @@
     
     
     <meta name="keywords" content="数据结构/算法">
-    <meta name="description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作：  树结点创建 遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印   后序遍历释放树结点 搜索 寻找结点子树最小关键字结点、寻找结点子树最大关键字结点 求结点高度 左旋 右旋 插入   先以普">
+    <meta name="description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作： 树结点创建遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印  后序遍历释放树结点搜索寻找结点子树最小关键字结点、寻找结点子树最大关键字结点求结点高度左旋右旋插入 先以普通二叉搜索树的方式插入">
 <meta name="keywords" content="数据结构&#x2F;算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="avl树-《算法导论》学习笔记十三">
 <meta property="og:url" content="http://yoursite.com/2018/06/20/024avl-tree/index/index.html">
 <meta property="og:site_name" content="My Blog">
-<meta property="og:description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作：  树结点创建 遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印   后序遍历释放树结点 搜索 寻找结点子树最小关键字结点、寻找结点子树最大关键字结点 求结点高度 左旋 右旋 插入   先以普">
+<meta property="og:description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作： 树结点创建遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印  后序遍历释放树结点搜索寻找结点子树最小关键字结点、寻找结点子树最大关键字结点求结点高度左旋右旋插入 先以普通二叉搜索树的方式插入">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-20T03:07:40.409Z">
+<meta property="og:updated_time" content="2018-06-20T04:39:26.707Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="avl树-《算法导论》学习笔记十三">
-<meta name="twitter:description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作：  树结点创建 遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印   后序遍历释放树结点 搜索 寻找结点子树最小关键字结点、寻找结点子树最大关键字结点 求结点高度 左旋 右旋 插入   先以普">
+<meta name="twitter:description" content="（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。 AVL树实现了几个操作： 树结点创建遍历 递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印  后序遍历释放树结点搜索寻找结点子树最小关键字结点、寻找结点子树最大关键字结点求结点高度左旋右旋插入 先以普通二叉搜索树的方式插入">
     
         <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
     
@@ -164,6 +164,13 @@
 
 <div class="container body-wrap">
     
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#树结点创建"><span class="post-toc-number">1.</span> <span class="post-toc-text">树结点创建</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#遍历"><span class="post-toc-number">2.</span> <span class="post-toc-text">遍历</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#后序遍历释放树结点"><span class="post-toc-number">3.</span> <span class="post-toc-text">后序遍历释放树结点</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#搜索"><span class="post-toc-number">4.</span> <span class="post-toc-text">搜索</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#寻找结点子树最小关键字结点、寻找结点子树最大关键字结点"><span class="post-toc-number">5.</span> <span class="post-toc-text">寻找结点子树最小关键字结点、寻找结点子树最大关键字结点</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#求结点高度"><span class="post-toc-number">6.</span> <span class="post-toc-text">求结点高度</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#左旋"><span class="post-toc-number">7.</span> <span class="post-toc-text">左旋</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#右旋"><span class="post-toc-number">8.</span> <span class="post-toc-text">右旋</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#插入"><span class="post-toc-number">9.</span> <span class="post-toc-text">插入</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#删除"><span class="post-toc-number">10.</span> <span class="post-toc-text">删除</span></a></li></ol>
+        </nav>
+    </aside>
+
 
 <article id="post-024avl-tree/index"
   class="post-article article-type-post fade" itemprop="blogPost">
@@ -188,21 +195,10 @@
         <div class="post-content" id="post-content" itemprop="postContent">
             <p>（引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。</p>
 <p>AVL树实现了几个操作：</p>
-<ol>
-<li>树结点创建</li>
-<li>遍历<ol>
-<li>递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印</li>
-</ol>
-</li>
-<li>后序遍历释放树结点</li>
-<li>搜索</li>
-<li>寻找结点子树最小关键字结点、寻找结点子树最大关键字结点</li>
-<li>求结点高度</li>
-<li>左旋</li>
-<li>右旋</li>
-<li>插入</li>
-</ol>
-<blockquote>
+<h1 id="树结点创建"><a href="#树结点创建" class="headerlink" title="树结点创建"></a>树结点创建</h1><h1 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h1><blockquote>
+<p>递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印</p>
+</blockquote>
+<h1 id="后序遍历释放树结点"><a href="#后序遍历释放树结点" class="headerlink" title="后序遍历释放树结点"></a>后序遍历释放树结点</h1><h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><h1 id="寻找结点子树最小关键字结点、寻找结点子树最大关键字结点"><a href="#寻找结点子树最小关键字结点、寻找结点子树最大关键字结点" class="headerlink" title="寻找结点子树最小关键字结点、寻找结点子树最大关键字结点"></a>寻找结点子树最小关键字结点、寻找结点子树最大关键字结点</h1><h1 id="求结点高度"><a href="#求结点高度" class="headerlink" title="求结点高度"></a>求结点高度</h1><h1 id="左旋"><a href="#左旋" class="headerlink" title="左旋"></a>左旋</h1><h1 id="右旋"><a href="#右旋" class="headerlink" title="右旋"></a>右旋</h1><h1 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h1><blockquote>
 <p>先以普通二叉搜索树的方式插入结点；</p>
 <p>插入结点后可能影响平衡（一个子树高度-另一子树高度等于2），具体的不平衡的情况分四种：</p>
 <ol>
@@ -218,10 +214,7 @@
 <p>旋转之后，结点的左子树与右子树达到平衡，但结点父结点的树可能不平衡，</p>
 <p>需要循环向根节点判断结点高度有无平衡，直至根节点。</p>
 </blockquote>
-<ol start="10">
-<li>删除</li>
-</ol>
-<blockquote>
+<h1 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h1><blockquote>
 <ol>
 <li><p>先查询相同的key的结点；</p>
 </li>
@@ -732,7 +725,7 @@ int main(
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-20T03:07:40.409Z" itemprop="dateUpdated">2018-06-20 11:07:40</time>
+    Last updated: <time datetime="2018-06-20T04:39:26.707Z" itemprop="dateUpdated">2018-06-20 12:39:26</time>
 </span><br>
 
 
@@ -811,7 +804,14 @@ int main(
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/20/025trie-tree/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">trie树-《算法导论》学习笔记十四</h4>
+      </a>
+    </div>
   
 
   

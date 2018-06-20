@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。 树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-19T12:50:03.888Z">
+<meta property="og:updated_time" content="2018-06-20T04:39:52.623Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="红黑树-《算法导论》学习笔记十二">
 <meta name="twitter:description" content="红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。 树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一颗红黑">
@@ -208,7 +208,7 @@
 <li>插入，插入一个新结点时，考虑如果插入黑色结点，破坏了原树的红黑性质（黑高），要进行重新平衡</li>
 <li>删除，删除了一个结点后，考虑如果删除的是黑色结点，或删除了结点，后继提升到删除节点的位置后，平衡红黑性质</li>
 </ul>
-<p>———-插入</p>
+<p><strong>———-插入</strong></p>
 <ol>
 <li><p>如果结点的父结点为黑色，表示没插入这个结点前满足红黑树<br>性质，且插入这个红色结点后，也不影响红黑树黑高，故保持当前位置</p>
 </li>
@@ -221,7 +221,7 @@
 <li><p>将根结点变为黑色</p>
 </li>
 </ol>
-<p>———-删除</p>
+<p><strong>———-删除</strong></p>
 <ol>
 <li><p>以指针p指向待删除结点node，p_color记录node颜色</p>
 </li>
@@ -718,7 +718,7 @@ int main(
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-19T12:50:03.888Z" itemprop="dateUpdated">2018-06-19 20:50:03</time>
+    Last updated: <time datetime="2018-06-20T04:39:52.623Z" itemprop="dateUpdated">2018-06-20 12:39:52</time>
 </span><br>
 
 
