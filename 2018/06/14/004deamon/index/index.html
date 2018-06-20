@@ -25,7 +25,7 @@
 <meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux daemon守护进程的创建">
-<meta property="og:url" content="http://yoursite.com/2018/06/14/004deamon/index/index.html">
+<meta property="og:url" content="http://lkness/2018/06/14/004deamon/index/index.html">
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻： 这里我用ssh登陆ubuntu，在终端用vim编写。 第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下： /">
 <meta property="og:locale" content="zh">
@@ -318,7 +318,7 @@ int main()
     </div>
     
     <footer>
-        <a href="http://yoursite.com">
+        <a href="http://lkness">
             <img src="/img/head.jpg" alt="lkness">
             lkness
         </a>
@@ -344,7 +344,7 @@ int main()
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -354,22 +354,22 @@ int main()
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/14/004deamon/index/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/14/004deamon/index/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux daemon守护进程的创建》 — My Blog&url=http://yoursite.com/2018/06/14/004deamon/index/&via=http://yoursite.com" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux daemon守护进程的创建》 — My Blog&url=http://lkness/2018/06/14/004deamon/index/&via=http://lkness" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/14/004deamon/index/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/14/004deamon/index/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -518,7 +518,7 @@ int main()
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&pic=http://yoursite.com/img/head.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -528,22 +528,22 @@ int main()
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/14/004deamon/index/&title=《Linux daemon守护进程的创建》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/06/14/004deamon/index/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/14/004deamon/index/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux daemon守护进程的创建》 — My Blog&url=http://yoursite.com/2018/06/14/004deamon/index/&via=http://yoursite.com" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux daemon守护进程的创建》 — My Blog&url=http://lkness/2018/06/14/004deamon/index/&via=http://lkness" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2018/06/14/004deamon/index/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/14/004deamon/index/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -554,7 +554,7 @@ int main()
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKklEQVR42u3aS5LCMAxFUfa/aZgySXKfZKiyfDOiKHfsw0Ctj18v/Ly/Hv5N+v3VymWPDBkytmW8b5/vNZx3tfJ+zdXK+7PJkCHjHAZ/Hd+SB9wrJDmbDBkyZKRH5J/5+2XIkCEjTeZ46safTqIpQ4aMcxh8A1JS8pCa/tWCWlyGDBkbMnjX/f+ffzLfkCFDxlaMVWlcf5DZOZUMGTJmM/oNsrjUbLfeLveVIUPGaAZPClfdy+IXO5YVsTJkyNiWwX2dxO7+QDygP/zHkCFDxlAGT+M6owI+QliAkSFDxlBGbcvaAPI+TKfvjG+xyZAhY0PGqiYXD5ckjKaFsQwZMmYzOk23dPtaS67W+JMhQ8YkBh8lpu25dLTZCv0yZMgYzeBtLxK5CZK8Ib0iJkOGjDMZtQKS/xBpURqslyFDxjhGp8W/9toETxYfhpcyZMgYyuDDxVqLLb38GmNkyJBxDIMHQd705023VoCWIUPGkYx0GFkbPa4qjGXIkDGbkW5PQnBtGJAmqTJkyDiHkTbU0iZ+v0yNBwMyZMgYxyBhtFZ2okiP1xSnHDJkyBjB6ATZ2piTt+eCwC1DhozRjM6IkRyxX6x2QrkMGTImMdLgWCtKfx5wZciQcQCjcxmi86OkqV5Qi8uQIeNIRjqqJOlgp2wuBlwZMmSMZpDX1RI+Pgp9KGJlyJAxmpEWsbVWGr8oVpzEypAhYyijVTpiEhkDpPGzON+QIUPGTowPA6pIHerFziYAAAAASUVORK5CYII=" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABu0lEQVR42u3aQY7CMBAEQP7/afYBLEn3ODEglU+IoLjMYeRp+/GIx/NlvD59/WX+zcUDFxd3mfs8HMe/yd+ffI5mwcXF3cjNp0mWOit/xwZcXNxf4b57elzs3i0MFxf317n5Bij/BhcX99u4yZQJ9NocAxcX91Pca6ON2edb8l1cXNwR91mOlS3OBbPj4uJu4eYFZRaGzkLSk/fg4uJu5LYtStvezOLUulfDxcW9iNuGpCvHqEngUoQjuLi4N3BnuFl00gay/zzFxcX9EDc/7FxvfurSiYuLu5177fWp2WWLkwXg4uJu5M4ORNvQJA9M374TFxd3C3e2fcmPS9vyFxU+XFzcLdyWmLc9banKiyMuLu5ObnLs0QYiBSIudri4uHdz8+an3cTkEUkRvOLi4n6Imx9/tscwsytZuLi438bNQ5Di/tdsF4aLi7uFuzJxe61qPZbFxcXdw22LyyzgaBecb55wcXHv4ybFK1/frJUqyhwuLu5GbjJxvrxZW1X3ari4uF/JnR205OUMFxf3t7h5wNHGqcVRCi4u7s3cpBjNos/2csbJH4SLi7uFuxJ2rG9l8r8JFxd3C/cPc6HYV8iAEL0AAAAASUVORK5CYII=" alt="微信分享二维码">
 </div>
 
 
