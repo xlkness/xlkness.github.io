@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lkness/"/>
-  <updated>2018-06-20T12:45:02.351Z</updated>
+  <updated>2018-06-22T12:43:57.055Z</updated>
   <id>http://lkness/</id>
   
   <author>
@@ -15,6 +15,133 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>037erlang-parser</title>
+    <link href="http://lkness/2018/06/22/037erlang-parser/index/"/>
+    <id>http://lkness/2018/06/22/037erlang-parser/index/</id>
+    <published>2018-06-22T12:36:09.000Z</published>
+    <updated>2018-06-22T12:43:57.055Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>一门编程语言的编译器或者解释器通常功能分解为两步：</p><blockquote><p>1、读取源码文件然后分析它的结构</p><p>2、处理这些结构，例如生成目标程序<br>lexer和yacc就是能完成第一步以便生成程序段的工具。而第一步的任务又能分为两个子任务：<br>1、分割源码文件内容为很多tokens(lexer)</p><p>2、分析出程序的分级结构(yacc)</p></blockquote><h1 id="二、lexer（词法分析工具）"><a href="#二、lexer（词法分析工具）" class="headerlink" title="二、lexer（词法分析工具）"></a>二、lexer（词法分析工具）</h1><p>lexer的源就是一个正则表达式表，其正则规则符合目标程序的代码片段。正则表达式表读取输入流，并将其根据正则规则转换为分割的字符串，然后输出为输出流，再翻译为一个程序。当 Lex 接收到文件或文本形式的输入时，它试图将文本与常规表达式进行匹配。 它一次读入一个输入字符，直到找到一个匹配的模式。 如果能够找到一个匹配的模式，Lex 就执行相关的动作（可能包括返回一个标记）。 另一方面，如果没有可以匹配的常规表达式，将会停止进一步的处理，Lex 将显示一个错误消息。<br>Erlang的lexer工具就是leex模块。</p><h1 id="三、yacc（语法分析工具）"><a href="#三、yacc（语法分析工具）" class="headerlink" title="三、yacc（语法分析工具）"></a>三、yacc（语法分析工具）</h1><p>是一个用来生成编译器的编译器（编译器代码生成器）。输入词法分析器的流，输出目标语言的代码。<br>Erlang的yacc工具就是yecc。</p><h1 id="四、作用"><a href="#四、作用" class="headerlink" title="四、作用"></a>四、作用</h1><p>有了这两个工具，我们可以自定义自己的编程语言，自定义这个语言的语法规则，最终生成相同功能的erlang代码。例如领域特定语言(DSL)，我们可以定义个简单类似makefile的mymakefile语法规则，然后生成erlang代码来真正执行功能。</p><h1 id="五、初识"><a href="#五、初识" class="headerlink" title="五、初识"></a>五、初识</h1><p>这次研究leex和yecc也是在研究erlang protocolbuf时候，发现通用的做法就是书写一个协议字段描述文件，然后来生成erlang文件，例如一条TestRequest协议，定义其协议号10000，编解码文件为test_proto.erl，那么描述关系就是10000,TestRequest,test_proto，然后我们代码中传包解包时，都在协议头带上一个16位的协议号，通过协议号路由到真正的编解码文件也就是test_proto.erl。而看了很多实现，都是用riak官方某个rebar插件，来将这种关系描述文件生成erlang文件。</p><p>这个功能很简单，不过想是不是能用leex、yecc完成，最近正好也在研究，于是就产生了试一试的想法。</p><h1 id="六、定义leex的-xrl文件"><a href="#六、定义leex的-xrl文件" class="headerlink" title="六、定义leex的.xrl文件"></a>六、定义leex的.xrl文件</h1><p>leex需要.xrl文件来描述自定义源文件的正则匹配规则，例如上面的协议描述关系，我们可以用[0-9]+来匹配出开始的协议号，用[,]<a href="[0-9a-zA-Z]*_?">a-zA-Z</a>*[,]匹配出协议名。</p><p>leex文件需要三个部分:Definitions Rules Erlangcode，Definitions表示正则匹配的变量，Rules表示匹配的规则和匹配后的输出，Erlangcode则是作为辅助的erlang函数。</p><p>我们可以按照第五步来编写我们的.xrl文件（假设叫test_lexer.xrl）：</p><pre><code>Definitions.TypeID = [0-9]+MsgName = [,][a-zA-Z]([0-9a-zA-Z]*_?)*[,]MsgModule = [a-zA-Z]([0-9a-zA-Z]*_?)*(\n)?NoneLine = [\n]Rules.{TypeID} : {token, {msg_number, TokenLine, list_to_integer(TokenChars)}}.{MsgName} : {token, {msg_name, TokenLine, drop_tokens(TokenChars)}}.{MsgModule} : {token, {msg_module, TokenLine, drop_tokens(TokenChars)}}.{NoneLine} : skip_token.Erlang code.drop_tokens(TokenChars) -&gt;    [Chars] = string:tokens(TokenChars, &quot;,&quot;),    [Chars1] = string:tokens(Chars, &quot;\s&quot;),    [Chars2] = string:tokens(Chars1, &quot;.&quot;),    [Chars3] = string:tokens(Chars2, &quot;\n&quot;),    Chars3.</code></pre><p>上面的代码还是容易看懂的。</p><p>使用方法则是先编写一个协议描述的文件test_pb_desc.csv，随便输入个关系：</p><pre><code>10000,fdsfds_232,fdsf_REWr10001,fwefsd,terterr</code></pre><p>然后通过leex编译出我们的词法分析器：</p><pre><code>leex:file(&quot;test_lexer.xrl&quot;).</code></pre><p>不出意外，当前目录就会多一个test_lexer.erl，然后来分析我们的描述文件：</p><pre><code>{ok, Lines} = file:read_file(&quot;test_pb_desc.csv&quot;),{_, Tokens, _} = test_lexer:string(binary_to_list(Lines)),</code></pre><p>这里得到的Tokens就是我们的词法分析结果，可以输入到下一步的语法分析器里生成erlang代码。</p><h1 id="七、定义yecc的-yrl文件"><a href="#七、定义yecc的-yrl文件" class="headerlink" title="七、定义yecc的.yrl文件"></a>七、定义yecc的.yrl文件</h1><p>yecc需要.yrl文件来描述词法分析的分析方法以及分析的产出。</p><p>yecc文件需要四个部分：Nonterminals Terminals Rootsymbol Erlangcode，Nonterminals表示每次输入的流，Terminals表示输入流里面的tokens关键字，Rootsymbol表示输入的根（源），Erlangcode照例是辅助的erlang函数，<br>我们可以按照第六步的生成来编写yrl文件（例如叫test_parser.yrl）：</p><pre><code>Nonterminalscombines combine.Terminals msg_number msg_name msg_module.Rootsymbol combines.combines -&gt; combine : &apos;$1&apos;.combines -&gt; combine combines : &apos;$1&apos; ++ &apos;$2&apos;.combine -&gt; msg_number msg_name msg_module :    [{{save('$1'), save('$2')}, {save('$2'), save('$1')}, {save('$1'), save('$3')}}].Erlang code.save({msg_number, _, Value}) -&gt; Value;save({msg_name, _, Value}) -&gt; list_to_atom(Value);save({msg_module, _, Value}) -&gt; list_to_atom(Value).</code></pre><p>这里的combines语法有点像[H | Rest]语法，第一个combines -&gt; combine : ‘$1’表示整个输入的词法分析流列表只剩一个元素的做法，combines -&gt; combine combines : … 表示匹配出单个元素combine 以及剩下的combines，而combine又寻找到单个规则combine -&gt; msg_number msg_name ….，这样递归地处理输入源。</p><p>使用方法是：</p><pre><code>yecc:file(&quot;test_parser.yrl&quot;).</code></pre><p>然后编译生成的test_parser.erl文件，再调用test_parser:parse(Tokens).就生成erlang的目标代码了，这里我只生成了一个列表。</p><h1 id="八、完整代码"><a href="#八、完整代码" class="headerlink" title="八、完整代码"></a>八、完整代码</h1><p>我将完整代码用来编写了一个rebar3插件，用户定义协议描述文件xxx，然后里面的内容是协议描述关系：数字,协议名,协议编解码文件 这样的内容，插件就能输出成一个erlang文件。</p><p>完整代码参照我的git repo：<a href="https://github.com/xlkness/rebar3_pb_msgdesc" target="_blank" rel="noopener">rebar3_pb_msgdesc</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、简介&quot;&gt;&lt;a href=&quot;#一、简介&quot; class=&quot;headerlink&quot; title=&quot;一、简介&quot;&gt;&lt;/a&gt;一、简介&lt;/h1&gt;&lt;p&gt;一门编程语言的编译器或者解释器通常功能分解为两步：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1、读取源码文件然后分析它的结构
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Erlang Abstract Syntax Tree和汇编字节码</title>
+    <link href="http://lkness/2018/06/22/036erlang-ast/index/"/>
+    <id>http://lkness/2018/06/22/036erlang-ast/index/</id>
+    <published>2018-06-22T12:35:59.000Z</published>
+    <updated>2018-06-22T12:45:00.578Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、抽象语法树简介"><a href="#一、抽象语法树简介" class="headerlink" title="一、抽象语法树简介"></a>一、抽象语法树简介</h1><p>抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表示。</p><p>抽象语法树是解析器(parser)的产物，解析器广义来说输入一般是程序的源码，输出一般是语法树（syntax tree，也叫parse tree等）或抽象语法树。进一步剥开来，广义的解析器里一般会有扫描器（scanner，也叫tokenizer或者lexical analyzer，词法分析器），以及狭义的解析器（parser，也叫syntax analyzer，语法分析器）。扫描器的输入一般是文本，经过词法分析，输出是将文本切割为单词的流。狭义的解析器输入是单词的流，经过语法分析，输出是语法树或者精简过的AST。</p><p>例如：将i = a + b * c作为源代码输入到解析器里，则广义上的解析器的工作流程如下图：</p><p><img src="/img/erlang_ast.png" alt="erlang_ast1"></p><h1 id="二、用途"><a href="#二、用途" class="headerlink" title="二、用途"></a>二、用途</h1><pre><code>erlang beam是寄存器虚拟机，因此erlang的源码会被erlang解析器的词法分析变为AST，然后经过树形遍历解析器给转换为汇编字节码。</code></pre><h1 id="三、抽象语法树初识"><a href="#三、抽象语法树初识" class="headerlink" title="三、抽象语法树初识"></a>三、抽象语法树初识</h1><h2 id="1、创建一个test1-erl的文件，输入以下代码："><a href="#1、创建一个test1-erl的文件，输入以下代码：" class="headerlink" title="1、创建一个test1.erl的文件，输入以下代码："></a>1、创建一个test1.erl的文件，输入以下代码：</h2><pre><code>-module(test1).-export([start/0]).-compile({parse_transform, test_parser}).start() -&gt;    &quot;hello world&quot;.</code></pre><h2 id="2、创建一个test-parser-erl的文件，输入以下代码："><a href="#2、创建一个test-parser-erl的文件，输入以下代码：" class="headerlink" title="2、创建一个test_parser.erl的文件，输入以下代码："></a>2、创建一个test_parser.erl的文件，输入以下代码：</h2><pre><code>-module(test_parser).-export([parse_transform/2]).parse_transform(AST, _Options) -&gt;    io:format(&quot;old:~w~n~n&quot;, [AST]),    Acc = parse_ast(AST, []),    io:format(&quot;new:~w~n~n&quot;, [Acc]),    Acc.parse_ast([{attribute, _, _, _} = H | R], Acc) -&gt;    parse_ast(R, [H | Acc]);parse_ast([{function, _Line, _Fun, _Arity, _Args} = H | R], Acc) -&gt;    parse_ast(R, [parse_fun(H) | Acc]);parse_ast([H | R], Acc) -&gt;    parse_ast(R, [H | Acc]);parse_ast([], Acc) -&gt;    lists:reverse(Acc).parse_fun({function, Line, Fun, Arity, Clause}) -&gt;    {function, Line, Fun, Arity, parse_clause(Clause, [])}.parse_clause([{clause, Line, P, Guard, Return}], Acc) -&gt;    [{clause, Line, P, Guard, parse_return(Return, [])} | Acc].parse_return([{string, Line, Value} | R], Acc) -&gt;    parse_return(R, [{bin, Line, [{bin_element, Line, {string, Line, Value},default,default}]} | Acc]);parse_return([], Acc) -&gt;    lists:reverse(Acc).</code></pre><h2 id="3、编译"><a href="#3、编译" class="headerlink" title="3、编译"></a>3、编译</h2><pre><code>1&gt; c(test_parser).{ok,test_parser}2&gt; c(test1).old:[{attribute,1,file,{[116,101,115,116,49,46,101,114,108],1}},{attribute,1,module,test1},{attribute,3,export,[{start,0}]},{function,7,start,0,[{clause,7,[],[],[{string,8,[104,101,108,108,111,32,119,111,114,108,100]}]}]},{eof,9}]new:[{attribute,1,file,{[116,101,115,116,49,46,101,114,108],1}},{attribute,1,module,test1},{attribute,3,export,[{start,0}]},{function,7,start,0,[{clause,7,[],[],[{bin,8,[{bin_element,8,{string,8,[104,101,108,108,111,32,119,111,114,108,100]},default,default}]}]}]},{eof,9}]{ok,test1}</code></pre><p>先不管io:format的打印，我们直接执行test1:start()，</p><pre><code>3&gt; test1:start().&lt;&lt;&quot;hello world&quot;&gt;&gt;</code></pre><p>发现终端输出的是二进制！而我们源码明明写的是个字符串！！破编译器对我们的代码干了什么！！</p><p>别惊慌，这时候我们就可以来看看我们打印的抽象语法树了。</p><p>先看old，attribute都是源码文件的属性，例如file、export、import、module名等，可以略过，以及eof表示源码文件的结尾，也可以忽略。直接定位到function元组，{function, Line, Name, Arity, Clauses}表示一个函数的源码行、函数名、形参数、模式匹配列表，再定位到模式匹配列表clause，其表示了一个函数的多个模式匹配和返回值，当前start函数就一个匹配，因此clause只有一个tuple元素，返回值就是一个{string, Line, “hello world”}，<br>那么我们是不是修改这个{string, Line, “hello world”}为一个二进制字符串，就能达到我们演示的效果呢？是的！</p><p>这就是test1.erl中-compile({parse_transform, test_parser}).的作用，erlang的解析器会在词法分析完成后，调用我们自己指定的函数对ast进行二次更改，于是test_parser.erl里面就将start函数的返回值更改为了一个二进制。然后返回一个新的AST，再经树形解析编译为erlang汇编字节码文件，供erlang vm调用。</p><h1 id="四、应用"><a href="#四、应用" class="headerlink" title="四、应用"></a>四、应用</h1><p>lager日志库 <a href="https://github.com/erlang-lager/lager" target="_blank" rel="noopener">https://github.com/erlang-lager/lager</a></p><p>以前一直疑惑使用lager日志库为什么要在编译选项上加一个{parse_transform, lager_transform}，现在也懂了，</p><p>就是编译我们项目每一个源文件时，都将最终的抽象语法树再次添加一些特性代码。</p><p>这里我们可以打印一下，现在我在一个叫erlserver_app.erl的文件里加入lager日志打印代码：</p><pre><code>-module(erlserver_app).-behaviour(application).-export([start/2, stop/1]).-compile([{parse_transform, lager_transform}]).start(_StartType, _StartArgs) -&gt;    lager:warning(&quot;12345678987654321~w~n&quot;, [&quot;abcdedeba&quot;]),    erlserver_sup:start_link().%%--------------------------------------------------------------------stop(_State) -&gt;    ok.</code></pre><p>然后在lager_transform里继续像上面那样打印，</p><p>最终编译输出：</p><pre><code>===&gt; old:[{attribute,1,file,{[47,104,111,109,101,47,108,105,107,117,110,47,115,116,117,100,121,47,101,114,108,97,110,103,47,101,114,108,115,101,114,118,101,114,47,95,98,117,105,108,100,47,100,101,102,97,117,108,116,47,108,105,98,47,101,114,108,115,101,114,118,101,114,47,115,114,99,47,101,114,108,115,101,114,118,101,114,95,97,112,112,46,101,114,108],1}},{attribute,6,module,erlserver_app},{attribute,8,behaviour,application},{attribute,11,export,[{start,2},{stop,1}]},{attribute,13,compile,[]},{function,19,start,2,[{clause,19,[{var,19,&apos;_StartType&apos;},{var,19,&apos;_StartArgs&apos;}],[],[{call,20,{remote,20,{atom,20,lager},{atom,20,warning}},[{string,20,[49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110]},{cons,20,{string,20,[97,98,99,100,101,100,101,98,97]},{nil,20}}]},{call,21,{remote,21,{atom,21,erlserver_sup},{atom,21,start_link}},[]}]}]},{function,24,stop,1,[{clause,24,[{var,24,&apos;_State&apos;}],[],[{atom,25,ok}]}]},{eof,30}]===&gt; new:[{attribute,1,file,{[47,104,111,109,101,47,108,105,107,117,110,47,115,116,117,100,121,47,101,114,108,97,110,103,47,101,114,108,115,101,114,118,101,114,47,95,98,117,105,108,100,47,100,101,102,97,117,108,116,47,108,105,98,47,101,114,108,115,101,114,118,101,114,47,115,114,99,47,101,114,108,115,101,114,118,101,114,95,97,112,112,46,101,114,108],1}},{attribute,6,module,erlserver_app},{attribute,6,lager_records,[]},{attribute,8,behaviour,application},{attribute,11,export,[{start,2},{stop,1}]},{attribute,13,compile,[]},{function,19,start,2,[{clause,19,[{var,19,&apos;_StartType&apos;},{var,19,&apos;_StartArgs&apos;}],[],[{&apos;case&apos;,20,{tuple,20,[{call,20,{atom,20,whereis},[{atom,20,lager_event}]},{call,20,{atom,20,whereis},[{atom,20,lager_event}]},{call,20,{remote,20,{atom,20,lager_config},{atom,20,get}},[{tuple,20,[{atom,20,lager_event},{atom,20,loglevel}]},{tuple,20,[{integer,20,0},{nil,20}]}]}]},[{clause,20,[{tuple,20,[{atom,20,undefined},{atom,20,undefined},{var,20,&apos;_&apos;}]}],[],[{call,20,{&apos;fun&apos;,20,{clauses,[{clause,20,[],[],[{tuple,20,[{atom,20,error},{atom,20,lager_not_running}]}]}]}},[]}]},{clause,20,[{tuple,20,[{atom,20,undefined},{var,20,&apos;_&apos;},{var,20,&apos;_&apos;}]}],[],[{call,20,{&apos;fun&apos;,20,{clauses,[{clause,20,[],[],[{tuple,20,[{atom,20,error},{tuple,20,[{atom,20,sink_not_configured},{atom,20,lager_event}]}]}]}]}},[]}]},{clause,20,[{tuple,20,[{var,20,&apos;__Piderlserver_app20&apos;},{var,20,&apos;_&apos;},{tuple,20,[{var,20,&apos;__Levelerlserver_app20&apos;},{var,20,&apos;__Traceserlserver_app20&apos;}]}]}],[[{op,20,&apos;orelse&apos;,{op,20,&apos;/=&apos;,{op,20,&apos;band&apos;,{var,20,&apos;__Levelerlserver_app20&apos;},{integer,20,16}},{integer,20,0}},{op,20,&apos;/=&apos;,{var,20,&apos;__Traceserlserver_app20&apos;},{nil,20}}}]],[{call,20,{remote,20,{atom,20,lager},{atom,20,do_log}},[{atom,20,warning},{cons,20,{tuple,20,[{atom,20,application},{atom,20,erlserver}]},{cons,20,{tuple,20,[{atom,20,module},{atom,20,erlserver_app}]},{cons,20,{tuple,20,[{atom,20,function},{atom,20,start}]},{cons,20,{tuple,20,[{atom,20,line},{integer,20,20}]},{cons,20,{tuple,20,[{atom,20,pid},{call,20,{atom,20,pid_to_list},[{call,20,{atom,20,self},[]}]}]},{cons,20,{tuple,20,[{atom,20,node},{call,20,{atom,20,node},[]}]},{call,20,{remote,20,{atom,20,lager},{atom,20,md}},[]}}}}}}},{string,20,[49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110]},{cons,20,{string,20,[97,98,99,100,101,100,101,98,97]},{nil,20}},{integer,20,4096},{integer,20,16},{var,20,&apos;__Levelerlserver_app20&apos;},{var,20,&apos;__Traceserlserver_app20&apos;},{atom,20,lager_event},{var,20,&apos;__Piderlserver_app20&apos;}]}]},{clause,20,[{var,20,&apos;_&apos;}],[],[{atom,20,ok}]}]},{call,21,{remote,21,{atom,21,erlserver_sup},{atom,21,start_link}},[]}]}]},{function,24,stop,1,[{clause,24,[{var,24,&apos;_State&apos;}],[],[{atom,25,ok}]}]},{eof,30}]</code></pre><p>看来添加的东西挺多，没事，慢慢看，我们根据官方文档The Abstract Format一个一个对比看，</p><p>最终将添加的代码还原出来：</p><pre><code>case {whereis(lager_event), whereis(lager_event), lager_config:get({lager_event, loglevel}, {0, []})} of    {undefined, undefined, _} -&gt;        {error, lager_not_running};    {undefined, _, _} -&gt;        {error, sink_not_configured, lager_event};    {__Piderlserver_app20, _, {__Levelerlserver_app20, __Traceserlserver_app20}} when __Levelerlserver_app20 band 16 /= 0 orelse __Traceserlserver_app20 /= nil -&gt;        lager:do_log(warning, [{application, erlserver}, {atom, erlserver_app}, {function, start}, {line, 20}, {pid, pid_to_list(self())}, {node, node()}, lager:md()],            [49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110], [[97,98,99,100,101,100,101,98,97], []], 4096, 16, __Levelerlserver_app20,                __Traceserlserver_app20, lager_event, __Piderlserver_app20);    _ -&gt;        okend</code></pre><p>小小一句lager:warning()原来有这么多弯弯绕啊！</p><h1 id="五、erlang汇编字节码"><a href="#五、erlang汇编字节码" class="headerlink" title="五、erlang汇编字节码"></a>五、erlang汇编字节码</h1><p>一直说erlang汇编字节码，但是具体是个什么东西，还没有认识。</p><p>下面新建一个文件test.erl，输入以下内容：</p><pre><code>-module(test).-export([start/2]).start(A, B) -&gt;        abs(A) + abs(B).</code></pre><h2 id="1、编译-S汇编码"><a href="#1、编译-S汇编码" class="headerlink" title="1、编译.S汇编码"></a>1、编译.S汇编码</h2><pre><code>erlc -S test.erl</code></pre><h2 id="2、编译-dis汇编码"><a href="#2、编译-dis汇编码" class="headerlink" title="2、编译.dis汇编码"></a>2、编译.dis汇编码</h2><pre><code>erlc(test).erts_debug:df(test).</code></pre><p>然后打开得到的test.S文件：</p><pre><code>{module, test}.  %% version = 0{module, test}.  %% version = 0{exports, [{module_info,0},{module_info,1},{start,2}]}.{attributes, []}.{labels, 7}.{function, start, 2, 2}.  {label,1}.    {line,[{location,&quot;test.erl&quot;,4}]}.    {func_info,{atom,test},{atom,start},2}.  {label,2}.    {line,[{location,&quot;test.erl&quot;,5}]}.    {gc_bif,abs,{f,0},2,[{x,0}],{x,0}}.    {line,[{location,&quot;test.erl&quot;,5}]}.    {gc_bif,abs,{f,0},2,[{x,1}],{x,1}}.    {line,[{location,&quot;test.erl&quot;,5}]}.    {gc_bif,&apos;+&apos;,{f,0},2,[{x,0},{x,1}],{x,0}}.    return.{function, module_info, 0, 4}.  {label,3}.    {line,[]}.    {func_info,{atom,test},{atom,module_info},0}.  {label,4}.    {move,{atom,test},{x,0}}.    {line,[]}.    {call_ext_only,1,{extfunc,erlang,get_module_info,1}}.{function, module_info, 1, 6}.  {label,5}.    {line,[]}.    {func_info,{atom,test},{atom,module_info},1}.  {label,6}.    {move,{x,0},{x,1}}.    {move,{atom,test},{x,0}}.    {line,[]}.    {call_ext_only,2,{extfunc,erlang,get_module_info,2}}.</code></pre><p>每一个function元组标明了模块中的函数，我们直接定位到function start模块，每个label表示pc指针的执行顺序，跳过label1，我们直接看label2，有许多寄存器x0,x1,…xn y0,y1,…yn。x寄存器是用来存储函数入参的，特殊的x0寄存器，函数第一个入参是存放在里面，并且也用来作为函数返回值，而y寄存器是栈上分配的临时寄存器，</p><p>有了以上知识，我们直接看汇编码：</p><p>（忽略某些无用行）</p><pre><code>{gc_bif,abs,{f,0},2,[{x,0}],{x,0}}. //用x0去调用bif函数abs，存储结果到x0寄存器，{gc_bif,abs,{f,0},2,[{x,1}],{x,1}}. //用x1去调用bif函数abs，存储结果到x1寄存器，{gc_bif,&apos;+&apos;,{f,0},2,[{x,0},{x,1}],{x,0}}. //执行bif函数+， x0+x1，结果放入x0寄存器return. //返回，直接返回x0的值</code></pre><p>这就是.S汇编字节码，它具有一定可读性，方便人和机器阅读</p><p>再打开.dis汇编码文件：</p><pre><code>00007FDAE5183770: i_func_info_IaaI 0 test start 200007FDAE5183798: i_gc_bif1_jIsId j(0000000000000000) abs/1 x(0) 2 x(0)00007FDAE51837C8: i_gc_bif1_jIsId j(0000000000000000) abs/1 x(1) 2 x(1)00007FDAE51837F8: i_plus_jIxxd j(0000000000000000) 2 x(0) x(1) x(0)00007FDAE5183828: return00007FDAE5183830: i_func_info_IaaI 0 test module_info 000007FDAE5183858: move_cr test r(0)00007FDAE5183868: allocate_tt 0 100007FDAE5183878: call_bif_e erlang:get_module_info/100007FDAE5183888: deallocate_return_Q 000007FDAE5183898: i_func_info_IaaI 0 test module_info 100007FDAE51838C0: move_rx r(0) x(1)00007FDAE51838D0: move_cr test r(0)00007FDAE51838E0: allocate_tt 0 200007FDAE51838F0: call_bif_e erlang:get_module_info/200007FDAE5183900: deallocate_return_Q 0</code></pre><p>其实大体上差不多，不过多了真是调用的函数和执行地址，但是erlang的汇编操作码太多，因此这个文件可读性很差，如果想搞懂具体指令作用可以去查阅相关文档。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、抽象语法树简介&quot;&gt;&lt;a href=&quot;#一、抽象语法树简介&quot; class=&quot;headerlink&quot; title=&quot;一、抽象语法树简介&quot;&gt;&lt;/a&gt;一、抽象语法树简介&lt;/h1&gt;&lt;p&gt;抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【从零开始构建erlang服务器】-04协议层</title>
+    <link href="http://lkness/2018/06/22/035build-erlang-server04/index/"/>
+    <id>http://lkness/2018/06/22/035build-erlang-server04/index/</id>
+    <published>2018-06-22T12:06:51.000Z</published>
+    <updated>2018-06-22T12:45:30.498Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型，使用什么压缩算法或加密算法等。常 见的有tcp，udo，http，sip等常见协议。协议有流程规范和编码规范。流程如呼叫流程等信令流程，编码规范规定所有信令和数据如何打包/解包。编码规范就是我们通常所说的编解码，序列化。不光是用在通信工作上，在存储工作上我们也经常用到。如我们经常想把内存中对象存放到磁盘上，就需要对对象进行数据序列化工作。</p><p>本文主要使用google protocol buffer协议。协议就不多介绍了，网上搜索有很多讲解。</p><h1 id="二、编写proto文件"><a href="#二、编写proto文件" class="headerlink" title="二、编写proto文件"></a>二、编写proto文件</h1><p>协议规定了两方交流的方式，因此要有统一的双方都认识的东西来规定协议，例如json、xml，对于protocolbuf，就要定义proto文件了。</p><p>协议一般都跟服务器逻辑相关，因此我们先明确服务器要提供什么功能，再来编写协议。</p><p>这里我们可以做一个五子棋游戏服务器，那么游戏提供以下功能：</p><p>（先不做登陆功能，假设只要是客户端跟我们服务器完成三次握手就能进入游戏）</p><p>1、大厅，每隔3s刷新显示所有房间人数和玩家准备状态（先不提供按等级划分的大厅例如菜鸟场、新手场、中级场等）;<br>2、大厅提供直选房间加入方式，也提供匹配方式加入房间（优先匹配有一个人落座的房间）；<br>3、房间，最多坐两个人，多余的人会进入观战席，座位上的玩家可以准备，可以取消准备，玩家从进入房间开始计时，计时到了还没准备就踢出房间，不管中途多少次准备、未准备，一旦双方准备，则游戏开始，随机分配先手方；<br>4、对战，无禁手，无交换，无放弃落子（往简单做），双方各有2分钟总的思考时间，用完则其每一步均只有10s思考时间；<br>5、对战中异常检测，3s一次心跳，如果客户端下线或者退出房间，则另一方赢；<br>6、房间预先创建20个，如果只剩5个空房间，则多创建5个保留；<br>7、点选加入房间如果人满，返回人满错误提示玩家重新选房间</p><p>根据需求我们可以制定协议了。</p><p>创建协议文件gobang.proto，复制以下内容到协议（协议只是随便定义了下，没精力了，后续写代码再优化吧）：</p><pre><code>enum ChessPieceColor {    BALCK = 1;    RED = 2;}// 心跳message HeartBeatReq {}message HeartBeatResp {}// 获取大厅房间人数，客户端可以自己间隔获取message GetRoomsInfoReq {}message GetRoomsInfoResp {    repeated roomInfoType rooms = 1;}// 加入房间message JoinRoomReq {    required uint32 join_type = 1;      // 1:随机匹配 2:选房加入    required string nick_name = 2;      // 未做注册、登陆，直接给昵称    required uint32 sex = 3;            // 性别    optional uint32 room_id = 4;        // 选房加入时的房间号}message JoinRoomResp {    required bool audience = 1;         // 是否观众席位（加入瞬间座位满了）    required roomInfoType room = 2;     // 加入的房间信息    optional uint32 remain_sec = 3;     // 不准备的剩余秒数，到时即踢}// 准备message PrepareReq {    required uint32 type = 1;           // 1:准备 2:取消准备}message PrepareResp {    required uint32 remain_sec = 1;     // 不准备的剩余秒数，到时即踢}// 游戏开始-服务器主动推送给客户端message StartGamePush {    required ChessPieceColor color = 1; // 我方颜色，黑棋先（如果是围观群众，不读这个字段）    required uint32 remain_sec = 2;     // 思考的剩余时长，如果超时了，每一次落子只有per_round_remain_sec    required uint32 per_round_remain_sec = 3;   // 思考的总时间花费完了，之后每一步只有这么长的时间思考，超过即输    repeated startDetailType detail = 4;    message startDetailType {       // 推送给围观群众的        required ChessPieceColor color = 1;        required userInfoType user = 2;    }}// 游戏进行message PlayGameReq {    required uint32 x_pos = 1;    required uint32 y_pos = 2;}message PlayGameResp {    required uint32 err_code = 1;    required uint32 remain_sec = 2;}// 服务器推送其他玩家落子message PlayBroadcastPush {    required ChessPieceColor color = 1;         // 棋子颜色    required uint32 x_pos = 2;    required uint32 y_pos = 3;}// 游戏结束message EndGamePush {    required userInfoType winner = 1;           // 赢家}// 玩家加入房间、退出房间推送message UserInOutPush {    required uint32 type = 1;                   // 1.进入座位、2.进入观众席、3.退出座位、4.退出观众席    optional seatInfoType seat = 2;             // 座位变动才有    optional userInfoType user = 3;                 // 观众席变动才有}// 座位玩家加入观众席message JoinAudienceReq {}message JoinAudienceResp {    required uint32 err_code = 1;}// 观众席加入座位message JoinSeatReq {}message JoinSeatResp {    required uint32 err_code = 1;}/*内部声明*/// 房间信息message roomInfoType {    required uint32 room_id = 1;        // 房间id    repeated seatInfoType seats = 2;    // 座位信息    repeated userInfoType audiences = 3;// 围观群众}// 座位信息message seatInfoType {    required uint32 index = 1;          // 座位编号    optional userInfoType user = 2;     // 座位用户信息，空座位没有用户}// 用户信息message userInfoType {    required uint64 user_id = 1;        // 用户id    required string nick_name = 2;      // 昵称}</code></pre><h1 id="三、编译协议文件"><a href="#三、编译协议文件" class="headerlink" title="三、编译协议文件"></a>三、编译协议文件</h1><h2 id="1、添加协议描述文件"><a href="#1、添加协议描述文件" class="headerlink" title="1、添加协议描述文件"></a>1、添加协议描述文件</h2><p>目前我看到的erlang protocolbuf通信，都是将proto结构体编码成二进制，然后再在二进制头上补一个16位的协议号，这个协议号是前端和后端自定义的，也可以说是公司层面的协议号，例如这个项目组使用100-999，那个项目组使用1000-1999这样子。那么协议流发出去就是一个&lt;&lt;MsgID:16, Bin/binary&gt;&gt;这样一个二进制流，然后接收端再提取前16位的协议号。通过协议号找到真正的协议名，然后路由到真正的协议编解码文件进行处理，例如有多个.proto文件，经过pb工具生成编解码工具文件就有多个，如何路由到哪个编解码文件，就需要手工写一个描述关系。</p><p>将自定义的协议描述文件生成对应的erlang文件的工具我看到的很多都是用riak官方的一个rebar插件，这里我自己在学习lexer/yecc编译工具的时候写了一个rebar3插件rebar3_pb_msgdesc，功能一样。我就使用自己的插件来生成了，具体用法参考插件的readme文件。</p><p>针对第二步的协议内容，我们编写一个erlserver_pb_desc.csv文件，格式 协议号，协议名，协议文件 输入以下内容：</p><pre><code>1,HeartBeatReq,erlserver_gobang_pb2,HeartBeatResp,erlserver_gobang_pb100,GetRoomsInfoReq,erlserver_gobang_pb101,GetRoomsInfoResp,erlserver_gobang_pb102,JoinRoomReq,erlserver_gobang_pb103,JoinRoomResp,erlserver_gobang_pb104,PrepareReq,erlserver_gobang_pb105,PrepareResp,erlserver_gobang_pb106,StartGamePush,erlserver_gobang_pb107,PlayGameReq,erlserver_gobang_pb108,PlayGameResp,erlserver_gobang_pb109,PlayBroadcastPush,erlserver_gobang_pb110,EndGamePush,erlserver_gobang_pb111,UserInOutPush,erlserver_gobang_pb112,JoinAudienceReq,erlserver_gobang_pb113,JoinAudienceResp,erlserver_gobang_pb114,JoinSeatReq,erlserver_gobang_pb115,JoinSeatResp,erlserver_gobang_pb</code></pre><p>然后按照我的插件readme配置，执行rebar3 compile就能生成文件了，注意配置生成的描述文件可以放在src/proto/目录。</p><h2 id="2、生成协议编解码文件"><a href="#2、生成协议编解码文件" class="headerlink" title="2、生成协议编解码文件"></a>2、生成协议编解码文件</h2><p>生成协议编解码文件现在都推荐gpb库了，而rebar3插件rebar3_gpb_plugin就可以自动使用gpb作为插件并生成协议编解码文件，按照插件readme的配置，我们将编解码文件生成到src/proto/目录，配置好了rebar3钩子(hook)，直接执行compile就能生成协议编解码文件。<br>（如还是很模糊，可直接参考这个项目<a href="https://github.com/xlkness/erlserver" target="_blank" rel="noopener">github repo</a>）</p><h1 id="四、测试协议收发"><a href="#四、测试协议收发" class="headerlink" title="四、测试协议收发"></a>四、测试协议收发</h1><p>在项目根目录创建一个test目录，然后添加一个proto_tst.erl文件，输入以下内容：</p><pre><code>%%%-------------------------------------------------------------------%%% @author lkness%%% @copyright (C) 2018, &lt;COMPANY&gt;%%% @doc%%%%%% @end%%% Created : 14. Apr 2018 6:27 PM%%%--------------------------------------------------------------------module(proto_tst).%% API-export([    start/0]).start() -&gt;    {ok, Fd} = gen_tcp:connect({127,0,0,1}, 8888, [binary, {packet, raw}, {active, once}]),    GetRoomsInfoReq = #{},    MsgName = erlserver_pb_desc:msg_type(100),    B = erlserver_gobang_pb:encode_msg(GetRoomsInfoReq, MsgName),    SendMsg = &lt;&lt;100:16, B/binary&gt;&gt;,    gen_tcp:send(Fd, SendMsg),    receive        {tcp, _Socket, Packet} -&gt;            &lt;&lt;Cmd:16, Bin/binary&gt;&gt; = Packet,            RecvMsgName = erlserver_pb_desc:msg_type(Cmd),            Msg = erlserver_gobang_pb:decode_msg(Bin, RecvMsgName),            io:format(&quot;sender recv msg:~w/~p~n&quot;, [Cmd, Msg])    after 5000 -&gt;        io:format(&quot;error, not receive from server~n&quot;)    end,    ok.</code></pre><p>然后在我们的user处理模块里，接收socket消息里面添加响应逻辑：</p><pre><code>handle_info({tcp, Socket, &lt;&lt;Cmd:16, Binary/binary&gt;&gt; = Data}, State=#state{socket=Socket, transport=Transport})when byte_size(Data) &gt; 1 -&gt;Transport:setopts(Socket, [{active, once}]),{ok, PeerName} = inet:peername(Socket),MsgName = erlserver_pb_desc:msg_type(Cmd),Msg = erlserver_gobang_pb:decode_msg(Binary, MsgName),lager:info(&quot;receive from client[~w], msg:~p/~p~n&quot;, [PeerName, Cmd, Msg]),SendMsg = #{rooms =&gt; [#{room_id =&gt; 123, seats =&gt; [], audiences =&gt; []}]},SendBin = erlserver_gobang_pb:encode_msg(SendMsg, erlserver_pb_desc:msg_type(101)),Transport:send(Socket, &lt;&lt;101:16, SendBin/binary&gt;&gt;),{noreply, State, ?TIMEOUT};</code></pre><p>可以看到，就是个简单的收发交互，主要是查看协议是否正常编解码和协议描述文件是否正常生成和对应。</p><p>一切就绪，我们可以在测试环境运行rebar shell（因为我们的测试文件放在test目录，default环境启动的话默认不加载test目录），</p><pre><code>rebar3 shell(erlserver@127.0.0.1)6&gt; test_pb:start().sender recv msg:101/#{rooms =&gt;                          [#{audiences =&gt; [],room_id =&gt; 123,seats =&gt; []}]}2018-04-16/20:42:22.774[info][erlserver_user:handle_info:55]|receive from client[{{127,0,0,1},36069}], msg:100/#{}ok</code></pre><p>好，不出意外，就打印了收发消息，我们也看到了收到的字节流正常解码为了协议字段信息。</p><h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>本节根据具体需求定义了协议文件，然后能将协议文件生成编解码工具，最后还测试了协议收发。</p><p>后面就可以开始编写我们的五子棋游戏了（本来想做个聊天室服务器，感觉太烂大街了，并且im都用ejjabered，自己随手写太low了）。</p><p>（项目<a href="https://github.com/xlkness/erlserver" target="_blank" rel="noopener">repo</a>。。。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、简介&quot;&gt;&lt;a href=&quot;#一、简介&quot; class=&quot;headerlink&quot; title=&quot;一、简介&quot;&gt;&lt;/a&gt;一、简介&lt;/h1&gt;&lt;p&gt;协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【从零开始构建erlang服务器】-03用户层和日志</title>
+    <link href="http://lkness/2018/06/22/034build-erlang-server03/index/"/>
+    <id>http://lkness/2018/06/22/034build-erlang-server03/index/</id>
+    <published>2018-06-22T12:06:44.000Z</published>
+    <updated>2018-06-22T12:46:11.465Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><pre><code>上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户层代码以及服务器开发调试运维的日志集成。</code></pre><h1 id="二、编写用户层代码"><a href="#二、编写用户层代码" class="headerlink" title="二、编写用户层代码"></a>二、编写用户层代码</h1><pre><code>前面知道网络层处理客户端连接，以及可以将客户端socket文件描述符授权给其它worker进程来一对一为客户端服务（得益于erlang actor模型的轻进程，可以做到一个连接一个进程），而网络库我们使用的ranch，因此可以参照ranch的example程序编写一个处理socket消息的进程，也就是为用户一对一服务器的用户层代码。</code></pre><p>仿照ranch例子创建一个erlserver_user.erl文件</p><p>添加如下代码：</p><pre><code>-module(erlserver_user).-behaviour(gen_server).-behaviour(ranch_protocol).%% API.-export([start_link/4]).%% gen_server.-export([init/1]).-export([handle_call/3]).-export([handle_cast/2]).-export([handle_info/2]).-export([terminate/2]).-export([code_change/3]).-define(TIMEOUT, 5000).-record(state, {socket, transport}).%% API.start_link(Ref, Socket, Transport, Opts) -&gt;    {ok, proc_lib:spawn_link(?MODULE, init, [{Ref, Socket, Transport, Opts}])}.init({Ref, Socket, Transport, _Opts = []}) -&gt;    ok = ranch:accept_ack(Ref),    ok = Transport:setopts(Socket, [{active, once}]),    gen_server:enter_loop(?MODULE, [],                          #state{socket=Socket, transport=Transport},                          ?TIMEOUT).handle_info({tcp, Socket, Data}, State=#state{    socket=Socket, transport=Transport})    when byte_size(Data) &gt; 1 -&gt;    Transport:setopts(Socket, [{active, once}]),    {ok, PeerName} = inet:peername(Socket),    io:format(&quot;receive from client[~w], msg:~p~n&quot;, [PeerName, Data]),    {noreply, State, ?TIMEOUT};handle_info({tcp_closed, _Socket}, State) -&gt;    {stop, normal, State};handle_info({tcp_error, _, Reason}, State) -&gt;    {stop, Reason, State};handle_info(timeout, State) -&gt;    {stop, normal, State};handle_info(_Info, State) -&gt;    {stop, normal, State}.handle_call(_Request, _From, State) -&gt;    {reply, ok, State}.handle_cast(_Msg, State) -&gt;    {noreply, State}.terminate(_Reason, _State) -&gt;    ok.code_change(_OldVsn, State, _Extra) -&gt;    {ok, State}.</code></pre><p>阅读过ranch源码，就知道ranch_acceptor在监听一个客户端连接后，就会调用我们指定的模块的start_link/4方法，当然，我们可以直接在start_link中启动一个gen_server，不过ranch的这个例子因为要有一个ranch:accept_ack操作，所以会阻塞在init，因此没有用gen_server，用了prob_lib:spawn_link，立即返回一个可用的pid给ranch库，然后在慢慢初始化，初始化完成后用gen_server:enter_loop将这个进程转变为一个gen_server进程。</p><h1 id="三、启动ranch监听功能"><a href="#三、启动ranch监听功能" class="headerlink" title="三、启动ranch监听功能"></a>三、启动ranch监听功能</h1><p>上一篇只在app.src启动了ranch，这只是表示应用启动起来，要使ranch开始监听某个端口，还需要显示调用ranch:start_listener/5，这里我们要监听本机8888端口，并且使用我们在第二步写好的客户端socket套接字消息处理进程，其它tcp参数都使用默认，则我们在erlserver_app.erl启动中添加以下代码：</p><pre><code>{ok, _} = ranch:start_listener(erlserver,                                  ranch_tcp, [{port, 8888}], erlserver_user, []),</code></pre><p>rebar3 shell启动我们的应用测试一下是否可用，另开一台机器进入erlang shell，输入{ok, Fd} = gen_tcp:connect({xxx,xxx,xxx,xxx}, 8888, [binary, {active, false}, {packet, raw}]), gen_tcp:send(Fd, “for test”).  看到输出，就说明现在可以创建一个并发服务器了，并且每个客户端连接都对应一个erlserver_user进程单独处理。</p><h1 id="四、添加lager日志库"><a href="#四、添加lager日志库" class="headerlink" title="四、添加lager日志库"></a>四、添加lager日志库</h1><p>在第二步的代码中，我们用了io:format来打印收到的客户端信息，这样做其实是不好的，终端打印的消息无法输出到文件记录下来，并且io打印的消息都是原始消息，不方便调试，要同时输出模块、行号等信息，每一次的io打印还都要加上这些信息，总之，对于服务器来说，没有一个专门的日志记录都是不好的。</p><h2 id="1、rebar-config添加依赖："><a href="#1、rebar-config添加依赖：" class="headerlink" title="1、rebar.config添加依赖："></a>1、rebar.config添加依赖：</h2><pre><code>{lager, {git, &quot;https://github.com/erlang-lager/lager&quot;, {branch, &quot;master&quot;}}}</code></pre><h2 id="2、erlserver-app-src启动lager"><a href="#2、erlserver-app-src启动lager" class="headerlink" title="2、erlserver.app.src启动lager"></a>2、erlserver.app.src启动lager</h2><p>（lager的顺序尽量放在除erlang runtime库之前，例如放在ranch之前，这样我们就可以在其它应用启动中也能使用lager输出应用启动的信息了）。</p><h2 id="3、添加lager配置"><a href="#3、添加lager配置" class="headerlink" title="3、添加lager配置"></a>3、添加lager配置</h2><p>这里前期为了调试方便，我们直接利用rebar3 shell加载一个本地调试配置文件<br>        在项目根目录创建一个config文件夹，并在里面创建一个erlserver.config配置文件，输入以下内容</p><pre><code>[    {lager, [        {log_root, &quot;./log&quot;},        {handlers, [            {lager_console_backend,             [{level, info}, {formatter, lager_default_formatter},              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, severity, &quot;][&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]},            {lager_file_backend,             [{file, &quot;error.log&quot;}, {level, error}, {formatter, lager_default_formatter},              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]},            {lager_file_backend,             [{file, &quot;console.log&quot;}, {level, info}, {formatter, lager_default_formatter},              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]}        ]}    ]}].</code></pre><p>这就是一个lager的简单配置，日志都输出到log目录，并且info对应console.log文件（目前都是本地调试，并不是发布的配置）。</p><h1 id="4、配置rebar3-shell读取config文件以及添加lager的parse-transform"><a href="#4、配置rebar3-shell读取config文件以及添加lager的parse-transform" class="headerlink" title="4、配置rebar3 shell读取config文件以及添加lager的parse_transform"></a>4、配置rebar3 shell读取config文件以及添加lager的parse_transform</h1><p>修改rebar.config的shell配置</p><pre><code>{shell, [    {apps, [erlserver, sync]},    {config, &quot;config/erlserver.config&quot;}]}.</code></pre><p>修改rebar.config的erl_opts配置（这里使用到的知识点可以参考我的另一篇erlang抽象语法树博客）</p><pre><code>{erl_opts, [    debug_info,    {parse_transform, lager_transform}]}.</code></pre><h1 id="五、使用日志库"><a href="#五、使用日志库" class="headerlink" title="五、使用日志库"></a>五、使用日志库</h1><p>修改第二步的erlserver_user的io:format打印为lager:info(“xxxxx”),再来尝试客户端连接并且传输信息。</p><h1 id="六、后续"><a href="#六、后续" class="headerlink" title="六、后续"></a>六、后续</h1><p>客户端消息处理层（用户层）以及日志都写好了，后续开始制定协议层了。</p><p>（project-<a href="https://github.com/xlkness/erlserver.git）" target="_blank" rel="noopener">https://github.com/xlkness/erlserver.git）</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、简介&quot;&gt;&lt;a href=&quot;#一、简介&quot; class=&quot;headerlink&quot; title=&quot;一、简介&quot;&gt;&lt;/a&gt;一、简介&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【从零开始构建erlang服务器】-02构建应用</title>
+    <link href="http://lkness/2018/06/22/033build-erlang-server02/index/"/>
+    <id>http://lkness/2018/06/22/033build-erlang-server02/index/</id>
+    <published>2018-06-22T12:06:28.000Z</published>
+    <updated>2018-06-22T12:47:03.905Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>开始一个erlang服务器应用的构建。<br>项目管理工具使用rebar3。配置方式参考我另一篇ubuntu16+ideaIC+rebar3搭建erlang开发环境</p><h1 id="二、新建应用"><a href="#二、新建应用" class="headerlink" title="二、新建应用"></a>二、新建应用</h1><p>服务器应用名：erlserver，终端执行：</p><pre><code>rebar3 new app erlserver===&gt; Writing erlserver/src/erlserver_app.erl===&gt; Writing erlserver/src/erlserver_sup.erl===&gt; Writing erlserver/src/erlserver.app.src===&gt; Writing erlserver/rebar.config===&gt; Writing erlserver/.gitignore===&gt; Writing erlserver/LICENSE===&gt; Writing erlserver/README.md</code></pre><p>此时在当前目录就生成了erlserver项目文件夹。</p><h1 id="三、添加本地调试配置"><a href="#三、添加本地调试配置" class="headerlink" title="三、添加本地调试配置"></a>三、添加本地调试配置</h1><pre><code>{deps, [    sync]}.{shell, [    {apps, [erlserver, sync]}]}.{dist_node, [    {setcookie, &apos;only4test&apos;},    {name, &apos;erlserver@127.0.0.1&apos;}]}.</code></pre><p>sync是个erlang shell应用，可以动态更新编译最新erlang项目代码，{shell…是rebar3 shell的配置和启动的应用。</p><h1 id="四、运行应用"><a href="#四、运行应用" class="headerlink" title="四、运行应用"></a>四、运行应用</h1><p>shell执行：<code>rebar3 shell</code></p><pre><code>===&gt; Compiling erlserverErlang/OTP 20 [erts-9.0] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:0] [hipe] [kernel-poll:false]Eshell V9.0  (abort with ^G)(erlserver@127.0.0.1)1&gt; ===&gt; The rebar3 shell is a development tool; to deploy applications in production, consider using releases (http://www.rebar3.org/docs/releases)Starting Sync (Automatic Code Compiler / Reloader)Scanning source files...===&gt; Booted erlserver===&gt; Booted syntax_tools===&gt; Booted compiler===&gt; Booted sync</code></pre><p>以上结果可以看到，执行了rebar3 shell之后，会先编译整个项目，然后运行erlserver应用节点，这时候我们就进入了一个erlang shell，并且已经启动了erlserver,sync应用。</p><h1 id="五、集成网络库"><a href="#五、集成网络库" class="headerlink" title="五、集成网络库"></a>五、集成网络库</h1><p>这里我们使用开源的erlang tcp网络库ranch</p><h2 id="1、添加依赖"><a href="#1、添加依赖" class="headerlink" title="1、添加依赖"></a>1、添加依赖</h2><p> 在rebar.config的deps里添加一个ranch依赖：</p><pre><code>{deps, [    sync,    {ranch, {git, &quot;https://github.com/ninenines/ranch&quot;, {branch, &quot;master&quot;}}}]}.</code></pre><p>经过这步就将ranch下载下来，但是依然没有将其运行起来。</p><p>在erlserver.app.src的依赖应用里面添加ranch：</p><pre><code>{applications,   [kernel,    stdlib,    ranch   ]},</code></pre><p>五、测试网络库</p><p>经过以上步骤，ranch就集成进项目了，使用rebar3 shell运行节点，可以看到ranch应用已经启动。测试ranch能否正常启动和监听端口（照着ranch的example可以创建简单的echo服务器试试）</p><p>六、后续展望</p><p>服务器项目已经构建，网络库也集成进来了，后面会开始利用ranch创建客户端一对一服务器进程树、以及利用protocol buffer协议做请求与服务、单元测试、common test、应用发布和部署等等。</p><p>（project-<a href="https://github.com/xlkness/erlserver.git）" target="_blank" rel="noopener">https://github.com/xlkness/erlserver.git）</a></p><p>（未完待续。。。）</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、简介&quot;&gt;&lt;a href=&quot;#一、简介&quot; class=&quot;headerlink&quot; title=&quot;一、简介&quot;&gt;&lt;/a&gt;一、简介&lt;/h1&gt;&lt;p&gt;开始一个erlang服务器应用的构建。&lt;br&gt;项目管理工具使用rebar3。配置方式参考我另一篇ubuntu16+ideaI
+      
+    
+    </summary>
+    
+      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
+    
+  </entry>
   
   <entry>
     <title>【从零开始构建erlang服务器】-01网络库</title>
@@ -403,136 +530,6 @@
     
     
       <category term="数据结构/算法" scheme="http://lkness/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>erlang的终端带颜色输出与中文字符串输出</title>
-    <link href="http://lkness/2018/06/19/017erlang-shell-color/index/"/>
-    <id>http://lkness/2018/06/19/017erlang-shell-color/index/</id>
-    <published>2018-06-19T12:19:59.000Z</published>
-    <updated>2018-06-19T12:21:25.453Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="1-带颜色输出"><a href="#1-带颜色输出" class="headerlink" title="1.带颜色输出"></a>1.带颜色输出</h1><p>erlang终端支持带颜色输出，例如lager日志库就可以。其实就是在输出前设置一下输出属性，正常的字体是：”\e[0;38m”<br>下面自己弄了一些宏：</p><pre><code>-define(CONSOLE_COLOR_RED,      &quot;\e[0;31m&quot;).-define(CONSOLE_COLOR_RED_BOLD, &quot;\e[1;31m&quot;).-define(CONSOLE_COLOR_YELLOW1,  &quot;\e[0;32m&quot;).-define(CONSOLE_COLOR_YELLOW2,  &quot;\e[0;33m&quot;).-define(CONSOLE_COLOR_BLUE,     &quot;\e[0;34m&quot;).-define(CONSOLE_COLOR_PURPLE,   &quot;\e[0;35m&quot;).-define(CONSOLE_COLOR_GREEN,    &quot;\e[0;36m&quot;).-define(CONSOLE_COLOR_GRAY,     &quot;\e[0;37m&quot;).-define(CONSOLE_COLOR_NORMAL,   &quot;\e[0;38m&quot;).</code></pre><p>用法就是打印的字符串前后加上要设置的属性例如<br><code>io:format(“~s~s~s~n”, [“\e[0;31m”, debug, “\e[0;38m”]).</code><br>就是在输出debug之前设置字体为红色，然后输出结束后设置字体为正常白色。</p><h1 id="2-中文输出"><a href="#2-中文输出" class="headerlink" title="2.中文输出"></a>2.中文输出</h1><p>中文输出乱码在rebar3插件里用rebar_info输出以及在ct里用io:format(user, ….)输出会遇到，带中文的字符串要转为utf8，代码形如：</p><pre><code>NewFormat = io_lib:format(Format, Args),io:format(&quot;~s&quot;, [unicode:characters_to_binary(NewFormat, utf8)]).</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;1-带颜色输出&quot;&gt;&lt;a href=&quot;#1-带颜色输出&quot; class=&quot;headerlink&quot; title=&quot;1.带颜色输出&quot;&gt;&lt;/a&gt;1.带颜色输出&lt;/h1&gt;&lt;p&gt;erlang终端支持带颜色输出，例如lager日志库就可以。其实就是在输出前设置一下输出属性，正常的
-      
-    
-    </summary>
-    
-      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>堆排序-《算法导论》学习笔记六</title>
-    <link href="http://lkness/2018/06/19/016heap-sort/index/"/>
-    <id>http://lkness/2018/06/19/016heap-sort/index/</id>
-    <published>2018-06-19T12:18:42.000Z</published>
-    <updated>2018-06-19T12:19:36.767Z</updated>
-    
-    <content type="html"><![CDATA[<p>堆排序就是将一组数按二叉树层序遍历的存储顺序，经过一系列比较转移，最终变成有序的数组，这里的二叉树堆一定是完全二叉树。堆排序能进行的基础是有个最大堆的数组，最大堆性质是指树上的每个节点的子节点都比自己小或等于。<br>因此最顶上的根节点一定是值最大的节点，有了最大堆在，堆排序就可以进行了，从层序遍历的最后一个节点开始倒序循环，交换当前节点与最顶层根节点，即最大值的节点，这样每次最大的节点都被放在层序遍历的最后位置，类似冒泡排序了，而放了最大值的节点即从堆中排除（只要堆长度减一即表示堆没有这个节点了），交换到顶点根节点的值再做一次下滤操作（以这个节点值与子树的最大值交换），保证剩余子树一定也是最大堆性质。<br>贴代码：</p><pre><code>#include &lt;stdio.h&gt;#include &lt;string.h&gt;#include &lt;unistd.h&gt;#include &lt;time.h&gt;#include &lt;stdlib.h&gt;int parent( int );int left( int );int right( int );inline int parent( int index ){    return index / 2;}inline int left( int index ){    return index * 2;}inline int right( int index ){    return index * 2 + 1;}//下滤void max_heapify(    int *arr,    int heap_size,    int index ){    int l = left( index );    int r = right( index );    int largest = 0;    if ( l &lt;= heap_size &amp;&amp; arr[l] &gt; arr[index] ) {        largest = l;    } else {        largest = index;    }    if ( r &lt;= heap_size &amp;&amp; arr[r] &gt; arr[largest] ) {        largest = r;    }    if ( largest != index ) {        int temp = arr[index];        arr[index] = arr[largest];        arr[largest] = temp;        max_heapify( arr, heap_size, largest );    }}//构建最大堆void build_max_heap(    int *arr,    int length,    int heap_size ){    int i = 0;    for ( i = length / 2; i &gt;= 1; i-- ) {        max_heapify( arr, heap_size, i );    }}//开始堆排序void heap_sort(    int *arr,    int length,    int heap_size ){    int i = 0;    build_max_heap( arr, length, heap_size );    for ( i = heap_size; i &gt;= 2; i-- ) {        int temp = arr[1];        arr[1] = arr[i];        arr[i] = temp;        heap_size -= 1;        max_heapify( arr, heap_size, 1 );    }}void check_is_inc_arr(    int *arr,    int len ){    int i = 0;    for ( i = 1; i &lt;= len; i++ ) {        if ( arr[i] &lt; arr[i - 1] ) {            printf(&quot;check_is_inc_arr fail.\n&quot;);            return;        }    }    printf(&quot;check_is_inc_arr ok.\n&quot;);}//初始化随机数组void initArr( int *arr, int lowV,    int upV, int len ){    int i = 0;    int size = upV - lowV;    for ( i = 1; i &lt; len + 1; i++ )    {        arr[i] = rand() % size + lowV;    }    arr[0] = 0;}void print_arr(    int *arr,    int len ){    int i = 0;    printf(&quot;\n=============================================\n&quot;);    for ( i = 0; i &lt;= len; i++ ) {        printf(&quot;%d &quot;, arr[i]);    }    printf(&quot;\n=============================================\n&quot;);}int main(    int argc,    char **argv ){    if ( argc != 4 ) {        printf(&quot;input array length and the random value range.\n&quot;);        exit( 0 );    }    srand( (int)time(NULL) );    int length = atoi( argv[1] );    int lowV = atoi( argv[2] );    int upV = atoi( argv[3] );    int *arr = ( int * )malloc( sizeof(int) * (length + 1) );    initArr( arr, lowV, upV, length );    //print_arr( arr, length );    heap_sort( arr, length, length );    //print_arr( arr, length );    check_is_inc_arr( arr, length );    return 0;}</code></pre><p>上面代码中因为c数组从0开始的原因，因此0位置不参与存储和运算，数据形式是{0, 2, 3, 4, 5, 6}。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;堆排序就是将一组数按二叉树层序遍历的存储顺序，经过一系列比较转移，最终变成有序的数组，这里的二叉树堆一定是完全二叉树。堆排序能进行的基础是有个最大堆的数组，最大堆性质是指树上的每个节点的子节点都比自己小或等于。&lt;br&gt;因此最顶上的根节点一定是值最大的节点，有了最大堆在，堆排
-      
-    
-    </summary>
-    
-      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="数据结构/算法" scheme="http://lkness/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>n阶矩阵一般乘法-《算法导论》学习笔记五</title>
-    <link href="http://lkness/2018/06/19/015nmatrix/index/"/>
-    <id>http://lkness/2018/06/19/015nmatrix/index/</id>
-    <published>2018-06-19T12:16:29.000Z</published>
-    <updated>2018-06-19T12:18:12.130Z</updated>
-    
-    <content type="html"><![CDATA[<p>A、B两个矩阵均是nxn的矩阵，则两个矩阵的乘法：</p><p><img src="/img/nmatrix1.png" alt="nmatrix1"></p><p>一般的矩阵乘法代码：</p><pre><code>#include &lt;stdio.h&gt;#include &lt;string.h&gt;#include &lt;stdlib.h&gt;#include &lt;unistd.h&gt;#include &lt;time.h&gt;class SquareMatrix {public:    SquareMatrix(){}    SquareMatrix( int row, int col ):        mRow(row), mCol(col)    {        Init();    }    ~SquareMatrix()    {        for ( int i = 0; i &lt; mRow; i++ ) {            delete[] mElement[i];            //printf(&quot;delete %d\n&quot;, i);        }        delete[] mElement;    }    void Init()    {        mElement = new int*[mRow];        for ( int i = 0; i &lt; mCol; i++ ) {            mElement[i] = new int[i];        }    }    void SetElement( int lowV, int upV )    {        int size = upV - lowV;        for ( int i = 0; i &lt; mRow; i++ ) {            for ( int j = 0; j &lt; mCol; j++ ) {                mElement[i][j] = rand() % size + lowV;            }        }    }    void PrintElement()    {        printf(&quot;=========================================\n&quot;);        for ( int i = 0; i &lt; mRow; i++ ) {            for ( int j = 0; j &lt; mCol; j++ ) {                printf(&quot;%d &quot;, mElement[i][j]);            }            printf(&quot;\n&quot;);        }        printf(&quot;=========================================\n&quot;);    }public:    int mRow;    int mCol;    int *(*mElement);};void SquareMatrixMultiply(    SquareMatrix &amp;a,    SquareMatrix &amp;b,    SquareMatrix &amp;c ){    int n = a.mRow;    c.mRow = c.mCol = n;    c.Init();    for ( int i = 0; i &lt; n; i++ ) {        for ( int j = 0; j &lt; n; j++ ) {            c.mElement[i][j] = 0;            for ( int k = 0; k &lt; n; k++ ) {                c.mElement[i][j] += a.mElement[i][k] * b.mElement[j][k];            }        }    }}int main( int argc, char **argv ){    if ( argc != 2 ) {        printf(&quot;Usage:./binaryfile num\n&quot;);        exit( 0 );    }    int n = atoi( argv[1] );    SquareMatrix smA( n, n ), smB( n, n ), smC;    smA.SetElement( 1, 10 );    smA.PrintElement();    smB.SetElement( 1, 10 );    smB.PrintElement();    SquareMatrixMultiply( smA, smB, smC );    smC.PrintElement();    printf(&quot;init square matrix finished\n&quot;);    return 0;}</code></pre><p>算法复杂度为O(n^3)，而Stranssen算法通过分治法将大矩阵切分为小矩阵进行计算，算法复杂度可以降低为O(n^2.81)，但是尝试写下代码，发现切割子矩阵时有点复杂，普通的切分会创建子矩阵并复制值，而用下标进行计算又比较复杂，下次有空再尝试写吧。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;A、B两个矩阵均是nxn的矩阵，则两个矩阵的乘法：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/img/nmatrix1.png&quot; alt=&quot;nmatrix1&quot;&gt;&lt;/p&gt;
-&lt;p&gt;一般的矩阵乘法代码：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
-#
-      
-    
-    </summary>
-    
-      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="数据结构/算法" scheme="http://lkness/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>erlang编写rebar3插件</title>
-    <link href="http://lkness/2018/06/19/014rebar3-plugin/index/"/>
-    <id>http://lkness/2018/06/19/014rebar3-plugin/index/</id>
-    <published>2018-06-19T12:11:35.000Z</published>
-    <updated>2018-06-19T12:15:54.478Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="1-生成插件工程"><a href="#1-生成插件工程" class="headerlink" title="1.生成插件工程"></a>1.生成插件工程</h1><p>假设插件名为testp，执行rebar3 new plugins testp，即生成了插件工程项目，查看目录结构如图：</p><p><img src="/img/rebar3plugin1.jpeg" alt="rebar3plugin1"></p><p>testp.erl文件调用初始化的代码，而插件最重要的代码在testp_prv.erl的文件，文件里提供了三个接口，分别为<code>init/1</code>,<code>do/1</code>,<code>format_error/1</code>，init做插件初始化的工作，初始化命名空间/初始化命令，然后将命令加入到rebar3，贴一份配置：</p><pre><code>init(State) -&gt;        Provider = providers:create([                {name, compile},            % The &apos;user friendly&apos; name of the task                {module, ?MODULE},            % The module implementation of the task                {namespace, testp},                {bare, true},                 % The task can be run by the user, always true                {deps, ?DEPS},                % The list of dependencies                {example, &quot;rebar3 testp compile&quot;}, % How to use the plugin                {opts, []},                   % list of options understood by the plugin                {short_desc, &quot;rebar3 testp compiler&quot;},                {desc, &quot;rebar3 testp compiler&quot;}        ]),        {ok, rebar_state:add_provider(State, Provider)}.</code></pre><p>这份配置就是为rebar3添加一个rebar3 testp compile命令，如果只输入<code>rebar3 testp</code>，会提示<code>rebar3 testp compiler</code>。<br>第二个方法do就是主要的业务逻辑了，执行了<code>rebar3 testp compiler</code>命令就会调用里面的do方法。<br>如果想添加多个命令，可以在testp.erl里多写一个命令的init调用，然后再添加一个命令类似的prv文件，写不同的do业务逻辑，就可以上传git，将git地址配置在rebar.config的plugins里了，rebar3 compile编译就自动拉取插件代码。<br>插件还可以配置钩子(provider_hook)使用，例如添加编译前调用<br><code>{provider_hooks,[{pre[{compile, {testp, compile}}]}]}</code>，编译后调用将pre改为post即可</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;1-生成插件工程&quot;&gt;&lt;a href=&quot;#1-生成插件工程&quot; class=&quot;headerlink&quot; title=&quot;1.生成插件工程&quot;&gt;&lt;/a&gt;1.生成插件工程&lt;/h1&gt;&lt;p&gt;假设插件名为testp，执行rebar3 new plugins testp，即生成了插件工
-      
-    
-    </summary>
-    
-      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>erlang rebar3配置文件</title>
-    <link href="http://lkness/2018/06/19/013rebar3-conf/index/"/>
-    <id>http://lkness/2018/06/19/013rebar3-conf/index/</id>
-    <published>2018-06-19T11:59:19.000Z</published>
-    <updated>2018-06-19T12:11:02.436Z</updated>
-    
-    <content type="html"><![CDATA[<p>rebar3的简单使用可以参考rebar3的官方文档。以下讲解一些rebar3的配置，初入erlang，理解还不甚深刻。<br>用rebar3进行工程创建，会生成rebar.config文件，贴一些配置的使用方法</p><h1 id="1-编译设置"><a href="#1-编译设置" class="headerlink" title="1.编译设置"></a>1.编译设置</h1><pre><code>%% 编译设置{erl_opts, [{parse_transform, lager_transform}, {parse_transform, ms_transform}, report, warn_export_all, warn_export_vars, warn_obsolete_guard, warn_shadow_vars, warn_unused_function, warn_deprecated_function%% ,warn_missing_spec, warn_unused_import]}.</code></pre><p>{parse_transform, lager_transform}是lager依赖库的编译选项，修改抽象语法树的方式在编译期生成对应的代码，lager源代码里本身没有lager:error，lager:info等等方法</p><h1 id="2-rebar3-shell"><a href="#2-rebar3-shell" class="headerlink" title="2.rebar3 shell"></a>2.rebar3 shell</h1><pre><code>{shell, [{apps, [app_name, sync, recon]}, {config, “config/app_name.config”}]}.</code></pre><p>这个配置支持在项目根目录直接运行rebar3 shell启动一个erl shell来运行我们的app，而其配置可以指定为config目录下的某个配置文件，而不是sys.config，适合本地调试，app_name后面的app名字是需要依赖启动的app</p><h1 id="3-rebar3插件"><a href="#3-rebar3插件" class="headerlink" title="3.rebar3插件"></a>3.rebar3插件</h1><pre><code>{plugins,[rebar3_run, rebar3_auto, {relflow, “1.0.5”}]}.</code></pre><p>配置我们项目需要的plugins，这里的插件可以是我们自己编写的rebar3插件</p><h1 id="4-钩子-provider-hooks"><a href="#4-钩子-provider-hooks" class="headerlink" title="4.钩子 provider_hooks"></a>4.钩子 provider_hooks</h1><pre><code>{provider_hooks,[{pre,[ {compile, {my_plugins, do_something}} ]},{post,[{compile,{my_plugins1, clean}}]}]}.</code></pre><p>例如这份配置，就是在执行rebar3 compile之前(pre)运行以my_plugins命名空间下的do_something命令，简单说就是编写了一个rebar3的插件叫my_plugins，提供一个命令叫do_something，即可以在命令行执行rebar3 my_plugins do_something的功能，只是现在配置之后自动调用了命令；post同理就是在compile之后执行那个插件的clean功能，clean功能具体干什么我们不得而知。</p><h1 id="5-环境"><a href="#5-环境" class="headerlink" title="5.环境"></a>5.环境</h1><pre><code>{profiles, [{profile1, [{erl_opts, [no_debug_info]},{relx, [{include_src, false}, {dev_mode, false}, {include_erts, true}, {system_libs, true}]}]}]}</code></pre><p>例如这份配置，指定了一种环境叫profile1，编译选项erl_opts为no_debug_info，打包发布的选项为不包含源码，禁止开发模式(目录不是软连接于default环境)，包含erlang环境等，当然还可以加其它很多选项，为每种环境单独自定义需要的功能，常用default、prod、test等</p><h1 id="6-覆盖"><a href="#6-覆盖" class="headerlink" title="6.覆盖"></a>6.覆盖</h1><pre><code>{overrides, [{add, deps1, [{erl_opts, [no_debug_info]}]}]}</code></pre><p>例如这份配置，就是对名为deps1的依赖的rebar.config再添加一个配置，overrides提供了add和override两种功能，第一种是加配置，第二种也就是用配置的数据去覆盖原来依赖中有的数据</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;rebar3的简单使用可以参考rebar3的官方文档。以下讲解一些rebar3的配置，初入erlang，理解还不甚深刻。&lt;br&gt;用rebar3进行工程创建，会生成rebar.config文件，贴一些配置的使用方法&lt;/p&gt;
-&lt;h1 id=&quot;1-编译设置&quot;&gt;&lt;a href=&quot;#
-      
-    
-    </summary>
-    
-      <category term="开发" scheme="http://lkness/categories/%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="Erlang" scheme="http://lkness/tags/Erlang/"/>
     
   </entry>
   

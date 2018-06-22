@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Erlang Abstract Syntax Tree和汇编字节码 | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Erlang">
+    <meta name="description" content="一、抽象语法树简介抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表示。 抽象语法树是解析器(parser)的产物，解析器广义来说输入一般是程序的源码，输出一般是语法树（syntax tree，也叫parse tree等）或抽象语法树。进一步剥开来，广义的解析器里一般会有扫描器（scanner，也叫tokenizer或者lexical analyzer，词法分析器">
+<meta name="keywords" content="Erlang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Erlang Abstract Syntax Tree和汇编字节码">
+<meta property="og:url" content="http://lkness/2018/06/22/036erlang-ast/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="一、抽象语法树简介抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表示。 抽象语法树是解析器(parser)的产物，解析器广义来说输入一般是程序的源码，输出一般是语法树（syntax tree，也叫parse tree等）或抽象语法树。进一步剥开来，广义的解析器里一般会有扫描器（scanner，也叫tokenizer或者lexical analyzer，词法分析器">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://lkness/img/erlang_ast.png">
+<meta property="og:updated_time" content="2018-06-22T12:45:00.578Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Erlang Abstract Syntax Tree和汇编字节码">
+<meta name="twitter:description" content="一、抽象语法树简介抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表示。 抽象语法树是解析器(parser)的产物，解析器广义来说输入一般是程序的源码，输出一般是语法树（syntax tree，也叫parse tree等）或抽象语法树。进一步剥开来，广义的解析器里一般会有扫描器（scanner，也叫tokenizer或者lexical analyzer，词法分析器">
+<meta name="twitter:image" content="http://lkness/img/erlang_ast.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Erlang Abstract Syntax Tree和汇编字节码</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Erlang Abstract Syntax Tree和汇编字节码</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-22T12:35:59.000Z" itemprop="datePublished" class="page-time">
+  2018-06-22
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、抽象语法树简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、抽象语法树简介</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、用途"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、用途</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、抽象语法树初识"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、抽象语法树初识</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1、创建一个test1-erl的文件，输入以下代码："><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1、创建一个test1.erl的文件，输入以下代码：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2、创建一个test-parser-erl的文件，输入以下代码："><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2、创建一个test_parser.erl的文件，输入以下代码：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3、编译"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3、编译</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、应用"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、应用</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、erlang汇编字节码"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、erlang汇编字节码</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1、编译-S汇编码"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">1、编译.S汇编码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2、编译-dis汇编码"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">2、编译.dis汇编码</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-036erlang-ast/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Erlang Abstract Syntax Tree和汇编字节码</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-22 20:35:59" datetime="2018-06-22T12:35:59.000Z"  itemprop="datePublished">2018-06-22</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="一、抽象语法树简介"><a href="#一、抽象语法树简介" class="headerlink" title="一、抽象语法树简介"></a>一、抽象语法树简介</h1><p>抽象语法树(Abstract Syntax Tree)是源代码的抽象语法结构的树状表示。</p>
+<p>抽象语法树是解析器(parser)的产物，解析器广义来说输入一般是程序的源码，输出一般是语法树（syntax tree，也叫parse tree等）或抽象语法树。进一步剥开来，广义的解析器里一般会有扫描器（scanner，也叫tokenizer或者lexical analyzer，词法分析器），以及狭义的解析器（parser，也叫syntax analyzer，语法分析器）。扫描器的输入一般是文本，经过词法分析，输出是将文本切割为单词的流。狭义的解析器输入是单词的流，经过语法分析，输出是语法树或者精简过的AST。</p>
+<p>例如：将i = a + b * c作为源代码输入到解析器里，则广义上的解析器的工作流程如下图：</p>
+<p><img src="/img/erlang_ast.png" alt="erlang_ast1"></p>
+<h1 id="二、用途"><a href="#二、用途" class="headerlink" title="二、用途"></a>二、用途</h1><pre><code>erlang beam是寄存器虚拟机，因此erlang的源码会被erlang解析器的词法分析变为AST，然后经过树形遍历解析器给转换为汇编字节码。
+</code></pre><h1 id="三、抽象语法树初识"><a href="#三、抽象语法树初识" class="headerlink" title="三、抽象语法树初识"></a>三、抽象语法树初识</h1><h2 id="1、创建一个test1-erl的文件，输入以下代码："><a href="#1、创建一个test1-erl的文件，输入以下代码：" class="headerlink" title="1、创建一个test1.erl的文件，输入以下代码："></a>1、创建一个test1.erl的文件，输入以下代码：</h2><pre><code>-module(test1).
+-export([start/0]).
+
+-compile({parse_transform, test_parser}).
+
+start() -&gt;
+    &quot;hello world&quot;.
+</code></pre><h2 id="2、创建一个test-parser-erl的文件，输入以下代码："><a href="#2、创建一个test-parser-erl的文件，输入以下代码：" class="headerlink" title="2、创建一个test_parser.erl的文件，输入以下代码："></a>2、创建一个test_parser.erl的文件，输入以下代码：</h2><pre><code>-module(test_parser).
+
+-export([parse_transform/2]).
+
+parse_transform(AST, _Options) -&gt;
+    io:format(&quot;old:~w~n~n&quot;, [AST]),
+    Acc = parse_ast(AST, []),
+    io:format(&quot;new:~w~n~n&quot;, [Acc]),
+    Acc.
+
+
+parse_ast([{attribute, _, _, _} = H | R], Acc) -&gt;
+    parse_ast(R, [H | Acc]);
+parse_ast([{function, _Line, _Fun, _Arity, _Args} = H | R], Acc) -&gt;
+    parse_ast(R, [parse_fun(H) | Acc]);
+parse_ast([H | R], Acc) -&gt;
+    parse_ast(R, [H | Acc]);
+parse_ast([], Acc) -&gt;
+    lists:reverse(Acc).
+
+parse_fun({function, Line, Fun, Arity, Clause}) -&gt;
+    {function, Line, Fun, Arity, parse_clause(Clause, [])}.
+
+parse_clause([{clause, Line, P, Guard, Return}], Acc) -&gt;
+    [{clause, Line, P, Guard, parse_return(Return, [])} | Acc].
+
+parse_return([{string, Line, Value} | R], Acc) -&gt;
+    parse_return(R, [{bin, Line, [{bin_element, Line, {string, Line, Value},default,default}]} | Acc]);
+parse_return([], Acc) -&gt;
+    lists:reverse(Acc).
+</code></pre><h2 id="3、编译"><a href="#3、编译" class="headerlink" title="3、编译"></a>3、编译</h2><pre><code>1&gt; c(test_parser).
+{ok,test_parser}
+2&gt; c(test1).
+old:[{attribute,1,file,{[116,101,115,116,49,46,101,114,108],1}},{attribute,1,module,test1},{attribute,3,export,[{start,0}]},
+{function,7,start,0,[{clause,7,[],[],[{string,8,[104,101,108,108,111,32,119,111,114,108,100]}]}]},
+{eof,9}]
+
+new:[{attribute,1,file,{[116,101,115,116,49,46,101,114,108],1}},{attribute,1,module,test1},{attribute,3,export,[{start,0}]},{function,7,start,0,[{clause,7,[],[],[{bin,8,[{bin_element,8,{string,8,[104,101,108,108,111,32,119,111,114,108,100]},default,default}]}]}]},{eof,9}]
+
+{ok,test1}
+</code></pre><p>先不管io:format的打印，我们直接执行test1:start()，</p>
+<pre><code>3&gt; test1:start().
+&lt;&lt;&quot;hello world&quot;&gt;&gt;
+</code></pre><p>发现终端输出的是二进制！而我们源码明明写的是个字符串！！破编译器对我们的代码干了什么！！</p>
+<p>别惊慌，这时候我们就可以来看看我们打印的抽象语法树了。</p>
+<p>先看old，attribute都是源码文件的属性，例如file、export、import、module名等，可以略过，以及eof表示源码文件的结尾，也可以忽略。直接定位到function元组，{function, Line, Name, Arity, Clauses}表示一个函数的源码行、函数名、形参数、模式匹配列表，再定位到模式匹配列表clause，其表示了一个函数的多个模式匹配和返回值，当前start函数就一个匹配，因此clause只有一个tuple元素，返回值就是一个{string, Line, “hello world”}，<br>那么我们是不是修改这个{string, Line, “hello world”}为一个二进制字符串，就能达到我们演示的效果呢？是的！</p>
+<p>这就是test1.erl中-compile({parse_transform, test_parser}).的作用，erlang的解析器会在词法分析完成后，调用我们自己指定的函数对ast进行二次更改，于是test_parser.erl里面就将start函数的返回值更改为了一个二进制。然后返回一个新的AST，再经树形解析编译为erlang汇编字节码文件，供erlang vm调用。</p>
+<h1 id="四、应用"><a href="#四、应用" class="headerlink" title="四、应用"></a>四、应用</h1><p>lager日志库 <a href="https://github.com/erlang-lager/lager" target="_blank" rel="noopener">https://github.com/erlang-lager/lager</a></p>
+<p>以前一直疑惑使用lager日志库为什么要在编译选项上加一个{parse_transform, lager_transform}，现在也懂了，</p>
+<p>就是编译我们项目每一个源文件时，都将最终的抽象语法树再次添加一些特性代码。</p>
+<p>这里我们可以打印一下，现在我在一个叫erlserver_app.erl的文件里加入lager日志打印代码：</p>
+<pre><code>-module(erlserver_app).
+-behaviour(application).
+
+-export([start/2, stop/1]).
+
+-compile([{parse_transform, lager_transform}]).
+
+start(_StartType, _StartArgs) -&gt;
+    lager:warning(&quot;12345678987654321~w~n&quot;, [&quot;abcdedeba&quot;]),
+    erlserver_sup:start_link().
+
+%%--------------------------------------------------------------------
+stop(_State) -&gt;
+    ok.
+</code></pre><p>然后在lager_transform里继续像上面那样打印，</p>
+<p>最终编译输出：</p>
+<pre><code>===&gt; old:
+[{attribute,1,file,{[47,104,111,109,101,47,108,105,107,117,110,47,115,116,117,100,121,47,101,114,108,97,110,103,47,101,114,108,115,101,114,118,101,114,47,95,98,117,105,108,100,47,100,101,102,97,117,108,116,47,108,105,98,47,101,114,108,115,101,114,118,101,114,47,115,114,99,47,101,114,108,115,101,114,118,101,114,95,97,112,112,46,101,114,108],1}},{attribute,6,module,erlserver_app},{attribute,8,behaviour,application},{attribute,11,export,[{start,2},{stop,1}]},{attribute,13,compile,[]},{function,19,start,2,[{clause,19,[{var,19,&apos;_StartType&apos;},{var,19,&apos;_StartArgs&apos;}],[],[{call,20,{remote,20,{atom,20,lager},{atom,20,warning}},[{string,20,[49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110]},{cons,20,{string,20,[97,98,99,100,101,100,101,98,97]},{nil,20}}]},{call,21,{remote,21,{atom,21,erlserver_sup},{atom,21,start_link}},[]}]}]},{function,24,stop,1,[{clause,24,[{var,24,&apos;_State&apos;}],[],[{atom,25,ok}]}]},{eof,30}]
+
+
+===&gt; new:
+[{attribute,1,file,{[47,104,111,109,101,47,108,105,107,117,110,47,115,116,117,100,121,47,101,114,108,97,110,103,47,101,114,108,115,101,114,118,101,114,47,95,98,117,105,108,100,47,100,101,102,97,117,108,116,47,108,105,98,47,101,114,108,115,101,114,118,101,114,47,115,114,99,47,101,114,108,115,101,114,118,101,114,95,97,112,112,46,101,114,108],1}},{attribute,6,module,erlserver_app},{attribute,6,lager_records,[]},{attribute,8,behaviour,application},{attribute,11,export,[{start,2},{stop,1}]},{attribute,13,compile,[]},{function,19,start,2,[{clause,19,[{var,19,&apos;_StartType&apos;},{var,19,&apos;_StartArgs&apos;}],[],[{&apos;case&apos;,20,{tuple,20,[{call,20,{atom,20,whereis},[{atom,20,lager_event}]},{call,20,{atom,20,whereis},[{atom,20,lager_event}]},{call,20,{remote,20,{atom,20,lager_config},{atom,20,get}},[{tuple,20,[{atom,20,lager_event},{atom,20,loglevel}]},{tuple,20,[{integer,20,0},{nil,20}]}]}]},[{clause,20,[{tuple,20,[{atom,20,undefined},{atom,20,undefined},{var,20,&apos;_&apos;}]}],[],[{call,20,{&apos;fun&apos;,20,{clauses,[{clause,20,[],[],[{tuple,20,[{atom,20,error},{atom,20,lager_not_running}]}]}]}},[]}]},{clause,20,[{tuple,20,[{atom,20,undefined},{var,20,&apos;_&apos;},{var,20,&apos;_&apos;}]}],[],[{call,20,{&apos;fun&apos;,20,{clauses,[{clause,20,[],[],[{tuple,20,[{atom,20,error},{tuple,20,[{atom,20,sink_not_configured},{atom,20,lager_event}]}]}]}]}},[]}]},{clause,20,[{tuple,20,[{var,20,&apos;__Piderlserver_app20&apos;},{var,20,&apos;_&apos;},{tuple,20,[{var,20,&apos;__Levelerlserver_app20&apos;},{var,20,&apos;__Traceserlserver_app20&apos;}]}]}],[[{op,20,&apos;orelse&apos;,{op,20,&apos;/=&apos;,{op,20,&apos;band&apos;,{var,20,&apos;__Levelerlserver_app20&apos;},{integer,20,16}},{integer,20,0}},{op,20,&apos;/=&apos;,{var,20,&apos;__Traceserlserver_app20&apos;},{nil,20}}}]],[{call,20,{remote,20,{atom,20,lager},{atom,20,do_log}},[{atom,20,warning},{cons,20,{tuple,20,[{atom,20,application},{atom,20,erlserver}]},{cons,20,{tuple,20,[{atom,20,module},{atom,20,erlserver_app}]},{cons,20,{tuple,20,[{atom,20,function},{atom,20,start}]},{cons,20,{tuple,20,[{atom,20,line},{integer,20,20}]},{cons,20,{tuple,20,[{atom,20,pid},{call,20,{atom,20,pid_to_list},[{call,20,{atom,20,self},[]}]}]},{cons,20,{tuple,20,[{atom,20,node},{call,20,{atom,20,node},[]}]},{call,20,{remote,20,{atom,20,lager},{atom,20,md}},[]}}}}}}},{string,20,[49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110]},{cons,20,{string,20,[97,98,99,100,101,100,101,98,97]},{nil,20}},{integer,20,4096},{integer,20,16},{var,20,&apos;__Levelerlserver_app20&apos;},{var,20,&apos;__Traceserlserver_app20&apos;},{atom,20,lager_event},{var,20,&apos;__Piderlserver_app20&apos;}]}]},{clause,20,[{var,20,&apos;_&apos;}],[],[{atom,20,ok}]}]},{call,21,{remote,21,{atom,21,erlserver_sup},{atom,21,start_link}},[]}]}]},{function,24,stop,1,[{clause,24,[{var,24,&apos;_State&apos;}],[],[{atom,25,ok}]}]},{eof,30}]
+</code></pre><p>看来添加的东西挺多，没事，慢慢看，我们根据官方文档The Abstract Format一个一个对比看，</p>
+<p>最终将添加的代码还原出来：</p>
+<pre><code>case {whereis(lager_event), whereis(lager_event), lager_config:get({lager_event, loglevel}, {0, []})} of
+    {undefined, undefined, _} -&gt;
+        {error, lager_not_running};
+    {undefined, _, _} -&gt;
+        {error, sink_not_configured, lager_event};
+    {__Piderlserver_app20, _, {__Levelerlserver_app20, __Traceserlserver_app20}} when __Levelerlserver_app20 band 16 /= 0 orelse __Traceserlserver_app20 /= nil -&gt;
+        lager:do_log(warning, [{application, erlserver}, {atom, erlserver_app}, {function, start}, {line, 20}, {pid, pid_to_list(self())}, {node, node()}, lager:md()],
+            [49,50,51,52,53,54,55,56,57,56,55,54,53,52,51,50,49,126,119,126,110], [[97,98,99,100,101,100,101,98,97], []], 4096, 16, __Levelerlserver_app20,
+                __Traceserlserver_app20, lager_event, __Piderlserver_app20);
+    _ -&gt;
+        ok
+end
+</code></pre><p>小小一句lager:warning()原来有这么多弯弯绕啊！</p>
+<h1 id="五、erlang汇编字节码"><a href="#五、erlang汇编字节码" class="headerlink" title="五、erlang汇编字节码"></a>五、erlang汇编字节码</h1><p>一直说erlang汇编字节码，但是具体是个什么东西，还没有认识。</p>
+<p>下面新建一个文件test.erl，输入以下内容：</p>
+<pre><code>-module(test).
+-export([start/2]).
+
+start(A, B) -&gt;
+        abs(A) + abs(B).
+</code></pre><h2 id="1、编译-S汇编码"><a href="#1、编译-S汇编码" class="headerlink" title="1、编译.S汇编码"></a>1、编译.S汇编码</h2><pre><code>erlc -S test.erl
+</code></pre><h2 id="2、编译-dis汇编码"><a href="#2、编译-dis汇编码" class="headerlink" title="2、编译.dis汇编码"></a>2、编译.dis汇编码</h2><pre><code>erl
+c(test).
+erts_debug:df(test).
+</code></pre><p>然后打开得到的test.S文件：</p>
+<pre><code>{module, test}.  %% version = 0
+{module, test}.  %% version = 0
+
+{exports, [{module_info,0},{module_info,1},{start,2}]}.
+
+{attributes, []}.
+
+{labels, 7}.
+
+
+{function, start, 2, 2}.
+  {label,1}.
+    {line,[{location,&quot;test.erl&quot;,4}]}.
+    {func_info,{atom,test},{atom,start},2}.
+  {label,2}.
+    {line,[{location,&quot;test.erl&quot;,5}]}.
+    {gc_bif,abs,{f,0},2,[{x,0}],{x,0}}.
+    {line,[{location,&quot;test.erl&quot;,5}]}.
+    {gc_bif,abs,{f,0},2,[{x,1}],{x,1}}.
+    {line,[{location,&quot;test.erl&quot;,5}]}.
+    {gc_bif,&apos;+&apos;,{f,0},2,[{x,0},{x,1}],{x,0}}.
+    return.
+
+
+{function, module_info, 0, 4}.
+  {label,3}.
+    {line,[]}.
+    {func_info,{atom,test},{atom,module_info},0}.
+  {label,4}.
+    {move,{atom,test},{x,0}}.
+    {line,[]}.
+    {call_ext_only,1,{extfunc,erlang,get_module_info,1}}.
+
+
+{function, module_info, 1, 6}.
+  {label,5}.
+    {line,[]}.
+    {func_info,{atom,test},{atom,module_info},1}.
+  {label,6}.
+    {move,{x,0},{x,1}}.
+    {move,{atom,test},{x,0}}.
+    {line,[]}.
+    {call_ext_only,2,{extfunc,erlang,get_module_info,2}}.
+</code></pre><p>每一个function元组标明了模块中的函数，我们直接定位到function start模块，每个label表示pc指针的执行顺序，跳过label1，我们直接看label2，有许多寄存器x0,x1,…xn y0,y1,…yn。x寄存器是用来存储函数入参的，特殊的x0寄存器，函数第一个入参是存放在里面，并且也用来作为函数返回值，而y寄存器是栈上分配的临时寄存器，</p>
+<p>有了以上知识，我们直接看汇编码：</p>
+<p>（忽略某些无用行）</p>
+<pre><code>{gc_bif,abs,{f,0},2,[{x,0}],{x,0}}. //用x0去调用bif函数abs，存储结果到x0寄存器，
+
+{gc_bif,abs,{f,0},2,[{x,1}],{x,1}}. //用x1去调用bif函数abs，存储结果到x1寄存器，
+
+{gc_bif,&apos;+&apos;,{f,0},2,[{x,0},{x,1}],{x,0}}. //执行bif函数+， x0+x1，结果放入x0寄存器
+
+return. //返回，直接返回x0的值
+</code></pre><p>这就是.S汇编字节码，它具有一定可读性，方便人和机器阅读</p>
+<p>再打开.dis汇编码文件：</p>
+<pre><code>00007FDAE5183770: i_func_info_IaaI 0 test start 2
+00007FDAE5183798: i_gc_bif1_jIsId j(0000000000000000) abs/1 x(0) 2 x(0)
+00007FDAE51837C8: i_gc_bif1_jIsId j(0000000000000000) abs/1 x(1) 2 x(1)
+00007FDAE51837F8: i_plus_jIxxd j(0000000000000000) 2 x(0) x(1) x(0)
+00007FDAE5183828: return
+
+00007FDAE5183830: i_func_info_IaaI 0 test module_info 0
+00007FDAE5183858: move_cr test r(0)
+00007FDAE5183868: allocate_tt 0 1
+00007FDAE5183878: call_bif_e erlang:get_module_info/1
+00007FDAE5183888: deallocate_return_Q 0
+
+00007FDAE5183898: i_func_info_IaaI 0 test module_info 1
+00007FDAE51838C0: move_rx r(0) x(1)
+00007FDAE51838D0: move_cr test r(0)
+00007FDAE51838E0: allocate_tt 0 2
+00007FDAE51838F0: call_bif_e erlang:get_module_info/2
+00007FDAE5183900: deallocate_return_Q 0
+</code></pre><p>其实大体上差不多，不过多了真是调用的函数和执行地址，但是erlang的汇编操作码太多，因此这个文件可读性很差，如果想搞懂具体指令作用可以去查阅相关文档。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-22T12:45:00.578Z" itemprop="dateUpdated">2018-06-22 20:45:00</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://lkness">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/036erlang-ast/index/&title=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/036erlang-ast/index/&title=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/036erlang-ast/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&url=http://lkness/2018/06/22/036erlang-ast/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/036erlang-ast/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/22/037erlang-parser/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">037erlang-parser</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/22/035build-erlang-server04/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">【从零开始构建erlang服务器】-04协议层</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Fri Jun 22 2018 20:35:59 GMT+0800",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/036erlang-ast/index/&title=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/036erlang-ast/index/&title=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/036erlang-ast/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Erlang Abstract Syntax Tree和汇编字节码》 — My Blog&url=http://lkness/2018/06/22/036erlang-ast/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/036erlang-ast/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKklEQVR42u3aQZKDMAwFUe5/aWabqoyhvxQWyO0V5WEIj4VKknUceJ1fa/XXz53va/6044klQ4aM1zLOy3V9zzVmRSLP5+8mQ4aMfRirCHb9Kvw5PIxeB+vlvgwZMmRcMki4THdkyJAho8PgySIpdEkqKUOGDBm8iCXtMP4E8vxHanEZMmS8kNEpLJ++fuR8Q4YMGa9inOGqHXPyxLH4VjJkyBjN4AGOJ47pq6fg5Z0yZMgYykgbXrxZxkcu+i05GTJkzGakoTA9EuD/VTskuMHIkCFjBIMMcv02KawdfN7sy5AhYzQjqHQbj+ahuThmIUOGjNGMs714OpgmncVMVoYMGaMZv5pnSIc2ap/mnyJWhgwZoxm8HK1d8520eJYhQ8YODBIEeSaWts86jbxlKStDhozNGLXDg9orpkWsDBky9mGkZWRasvKBCQK+GbaQIUPGUEYtjJJCtzZUQQ4JZMiQsSej3zjrpHppSbz8XRkyZGzA6AdZfvzZCbs37TYZMmRswAiGsfABZG10jH8gGTJk7Mbggw5piOyEY7QvQ4aMDRi1Ijbu5zWOGW7ulCFDxlDGGS4+AJG24Ugjb/kRZciQMZrBF2/DEVha4sbDFjJkyBjH6BSuaYLIQ3laPMuQIWMHBg98aZFZA8d3ypAhQ0ZjtIuPU6S/KEOGDBk8NeSl6XOfQ4YMGTswSBGbpn3pMUOaIMqQIWMfRq107DfgeHjtlNYyZMh4OeMPB3bRP0xQ+9wAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

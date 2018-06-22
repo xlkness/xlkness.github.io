@@ -159,6 +159,261 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-017erlang-shell-color/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:19:59" datetime="2018-06-19T12:19:59.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/017erlang-shell-color/index/">erlang的终端带颜色输出与中文字符串输出</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        1.带颜色输出erlang终端支持带颜色输出，例如lager日志库就可以。其实就是在输出前设置一下输出属性，正常的字体是：”\e[0;38m”下面自己弄了一些宏：
+-define(CONSOLE_COLOR_RED,      &quot;\e[0;31m&quot;).
+-define(CONSOLE_COLOR_RED_BOLD, &quot;\e[1;31m&quot;).
+-defi...
+    
+
+        <a href="/2018/06/19/017erlang-shell-color/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-016heap-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:18:42" datetime="2018-06-19T12:18:42.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/016heap-sort/index/">堆排序-《算法导论》学习笔记六</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        堆排序就是将一组数按二叉树层序遍历的存储顺序，经过一系列比较转移，最终变成有序的数组，这里的二叉树堆一定是完全二叉树。堆排序能进行的基础是有个最大堆的数组，最大堆性质是指树上的每个节点的子节点都比自己小或等于。因此最顶上的根节点一定是值最大的节点，有了最大堆在，堆排序就可以进行了，从层序遍历的最后一个节点开始倒序循环，交换当前节点与最顶层根节点，即最大值的节点，这样每次最大的节点都被放在层序...
+    
+
+        <a href="/2018/06/19/016heap-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-015nmatrix/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:16:29" datetime="2018-06-19T12:16:29.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/015nmatrix/index/">n阶矩阵一般乘法-《算法导论》学习笔记五</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        A、B两个矩阵均是nxn的矩阵，则两个矩阵的乘法：
+
+一般的矩阵乘法代码：
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+
+class SquareMatrix {
+public:
+  ...
+    
+
+        <a href="/2018/06/19/015nmatrix/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-014rebar3-plugin/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:11:35" datetime="2018-06-19T12:11:35.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/014rebar3-plugin/index/">erlang编写rebar3插件</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        1.生成插件工程假设插件名为testp，执行rebar3 new plugins testp，即生成了插件工程项目，查看目录结构如图：
+
+testp.erl文件调用初始化的代码，而插件最重要的代码在testp_prv.erl的文件，文件里提供了三个接口，分别为init/1,do/1,format_error/1，init做插件初始化的工作，初始化命名空间/初始化命令，然后将命令加入到reba...
+    
+
+        <a href="/2018/06/19/014rebar3-plugin/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-013rebar3-conf/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 19:59:19" datetime="2018-06-19T11:59:19.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/013rebar3-conf/index/">erlang rebar3配置文件</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        rebar3的简单使用可以参考rebar3的官方文档。以下讲解一些rebar3的配置，初入erlang，理解还不甚深刻。用rebar3进行工程创建，会生成rebar.config文件，贴一些配置的使用方法
+1.编译设置%% 编译设置
+{erl_opts, [
+{parse_transform, lager_transform}
+, {parse_transform, ms_transform...
+    
+
+        <a href="/2018/06/19/013rebar3-conf/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-012erlang-system-build/index"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -403,258 +658,6 @@ void merge( int *arr, int p,
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-007insert-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 18:37:04" datetime="2018-06-15T10:37:04.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/007insert-sort/index/">插入排序-《算法导论》学习笔记一</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        算法导论第二章的第一小节是插入排序，也就是像打扑克牌整理扑克一样，从左边第二张开始，每张与前边排好序的扑克牌比较，比较到能插入的位置就插入，算法比较简单。
-#include &lt;stdio.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdli...
-    
-
-        <a href="/2018/06/15/007insert-sort/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-006time-heap/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 15:46:30" datetime="2018-06-15T07:46:30.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/006time-heap/index/">C时间堆</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        跟上一篇，这里写一下时间堆：
-时间轮的滴答是固定以指定的槽间隔触发，而时间堆是以定时器堆中的最小到期时间做定时，也就是alarm(minTimeout)，一旦定时器被触发，那么就删除此定时器，更新时间堆，将新的最小到期时间定时器作为新的定时。
-然后是时间堆的数据结构，这里用了二叉树，将二叉树的根节点作为最小最小到期时间，每次滴答就取根节点，并且是完全二叉树，因此比较容易理解，我也懒得画图了，...
-    
-
-        <a href="/2018/06/15/006time-heap/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-005time-wheel/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-15 15:41:11" datetime="2018-06-15T07:41:11.000Z"  itemprop="datePublished">2018-06-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/15/005time-wheel/index/">C时间轮</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        看完了《linux高性能服务器编程》对里面的定时器很感兴趣。书中提到三种定时器，分别是：基于升序链表的定时器，基于时间轮的定时器，基于时间堆的定时器。三种定时器的实现书中均是给了C++代码，不过我对C++不太感兴趣，虽然现在在做C++开发，因此写了C版本的。书中定时器只给了封装的定时器类，没有给调用层代码，我是估摸着写了调用层代码。这里做个总结，以后可以翻翻：
-基于升序链表的定时器没太大难度...
-    
-
-        <a href="/2018/06/15/005time-wheel/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-004deamon/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-14 21:31:50" datetime="2018-06-14T13:31:50.000Z"  itemprop="datePublished">2018-06-14</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/14/004deamon/index/">Linux daemon守护进程的创建</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        今天在看《UNIX网络编程》的时候，看到了守护进程的创建，代码中fork了两次，并且第一次fork后对子进程调用setsid()，有些懵。当时搜了下setsid也是看得有点云里雾里。后来折腾了一下午，才算有点明白，这里把自己的一点分析心得写上来，以后忘了可以翻翻：
-这里我用ssh登陆ubuntu，在终端用vim编写。
-第一次fork我们先写一个简单的代码来fork并创建一个后台程序，代码如下...
-    
-
-        <a href="/2018/06/14/004deamon/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-003makefile/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-14 03:39:08" datetime="2018-06-13T19:39:08.000Z"  itemprop="datePublished">2018-06-14</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/14/003makefile/index/">编译60个小程序之makefile</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        公司有个任务需要编译60个c语言小程序，工程目录结构为：
-src：放所有小程序源文件.c
-drv：所有小程序编译后都为对应.drv
-其它头文件、库目录省略。
-makefile不太熟，也很菜，我第一想法是用for循环进行循环编译，还用到了makefile自定义函数，贴代码：
-CC = arm-linux-gcc
-
-CFLAGS +=-Wall -O -D_REENTRANT -fpic -sh...
-    
-
-        <a href="/2018/06/14/003makefile/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C/">C/C++</a></li></ul>
 
     </div>
     

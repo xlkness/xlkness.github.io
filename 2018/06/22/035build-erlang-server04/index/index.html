@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>【从零开始构建erlang服务器】-04协议层 | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Erlang">
+    <meta name="description" content="一、简介协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型，使用什么压缩算法或加密算法等。常 见的有tcp，udo，http，sip等常见协议。协议有流程规范和编码规范。流程如呼叫流程等信令流程，编码规范规定所有信令和数据如何打包/解包。编码规范就是我们通常所说的编解码，序列化。不光是用在通信工作上，在存储工作上我们也经常用">
+<meta name="keywords" content="Erlang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【从零开始构建erlang服务器】-04协议层">
+<meta property="og:url" content="http://lkness/2018/06/22/035build-erlang-server04/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="一、简介协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型，使用什么压缩算法或加密算法等。常 见的有tcp，udo，http，sip等常见协议。协议有流程规范和编码规范。流程如呼叫流程等信令流程，编码规范规定所有信令和数据如何打包/解包。编码规范就是我们通常所说的编解码，序列化。不光是用在通信工作上，在存储工作上我们也经常用">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-06-22T12:45:30.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【从零开始构建erlang服务器】-04协议层">
+<meta name="twitter:description" content="一、简介协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型，使用什么压缩算法或加密算法等。常 见的有tcp，udo，http，sip等常见协议。协议有流程规范和编码规范。流程如呼叫流程等信令流程，编码规范规定所有信令和数据如何打包/解包。编码规范就是我们通常所说的编解码，序列化。不光是用在通信工作上，在存储工作上我们也经常用">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">【从零开始构建erlang服务器】-04协议层</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">【从零开始构建erlang服务器】-04协议层</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-22T12:06:51.000Z" itemprop="datePublished" class="page-time">
+  2018-06-22
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、简介</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、编写proto文件"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、编写proto文件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、编译协议文件"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、编译协议文件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1、添加协议描述文件"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1、添加协议描述文件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2、生成协议编解码文件"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2、生成协议编解码文件</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、测试协议收发"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、测试协议收发</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-035build-erlang-server04/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">【从零开始构建erlang服务器】-04协议层</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-22 20:06:51" datetime="2018-06-22T12:06:51.000Z"  itemprop="datePublished">2018-06-22</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>协议的作用很重要，通信协议可以理解为两个节点之间为了协同工作实现信息交换，协商一定的规则和约定，例如规定字节序，各个字段类型，使用什么压缩算法或加密算法等。常 见的有tcp，udo，http，sip等常见协议。协议有流程规范和编码规范。流程如呼叫流程等信令流程，编码规范规定所有信令和数据如何打包/解包。编码规范就是我们通常所说的编解码，序列化。不光是用在通信工作上，在存储工作上我们也经常用到。如我们经常想把内存中对象存放到磁盘上，就需要对对象进行数据序列化工作。</p>
+<p>本文主要使用google protocol buffer协议。协议就不多介绍了，网上搜索有很多讲解。</p>
+<h1 id="二、编写proto文件"><a href="#二、编写proto文件" class="headerlink" title="二、编写proto文件"></a>二、编写proto文件</h1><p>协议规定了两方交流的方式，因此要有统一的双方都认识的东西来规定协议，例如json、xml，对于protocolbuf，就要定义proto文件了。</p>
+<p>协议一般都跟服务器逻辑相关，因此我们先明确服务器要提供什么功能，再来编写协议。</p>
+<p>这里我们可以做一个五子棋游戏服务器，那么游戏提供以下功能：</p>
+<p>（先不做登陆功能，假设只要是客户端跟我们服务器完成三次握手就能进入游戏）</p>
+<p>1、大厅，每隔3s刷新显示所有房间人数和玩家准备状态（先不提供按等级划分的大厅例如菜鸟场、新手场、中级场等）;<br>2、大厅提供直选房间加入方式，也提供匹配方式加入房间（优先匹配有一个人落座的房间）；<br>3、房间，最多坐两个人，多余的人会进入观战席，座位上的玩家可以准备，可以取消准备，玩家从进入房间开始计时，计时到了还没准备就踢出房间，不管中途多少次准备、未准备，一旦双方准备，则游戏开始，随机分配先手方；<br>4、对战，无禁手，无交换，无放弃落子（往简单做），双方各有2分钟总的思考时间，用完则其每一步均只有10s思考时间；<br>5、对战中异常检测，3s一次心跳，如果客户端下线或者退出房间，则另一方赢；<br>6、房间预先创建20个，如果只剩5个空房间，则多创建5个保留；<br>7、点选加入房间如果人满，返回人满错误提示玩家重新选房间</p>
+<p>根据需求我们可以制定协议了。</p>
+<p>创建协议文件gobang.proto，复制以下内容到协议（协议只是随便定义了下，没精力了，后续写代码再优化吧）：</p>
+<pre><code>enum ChessPieceColor {
+    BALCK = 1;
+    RED = 2;
+}
+
+
+// 心跳
+message HeartBeatReq {}
+message HeartBeatResp {}
+
+
+// 获取大厅房间人数，客户端可以自己间隔获取
+message GetRoomsInfoReq {}
+message GetRoomsInfoResp {
+    repeated roomInfoType rooms = 1;
+}
+
+
+// 加入房间
+message JoinRoomReq {
+    required uint32 join_type = 1;      // 1:随机匹配 2:选房加入
+    required string nick_name = 2;      // 未做注册、登陆，直接给昵称
+    required uint32 sex = 3;            // 性别
+    optional uint32 room_id = 4;        // 选房加入时的房间号
+}
+message JoinRoomResp {
+    required bool audience = 1;         // 是否观众席位（加入瞬间座位满了）
+    required roomInfoType room = 2;     // 加入的房间信息
+    optional uint32 remain_sec = 3;     // 不准备的剩余秒数，到时即踢
+}
+
+
+// 准备
+message PrepareReq {
+    required uint32 type = 1;           // 1:准备 2:取消准备
+}
+message PrepareResp {
+    required uint32 remain_sec = 1;     // 不准备的剩余秒数，到时即踢
+}
+
+
+// 游戏开始-服务器主动推送给客户端
+message StartGamePush {
+    required ChessPieceColor color = 1; // 我方颜色，黑棋先（如果是围观群众，不读这个字段）
+    required uint32 remain_sec = 2;     // 思考的剩余时长，如果超时了，每一次落子只有per_round_remain_sec
+    required uint32 per_round_remain_sec = 3;   // 思考的总时间花费完了，之后每一步只有这么长的时间思考，超过即输
+    repeated startDetailType detail = 4;
+    message startDetailType {       // 推送给围观群众的
+        required ChessPieceColor color = 1;
+        required userInfoType user = 2;
+    }
+}
+
+
+// 游戏进行
+message PlayGameReq {
+    required uint32 x_pos = 1;
+    required uint32 y_pos = 2;
+}
+message PlayGameResp {
+    required uint32 err_code = 1;
+    required uint32 remain_sec = 2;
+}
+
+
+// 服务器推送其他玩家落子
+message PlayBroadcastPush {
+    required ChessPieceColor color = 1;         // 棋子颜色
+    required uint32 x_pos = 2;
+    required uint32 y_pos = 3;
+}
+
+
+// 游戏结束
+message EndGamePush {
+    required userInfoType winner = 1;           // 赢家
+}
+
+
+// 玩家加入房间、退出房间推送
+message UserInOutPush {
+    required uint32 type = 1;                   // 1.进入座位、2.进入观众席、3.退出座位、4.退出观众席
+    optional seatInfoType seat = 2;             // 座位变动才有
+    optional userInfoType user = 3;                 // 观众席变动才有
+}
+
+
+// 座位玩家加入观众席
+message JoinAudienceReq {}
+message JoinAudienceResp {
+    required uint32 err_code = 1;
+}
+
+
+// 观众席加入座位
+message JoinSeatReq {}
+message JoinSeatResp {
+    required uint32 err_code = 1;
+}
+
+
+
+
+
+
+/*内部声明*/
+// 房间信息
+message roomInfoType {
+    required uint32 room_id = 1;        // 房间id
+    repeated seatInfoType seats = 2;    // 座位信息
+    repeated userInfoType audiences = 3;// 围观群众
+}
+// 座位信息
+message seatInfoType {
+    required uint32 index = 1;          // 座位编号
+    optional userInfoType user = 2;     // 座位用户信息，空座位没有用户
+}
+// 用户信息
+message userInfoType {
+    required uint64 user_id = 1;        // 用户id
+    required string nick_name = 2;      // 昵称
+}
+</code></pre><h1 id="三、编译协议文件"><a href="#三、编译协议文件" class="headerlink" title="三、编译协议文件"></a>三、编译协议文件</h1><h2 id="1、添加协议描述文件"><a href="#1、添加协议描述文件" class="headerlink" title="1、添加协议描述文件"></a>1、添加协议描述文件</h2><p>目前我看到的erlang protocolbuf通信，都是将proto结构体编码成二进制，然后再在二进制头上补一个16位的协议号，这个协议号是前端和后端自定义的，也可以说是公司层面的协议号，例如这个项目组使用100-999，那个项目组使用1000-1999这样子。那么协议流发出去就是一个&lt;&lt;MsgID:16, Bin/binary&gt;&gt;这样一个二进制流，然后接收端再提取前16位的协议号。通过协议号找到真正的协议名，然后路由到真正的协议编解码文件进行处理，例如有多个.proto文件，经过pb工具生成编解码工具文件就有多个，如何路由到哪个编解码文件，就需要手工写一个描述关系。</p>
+<p>将自定义的协议描述文件生成对应的erlang文件的工具我看到的很多都是用riak官方的一个rebar插件，这里我自己在学习lexer/yecc编译工具的时候写了一个rebar3插件rebar3_pb_msgdesc，功能一样。我就使用自己的插件来生成了，具体用法参考插件的readme文件。</p>
+<p>针对第二步的协议内容，我们编写一个erlserver_pb_desc.csv文件，格式 协议号，协议名，协议文件 输入以下内容：</p>
+<pre><code>1,HeartBeatReq,erlserver_gobang_pb
+2,HeartBeatResp,erlserver_gobang_pb
+100,GetRoomsInfoReq,erlserver_gobang_pb
+101,GetRoomsInfoResp,erlserver_gobang_pb
+102,JoinRoomReq,erlserver_gobang_pb
+103,JoinRoomResp,erlserver_gobang_pb
+104,PrepareReq,erlserver_gobang_pb
+105,PrepareResp,erlserver_gobang_pb
+106,StartGamePush,erlserver_gobang_pb
+107,PlayGameReq,erlserver_gobang_pb
+108,PlayGameResp,erlserver_gobang_pb
+109,PlayBroadcastPush,erlserver_gobang_pb
+110,EndGamePush,erlserver_gobang_pb
+111,UserInOutPush,erlserver_gobang_pb
+112,JoinAudienceReq,erlserver_gobang_pb
+113,JoinAudienceResp,erlserver_gobang_pb
+114,JoinSeatReq,erlserver_gobang_pb
+115,JoinSeatResp,erlserver_gobang_pb
+</code></pre><p>然后按照我的插件readme配置，执行rebar3 compile就能生成文件了，注意配置生成的描述文件可以放在src/proto/目录。</p>
+<h2 id="2、生成协议编解码文件"><a href="#2、生成协议编解码文件" class="headerlink" title="2、生成协议编解码文件"></a>2、生成协议编解码文件</h2><p>生成协议编解码文件现在都推荐gpb库了，而rebar3插件rebar3_gpb_plugin就可以自动使用gpb作为插件并生成协议编解码文件，按照插件readme的配置，我们将编解码文件生成到src/proto/目录，配置好了rebar3钩子(hook)，直接执行compile就能生成协议编解码文件。<br>（如还是很模糊，可直接参考这个项目<a href="https://github.com/xlkness/erlserver" target="_blank" rel="noopener">github repo</a>）</p>
+<h1 id="四、测试协议收发"><a href="#四、测试协议收发" class="headerlink" title="四、测试协议收发"></a>四、测试协议收发</h1><p>在项目根目录创建一个test目录，然后添加一个proto_tst.erl文件，输入以下内容：</p>
+<pre><code>%%%-------------------------------------------------------------------
+%%% @author lkness
+%%% @copyright (C) 2018, &lt;COMPANY&gt;
+%%% @doc
+%%%
+%%% @end
+%%% Created : 14. Apr 2018 6:27 PM
+%%%-------------------------------------------------------------------
+-module(proto_tst).
+
+
+%% API
+-export([
+    start/0
+]).
+
+
+start() -&gt;
+    {ok, Fd} = gen_tcp:connect({127,0,0,1}, 8888, [binary, {packet, raw}, {active, once}]),
+    GetRoomsInfoReq = #{},
+    MsgName = erlserver_pb_desc:msg_type(100),
+    B = erlserver_gobang_pb:encode_msg(GetRoomsInfoReq, MsgName),
+    SendMsg = &lt;&lt;100:16, B/binary&gt;&gt;,
+    gen_tcp:send(Fd, SendMsg),
+    receive
+        {tcp, _Socket, Packet} -&gt;
+            &lt;&lt;Cmd:16, Bin/binary&gt;&gt; = Packet,
+            RecvMsgName = erlserver_pb_desc:msg_type(Cmd),
+            Msg = erlserver_gobang_pb:decode_msg(Bin, RecvMsgName),
+            io:format(&quot;sender recv msg:~w/~p~n&quot;, [Cmd, Msg])
+    after 5000 -&gt;
+        io:format(&quot;error, not receive from server~n&quot;)
+    end,
+
+
+    ok.
+</code></pre><p>然后在我们的user处理模块里，接收socket消息里面添加响应逻辑：</p>
+<pre><code>handle_info({tcp, Socket, &lt;&lt;Cmd:16, Binary/binary&gt;&gt; = Data}, State=#state{
+socket=Socket, transport=Transport})
+when byte_size(Data) &gt; 1 -&gt;
+Transport:setopts(Socket, [{active, once}]),
+{ok, PeerName} = inet:peername(Socket),
+MsgName = erlserver_pb_desc:msg_type(Cmd),
+Msg = erlserver_gobang_pb:decode_msg(Binary, MsgName),
+lager:info(&quot;receive from client[~w], msg:~p/~p~n&quot;, [PeerName, Cmd, Msg]),
+SendMsg = #{rooms =&gt; [#{room_id =&gt; 123, seats =&gt; [], audiences =&gt; []}]},
+SendBin = erlserver_gobang_pb:encode_msg(SendMsg, erlserver_pb_desc:msg_type(101)),
+Transport:send(Socket, &lt;&lt;101:16, SendBin/binary&gt;&gt;),
+{noreply, State, ?TIMEOUT};
+</code></pre><p>可以看到，就是个简单的收发交互，主要是查看协议是否正常编解码和协议描述文件是否正常生成和对应。</p>
+<p>一切就绪，我们可以在测试环境运行rebar shell（因为我们的测试文件放在test目录，default环境启动的话默认不加载test目录），</p>
+<pre><code>rebar3 shell
+(erlserver@127.0.0.1)6&gt; test_pb:start().
+sender recv msg:101/#{rooms =&gt;
+                          [#{audiences =&gt; [],room_id =&gt; 123,seats =&gt; []}]}
+2018-04-16/20:42:22.774[info][erlserver_user:handle_info:55]|receive from client[{{127,0,0,1},36069}], msg:100/#{}
+ok
+</code></pre><p>好，不出意外，就打印了收发消息，我们也看到了收到的字节流正常解码为了协议字段信息。</p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>本节根据具体需求定义了协议文件，然后能将协议文件生成编解码工具，最后还测试了协议收发。</p>
+<p>后面就可以开始编写我们的五子棋游戏了（本来想做个聊天室服务器，感觉太烂大街了，并且im都用ejjabered，自己随手写太low了）。</p>
+<p>（项目<a href="https://github.com/xlkness/erlserver" target="_blank" rel="noopener">repo</a>。。。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-22T12:45:30.498Z" itemprop="dateUpdated">2018-06-22 20:45:30</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://lkness">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/035build-erlang-server04/index/&title=《【从零开始构建erlang服务器】-04协议层》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/035build-erlang-server04/index/&title=《【从零开始构建erlang服务器】-04协议层》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/035build-erlang-server04/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《【从零开始构建erlang服务器】-04协议层》 — My Blog&url=http://lkness/2018/06/22/035build-erlang-server04/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/035build-erlang-server04/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/22/036erlang-ast/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Erlang Abstract Syntax Tree和汇编字节码</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/22/034build-erlang-server03/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">【从零开始构建erlang服务器】-03用户层和日志</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Fri Jun 22 2018 20:06:51 GMT+0800",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/035build-erlang-server04/index/&title=《【从零开始构建erlang服务器】-04协议层》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/035build-erlang-server04/index/&title=《【从零开始构建erlang服务器】-04协议层》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/035build-erlang-server04/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《【从零开始构建erlang服务器】-04协议层》 — My Blog&url=http://lkness/2018/06/22/035build-erlang-server04/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/035build-erlang-server04/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACIklEQVR42u3aW5KCMBAFUPe/aWYBlnhvAk6RnHxRKpHDR1c/8nrF63hbye/fr9tvL14YGBiPZRyn6/03+Z8dwTp/Tcm9GBgY+zDaoHkeLvMA3Ybjj59jYGBglNd58E0CLgYGBsYY4zzUtrB2BwwMjD0ZSUCcacPl+99ei2NgYDyQkXfdf399y3wDAwPjUYyjXG1bbSxE1k+FgYGxNGN+GJmH6bHTEXkBjIGBsSpjLJjOfJ6XxElr75X3/zAwMB7O+BKPgyTv2iSyHk5gYGBsz0hCajs8SFLGIjRjYGBsw2gfKwm4yTBy5pgFBgYGRl5S1h2+aw+KYWBgbMNoG/pjKWAegpNX8DHDxcDAWIhxbeHaJoj5IDPiYWBgLMpoG2f3JYLtoxeTWAwMjIczijHh0OGM853zVxC9aAwMjEUZ8ylgPja4Y1TwcTCAgYGxHGOm4dWG3eSutrWHgYGxDyMqFOMEcb58LYYWGBgYSzPywUAeHGcOZ7RlMwYGxm6M9rDF2OPmrbr63BcGBsYGjJkjYvloYWz/KD3FwMDYgHG+xdSMtCxiBw9zYGBgLMo4yjXfksvHnMVxDQwMjKUZ+RoLuO3DJTu0wR0DA2MNRh5kZ4rYltGCMTAwdmAkRWwOyI9l/EMtjoGBsT1jfpA5mM9iYGBglH+cN+ny8cOXMI2BgbEBY2wYkLTh8hTwxkEmBgbGwxn5bXkJOnOAYyZ9xMDAWI7xB77Z2xm7uY7UAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

@@ -159,6 +159,261 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-027list-stack-queue/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 12:47:44" datetime="2018-06-20T04:47:44.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/027list-stack-queue/index/">通用链表/栈/队列-算法学习笔记十六</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        今天准备学习数据结构-图，会用到栈和队列，因此写了下代码，底层用了通用链表，为循环双向结构，结点数据域为void *；通用链表层之上封装了栈和队列，比较简单，但是代码行数有点多，单独摘出：
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;...
+    
+
+        <a href="/2018/06/20/027list-stack-queue/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-026out-sort/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 12:40:53" datetime="2018-06-20T04:40:53.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/026out-sort/index/">外排序多路归并+败者树-算法学习笔记十五</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        问题：一个文件有大量的数，现要对文件排序，但内存无法一次读取完全，而磁盘空间足够，要如何排序。
+学习了几篇博客：
+
+july大神的海量数据排序(他的其他博客都很值得看)
+对july大神的算法进行改进不用选择法而是败者树的博客
+以及另一篇但不知道是否为原创的博客
+还有生成不重复乱序m-n的数的博客(先生成m-n的数，然后洗牌算法)
+
+#以上几篇博客写得很完全了，看懂了思路，自己临摹写一个简单的...
+    
+
+        <a href="/2018/06/20/026out-sort/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-025trie-tree/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 12:34:50" datetime="2018-06-20T04:34:50.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/025trie-tree/index/">trie树-《算法导论》学习笔记十四</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        引用一下百度百科的话吧：Trie树，又称单词查找树，是一种树形结构，是一种哈希树的变种。典型应用是用于统计，排序和保存大量的字符串（但不仅限于字符串），所以经常被搜索引擎系统用于文本词频统计。它的优点是：利用字符串的公共前缀来减少查询时间，最大限度地减少无谓的字符串比较，查询效率比哈希树高。
+这里构建了一棵字典树，每个结点有52个孩子指针，对应26个小写字母和26个大写字母，根节点不存储数据...
+    
+
+        <a href="/2018/06/20/025trie-tree/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-024avl-tree/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-20 10:55:19" datetime="2018-06-20T02:55:19.000Z"  itemprop="datePublished">2018-06-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/20/024avl-tree/index/">avl树-《算法导论》学习笔记十三</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        （引用算法导论）AVL树是一种高度平衡的二叉搜索树：对每一个结点x，y的左子树与右子树的高度至多为1。AVL树相比二叉搜索树，每个结点维护一个额外的属性：结点的高度。
+AVL树实现了几个操作：
+树结点创建遍历
+递归的前序、中序、后序遍历，以及基于层序遍历的简单图形打印
+
+后序遍历释放树结点搜索寻找结点子树最小关键字结点、寻找结点子树最大关键字结点求结点高度左旋右旋插入
+先以普通二叉搜索树的方...
+    
+
+        <a href="/2018/06/20/024avl-tree/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-023red-black-tree/index"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-06-19 20:38:53" datetime="2018-06-19T12:38:53.000Z"  itemprop="datePublished">2018-06-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/06/19/023red-black-tree/index/">红黑树-《算法导论》学习笔记十二</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        红黑树是一种二叉搜索树，它在每个结点上增加了一个存储为来表示结点的颜色，或红或黑，通过从根到叶子的简单路径上各个结点的颜色进行约束，红黑树确保没有一条路径会比其它路径长出2倍，近似平衡的。
+树种每个结点包含5个属性：color、key、left、right、parent，如果一个结点没有子结点或父结点，则该结点相应指针属性值指向空（这里的空不是空指针，而是定义一个空结点，结点颜色为黑色），一...
+    
+
+        <a href="/2018/06/19/023red-black-tree/index/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-022bin-search-tree/index"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -398,261 +653,6 @@
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-017erlang-shell-color/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:19:59" datetime="2018-06-19T12:19:59.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/017erlang-shell-color/index/">erlang的终端带颜色输出与中文字符串输出</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        1.带颜色输出erlang终端支持带颜色输出，例如lager日志库就可以。其实就是在输出前设置一下输出属性，正常的字体是：”\e[0;38m”下面自己弄了一些宏：
--define(CONSOLE_COLOR_RED,      &quot;\e[0;31m&quot;).
--define(CONSOLE_COLOR_RED_BOLD, &quot;\e[1;31m&quot;).
--defi...
-    
-
-        <a href="/2018/06/19/017erlang-shell-color/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-016heap-sort/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:18:42" datetime="2018-06-19T12:18:42.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/016heap-sort/index/">堆排序-《算法导论》学习笔记六</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        堆排序就是将一组数按二叉树层序遍历的存储顺序，经过一系列比较转移，最终变成有序的数组，这里的二叉树堆一定是完全二叉树。堆排序能进行的基础是有个最大堆的数组，最大堆性质是指树上的每个节点的子节点都比自己小或等于。因此最顶上的根节点一定是值最大的节点，有了最大堆在，堆排序就可以进行了，从层序遍历的最后一个节点开始倒序循环，交换当前节点与最顶层根节点，即最大值的节点，这样每次最大的节点都被放在层序...
-    
-
-        <a href="/2018/06/19/016heap-sort/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-015nmatrix/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:16:29" datetime="2018-06-19T12:16:29.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/015nmatrix/index/">n阶矩阵一般乘法-《算法导论》学习笔记五</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        A、B两个矩阵均是nxn的矩阵，则两个矩阵的乘法：
-
-一般的矩阵乘法代码：
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
-
-class SquareMatrix {
-public:
-  ...
-    
-
-        <a href="/2018/06/19/015nmatrix/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构-算法/">数据结构/算法</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-014rebar3-plugin/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 20:11:35" datetime="2018-06-19T12:11:35.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/014rebar3-plugin/index/">erlang编写rebar3插件</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        1.生成插件工程假设插件名为testp，执行rebar3 new plugins testp，即生成了插件工程项目，查看目录结构如图：
-
-testp.erl文件调用初始化的代码，而插件最重要的代码在testp_prv.erl的文件，文件里提供了三个接口，分别为init/1,do/1,format_error/1，init做插件初始化的工作，初始化命名空间/初始化命令，然后将命令加入到reba...
-    
-
-        <a href="/2018/06/19/014rebar3-plugin/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-013rebar3-conf/index"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-06-19 19:59:19" datetime="2018-06-19T11:59:19.000Z"  itemprop="datePublished">2018-06-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/06/19/013rebar3-conf/index/">erlang rebar3配置文件</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        rebar3的简单使用可以参考rebar3的官方文档。以下讲解一些rebar3的配置，初入erlang，理解还不甚深刻。用rebar3进行工程创建，会生成rebar.config文件，贴一些配置的使用方法
-1.编译设置%% 编译设置
-{erl_opts, [
-{parse_transform, lager_transform}
-, {parse_transform, ms_transform...
-    
-
-        <a href="/2018/06/19/013rebar3-conf/index/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
 
     </div>
     

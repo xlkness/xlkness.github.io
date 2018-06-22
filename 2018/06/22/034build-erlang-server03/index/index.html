@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>【从零开始构建erlang服务器】-03用户层和日志 | My Blog | 我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Erlang">
+    <meta name="description" content="一、简介上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户层代码以及服务器开发调试运维的日志集成。 二、编写用户层代码前面知道网络层处理客户端连接，以及可以将客户端socket文件描述符授权给其它worker进程来一对一为客户端服务（得益于erlang actor模型的轻进程，可以做到一个连接一个进程），而网络库我们使用的ranch，因此可">
+<meta name="keywords" content="Erlang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【从零开始构建erlang服务器】-03用户层和日志">
+<meta property="og:url" content="http://lkness/2018/06/22/034build-erlang-server03/index/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="一、简介上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户层代码以及服务器开发调试运维的日志集成。 二、编写用户层代码前面知道网络层处理客户端连接，以及可以将客户端socket文件描述符授权给其它worker进程来一对一为客户端服务（得益于erlang actor模型的轻进程，可以做到一个连接一个进程），而网络库我们使用的ranch，因此可">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-06-22T12:46:11.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【从零开始构建erlang服务器】-03用户层和日志">
+<meta name="twitter:description" content="一、简介上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户层代码以及服务器开发调试运维的日志集成。 二、编写用户层代码前面知道网络层处理客户端连接，以及可以将客户端socket文件描述符授权给其它worker进程来一对一为客户端服务（得益于erlang actor模型的轻进程，可以做到一个连接一个进程），而网络库我们使用的ranch，因此可">
+    
+        <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/head.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">lkness</h5>
+          <a href="mailto:906102152@qq.com" title="906102152@qq.com" class="mail">906102152@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xlkness" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/2968846605" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">【从零开始构建erlang服务器】-03用户层和日志</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">【从零开始构建erlang服务器】-03用户层和日志</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-22T12:06:44.000Z" itemprop="datePublished" class="page-time">
+  2018-06-22
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、简介</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、编写用户层代码"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、编写用户层代码</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、启动ranch监听功能"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、启动ranch监听功能</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、添加lager日志库"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、添加lager日志库</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1、rebar-config添加依赖："><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1、rebar.config添加依赖：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2、erlserver-app-src启动lager"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2、erlserver.app.src启动lager</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3、添加lager配置"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">3、添加lager配置</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4、配置rebar3-shell读取config文件以及添加lager的parse-transform"><span class="post-toc-number">5.</span> <span class="post-toc-text">4、配置rebar3 shell读取config文件以及添加lager的parse_transform</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、使用日志库"><span class="post-toc-number">6.</span> <span class="post-toc-text">五、使用日志库</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#六、后续"><span class="post-toc-number">7.</span> <span class="post-toc-text">六、后续</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-034build-erlang-server03/index"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">【从零开始构建erlang服务器】-03用户层和日志</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-22 20:06:44" datetime="2018-06-22T12:06:44.000Z"  itemprop="datePublished">2018-06-22</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发/">开发</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><pre><code>上一篇讲了创建服务器项目以及添加ranch网络库，本篇利用网络库创建client socket消息处理的用户层代码以及服务器开发调试运维的日志集成。
+</code></pre><h1 id="二、编写用户层代码"><a href="#二、编写用户层代码" class="headerlink" title="二、编写用户层代码"></a>二、编写用户层代码</h1><pre><code>前面知道网络层处理客户端连接，以及可以将客户端socket文件描述符授权给其它worker进程来一对一为客户端服务（得益于erlang actor模型的轻进程，可以做到一个连接一个进程），而网络库我们使用的ranch，因此可以参照ranch的example程序编写一个处理socket消息的进程，也就是为用户一对一服务器的用户层代码。
+</code></pre><p>仿照ranch例子创建一个erlserver_user.erl文件</p>
+<p>添加如下代码：</p>
+<pre><code>-module(erlserver_user).
+
+-behaviour(gen_server).
+-behaviour(ranch_protocol).
+
+%% API.
+-export([start_link/4]).
+
+%% gen_server.
+-export([init/1]).
+-export([handle_call/3]).
+-export([handle_cast/2]).
+-export([handle_info/2]).
+-export([terminate/2]).
+-export([code_change/3]).
+
+-define(TIMEOUT, 5000).
+
+-record(state, {socket, transport}).
+
+%% API.
+
+start_link(Ref, Socket, Transport, Opts) -&gt;
+    {ok, proc_lib:spawn_link(?MODULE, init, [{Ref, Socket, Transport, Opts}])}.
+
+init({Ref, Socket, Transport, _Opts = []}) -&gt;
+    ok = ranch:accept_ack(Ref),
+    ok = Transport:setopts(Socket, [{active, once}]),
+    gen_server:enter_loop(?MODULE, [],
+                          #state{socket=Socket, transport=Transport},
+                          ?TIMEOUT).
+
+handle_info({tcp, Socket, Data}, State=#state{
+    socket=Socket, transport=Transport})
+    when byte_size(Data) &gt; 1 -&gt;
+    Transport:setopts(Socket, [{active, once}]),
+    {ok, PeerName} = inet:peername(Socket),
+    io:format(&quot;receive from client[~w], msg:~p~n&quot;, [PeerName, Data]),
+    {noreply, State, ?TIMEOUT};
+handle_info({tcp_closed, _Socket}, State) -&gt;
+    {stop, normal, State};
+handle_info({tcp_error, _, Reason}, State) -&gt;
+    {stop, Reason, State};
+handle_info(timeout, State) -&gt;
+    {stop, normal, State};
+handle_info(_Info, State) -&gt;
+    {stop, normal, State}.
+
+handle_call(_Request, _From, State) -&gt;
+    {reply, ok, State}.
+
+handle_cast(_Msg, State) -&gt;
+    {noreply, State}.
+
+terminate(_Reason, _State) -&gt;
+    ok.
+
+code_change(_OldVsn, State, _Extra) -&gt;
+    {ok, State}.
+</code></pre><p>阅读过ranch源码，就知道ranch_acceptor在监听一个客户端连接后，就会调用我们指定的模块的start_link/4方法，当然，我们可以直接在start_link中启动一个gen_server，不过ranch的这个例子因为要有一个ranch:accept_ack操作，所以会阻塞在init，因此没有用gen_server，用了prob_lib:spawn_link，立即返回一个可用的pid给ranch库，然后在慢慢初始化，初始化完成后用gen_server:enter_loop将这个进程转变为一个gen_server进程。</p>
+<h1 id="三、启动ranch监听功能"><a href="#三、启动ranch监听功能" class="headerlink" title="三、启动ranch监听功能"></a>三、启动ranch监听功能</h1><p>上一篇只在app.src启动了ranch，这只是表示应用启动起来，要使ranch开始监听某个端口，还需要显示调用ranch:start_listener/5，这里我们要监听本机8888端口，并且使用我们在第二步写好的客户端socket套接字消息处理进程，其它tcp参数都使用默认，则我们在erlserver_app.erl启动中添加以下代码：</p>
+<pre><code>{ok, _} = ranch:start_listener(erlserver,
+                                  ranch_tcp, [{port, 8888}], erlserver_user, []),
+</code></pre><p>rebar3 shell启动我们的应用测试一下是否可用，另开一台机器进入erlang shell，输入{ok, Fd} = gen_tcp:connect({xxx,xxx,xxx,xxx}, 8888, [binary, {active, false}, {packet, raw}]), gen_tcp:send(Fd, “for test”).  看到输出，就说明现在可以创建一个并发服务器了，并且每个客户端连接都对应一个erlserver_user进程单独处理。</p>
+<h1 id="四、添加lager日志库"><a href="#四、添加lager日志库" class="headerlink" title="四、添加lager日志库"></a>四、添加lager日志库</h1><p>在第二步的代码中，我们用了io:format来打印收到的客户端信息，这样做其实是不好的，终端打印的消息无法输出到文件记录下来，并且io打印的消息都是原始消息，不方便调试，要同时输出模块、行号等信息，每一次的io打印还都要加上这些信息，总之，对于服务器来说，没有一个专门的日志记录都是不好的。</p>
+<h2 id="1、rebar-config添加依赖："><a href="#1、rebar-config添加依赖：" class="headerlink" title="1、rebar.config添加依赖："></a>1、rebar.config添加依赖：</h2><pre><code>{lager, {git, &quot;https://github.com/erlang-lager/lager&quot;, {branch, &quot;master&quot;}}}
+</code></pre><h2 id="2、erlserver-app-src启动lager"><a href="#2、erlserver-app-src启动lager" class="headerlink" title="2、erlserver.app.src启动lager"></a>2、erlserver.app.src启动lager</h2><p>（lager的顺序尽量放在除erlang runtime库之前，例如放在ranch之前，这样我们就可以在其它应用启动中也能使用lager输出应用启动的信息了）。</p>
+<h2 id="3、添加lager配置"><a href="#3、添加lager配置" class="headerlink" title="3、添加lager配置"></a>3、添加lager配置</h2><p>这里前期为了调试方便，我们直接利用rebar3 shell加载一个本地调试配置文件<br>        在项目根目录创建一个config文件夹，并在里面创建一个erlserver.config配置文件，输入以下内容</p>
+<pre><code>[
+    {lager, [
+        {log_root, &quot;./log&quot;},
+        {handlers, [
+            {lager_console_backend,
+             [{level, info}, {formatter, lager_default_formatter},
+              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, severity, &quot;][&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]},
+            {lager_file_backend,
+             [{file, &quot;error.log&quot;}, {level, error}, {formatter, lager_default_formatter},
+              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]},
+            {lager_file_backend,
+             [{file, &quot;console.log&quot;}, {level, info}, {formatter, lager_default_formatter},
+              {formatter_config, [date, &quot;/&quot;, time, &quot;[&quot;, module, &quot;:&quot;, function, &quot;:&quot;, line,&quot;]&quot;, &quot;|&quot;, message, &quot;\n&quot;]}]}
+        ]}
+    ]}
+].
+</code></pre><p>这就是一个lager的简单配置，日志都输出到log目录，并且info对应console.log文件（目前都是本地调试，并不是发布的配置）。</p>
+<h1 id="4、配置rebar3-shell读取config文件以及添加lager的parse-transform"><a href="#4、配置rebar3-shell读取config文件以及添加lager的parse-transform" class="headerlink" title="4、配置rebar3 shell读取config文件以及添加lager的parse_transform"></a>4、配置rebar3 shell读取config文件以及添加lager的parse_transform</h1><p>修改rebar.config的shell配置</p>
+<pre><code>{shell, [
+    {apps, [erlserver, sync]},
+    {config, &quot;config/erlserver.config&quot;}
+]}.
+</code></pre><p>修改rebar.config的erl_opts配置（这里使用到的知识点可以参考我的另一篇erlang抽象语法树博客）</p>
+<pre><code>{erl_opts, [
+    debug_info,
+    {parse_transform, lager_transform}
+]}.
+</code></pre><h1 id="五、使用日志库"><a href="#五、使用日志库" class="headerlink" title="五、使用日志库"></a>五、使用日志库</h1><p>修改第二步的erlserver_user的io:format打印为lager:info(“xxxxx”),再来尝试客户端连接并且传输信息。</p>
+<h1 id="六、后续"><a href="#六、后续" class="headerlink" title="六、后续"></a>六、后续</h1><p>客户端消息处理层（用户层）以及日志都写好了，后续开始制定协议层了。</p>
+<p>（project-<a href="https://github.com/xlkness/erlserver.git）" target="_blank" rel="noopener">https://github.com/xlkness/erlserver.git）</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-06-22T12:46:11.465Z" itemprop="dateUpdated">2018-06-22 20:46:11</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://lkness">
+            <img src="/img/head.jpg" alt="lkness">
+            lkness
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Erlang/">Erlang</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/034build-erlang-server03/index/&title=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/034build-erlang-server03/index/&title=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/034build-erlang-server03/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&url=http://lkness/2018/06/22/034build-erlang-server03/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/034build-erlang-server03/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/06/22/035build-erlang-server04/index/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">【从零开始构建erlang服务器】-04协议层</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/22/033build-erlang-server02/index/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">【从零开始构建erlang服务器】-02构建应用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            id: "Fri Jun 22 2018 20:06:44 GMT+0800",
+            owner: 'xlkness',
+            repo: 'xlkness.github.io',
+            oauth: {
+                client_id: '53494e1af384ef691a2c',
+                client_secret: '933d8900eed9ddfe9909a3cfdadcdc8ac5a7aefd',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        觉得好看可以打赏哦
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/weixin.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/weixin.png" data-alipay="/img/zhifubao.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>lkness &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/034build-erlang-server03/index/&title=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/034build-erlang-server03/index/&title=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://lkness/2018/06/22/034build-erlang-server03/index/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《【从零开始构建erlang服务器】-03用户层和日志》 — My Blog&url=http://lkness/2018/06/22/034build-erlang-server03/index/&via=http://lkness" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://lkness/2018/06/22/034build-erlang-server03/index/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACI0lEQVR42u3ay46DMAwF0P7/TzPrEYK5tulIJCerqqWQw8KKH59PvI7TOn9/vv78ufrrwwsDA+O1jON23V9z/+AjWPlruroGAwNjH8bVJpIgmIPv/5s/FwMDA6PHyK+pBlwMDAyMHmOyiSs8BgYGxj2jmqZWy2T5/b+ei2NgYLyQkVfd///zV/obGBgYr2IcxVVNYnshsrwrDAyMpRl5gJukqZPpiMKLw8DAWJpR3XQ+WtErolXHzjAwMHZg5CWw5PDXK5Yl2/1jPxgYGEszekG2F0arg2J5aMbAwFiV0UtB8xJYEnwnYxYYGBi7MapZby+5rRbRIh4GBsbSjOoAxKRwVg3B+QvCwMDYgdELefeYvExWPWJGQRwDA2M5Rh748nS3N8CRbz2qF2JgYCzESDYUzWjEbYPJgTJ6TRgYGAsxeiFv8shnWwW/GgMYGBgbMPJDWK9hmR8Qq21UDAwMjMno2CR9LTQDMDAwlmb02orzpHQybFGeHMHAwFiO0SufVe/zVFvicmYEAwNjUUYeWCejFYWjXjWUY2BgbMOYp7XzMYtq6MfAwFibcRRXnnBWS2ZJU+HyYIqBgbE0I1/V9LK3ueSgWU2bMTAw1mAkQbZXApvcubwHDAyMDRh5k7IaLp9KfaNcHAMDAyPYyryR2TzPYmBgYLTKYb32Z/OVYWBgbMBIUs3k15xUHbwYNTIxMDBezsj/NjnY5eF1/hQMDIyFGD9DYNsZ8hZ4mQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
