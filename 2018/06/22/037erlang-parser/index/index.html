@@ -14,7 +14,7 @@
     
     
     
-    <title>037erlang-parser | My Blog | 我的小站</title>
+    <title>Erlang词法分析器、语法分析器(lexer-leex,yac-yecc) | My Blog | 我的小站</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -24,14 +24,14 @@
     <meta name="description" content="一、简介一门编程语言的编译器或者解释器通常功能分解为两步：  1、读取源码文件然后分析它的结构 2、处理这些结构，例如生成目标程序lexer和yacc就是能完成第一步以便生成程序段的工具。而第一步的任务又能分为两个子任务：1、分割源码文件内容为很多tokens(lexer) 2、分析出程序的分级结构(yacc)  二、lexer（词法分析工具）lexer的源就是一个正则表达式表，其正则规则符合目标">
 <meta name="keywords" content="Erlang">
 <meta property="og:type" content="article">
-<meta property="og:title" content="037erlang-parser">
+<meta property="og:title" content="Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)">
 <meta property="og:url" content="http://lkness/2018/06/22/037erlang-parser/index/index.html">
 <meta property="og:site_name" content="My Blog">
 <meta property="og:description" content="一、简介一门编程语言的编译器或者解释器通常功能分解为两步：  1、读取源码文件然后分析它的结构 2、处理这些结构，例如生成目标程序lexer和yacc就是能完成第一步以便生成程序段的工具。而第一步的任务又能分为两个子任务：1、分割源码文件内容为很多tokens(lexer) 2、分析出程序的分级结构(yacc)  二、lexer（词法分析工具）lexer的源就是一个正则表达式表，其正则规则符合目标">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-06-22T12:43:57.055Z">
+<meta property="og:updated_time" content="2018-06-22T12:52:38.366Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="037erlang-parser">
+<meta name="twitter:title" content="Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)">
 <meta name="twitter:description" content="一、简介一门编程语言的编译器或者解释器通常功能分解为两步：  1、读取源码文件然后分析它的结构 2、处理这些结构，例如生成目标程序lexer和yacc就是能完成第一步以便生成程序段的工具。而第一步的任务又能分为两个子任务：1、分割源码文件内容为很多tokens(lexer) 2、分析出程序的分级结构(yacc)  二、lexer（词法分析工具）lexer的源就是一个正则表达式表，其正则规则符合目标">
     
         <link rel="alternate" type="application/atom+xml" title="My Blog" href="/atom.xml">
@@ -120,7 +120,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">037erlang-parser</div>
+        <div class="flex-col header-title ellipsis">Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -142,7 +142,7 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">037erlang-parser</h1>
+        <h1 class="title">Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)</h1>
         <h5 class="subtitle">
             
                 <time datetime="2018-06-22T12:36:09.000Z" itemprop="datePublished" class="page-time">
@@ -176,7 +176,7 @@
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">037erlang-parser</h1>
+        <h1 class="post-card-title">Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)</h1>
         <div class="post-meta">
             <time class="post-time" title="2018-06-22 20:36:09" datetime="2018-06-22T12:36:09.000Z"  itemprop="datePublished">2018-06-22</time>
 
@@ -274,7 +274,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-06-22T12:43:57.055Z" itemprop="dateUpdated">2018-06-22 20:43:57</time>
+    Last updated: <time datetime="2018-06-22T12:52:38.366Z" itemprop="dateUpdated">2018-06-22 20:52:38</time>
 </span><br>
 
 
@@ -308,7 +308,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《037erlang-parser》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -318,7 +318,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《037erlang-parser》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -328,7 +328,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《037erlang-parser》 — My Blog&url=http://lkness/2018/06/22/037erlang-parser/index/&via=http://lkness" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&url=http://lkness/2018/06/22/037erlang-parser/index/&via=http://lkness" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
@@ -475,7 +475,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《037erlang-parser》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&pic=http://lkness/img/head.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -485,7 +485,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《037erlang-parser》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://lkness/2018/06/22/037erlang-parser/index/&title=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&source=学不见其长，但日有所增" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -495,7 +495,7 @@ save({msg_module, _, Value}) -&gt; list_to_atom(Value).
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《037erlang-parser》 — My Blog&url=http://lkness/2018/06/22/037erlang-parser/index/&via=http://lkness" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Erlang词法分析器、语法分析器(lexer-leex,yac-yecc)》 — My Blog&url=http://lkness/2018/06/22/037erlang-parser/index/&via=http://lkness" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
